@@ -84,8 +84,11 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
     episode_six_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode Six" in item[0]])
     episode_six.add_locations(episode_six_locations, DiceyDungeonsLocation)
 
+    # TODO: Add level up checks if Option is enabled
+
 
 def create_events(world: DiceyDungeonsWorld) -> None:
+    menu = world.get_region("Menu")
     episode_one = world.get_region("Episode One")
     episode_two = world.get_region("Episode Two")
     episode_three = world.get_region("Episode Three")
@@ -110,3 +113,6 @@ def create_events(world: DiceyDungeonsWorld) -> None:
             location_type=DiceyDungeonsLocation,
             item_type=items.DiceyDungeonsItem,
         )
+
+    # And finally one event for beating all episodes
+    menu.add_event("All episodes completed", "All episodes completed", location_type=DiceyDungeonsLocation, item_type=items.DiceyDungeonsItem)

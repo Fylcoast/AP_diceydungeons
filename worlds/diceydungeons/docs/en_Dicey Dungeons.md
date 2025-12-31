@@ -13,7 +13,7 @@ Your pool of items (equipment) which you can acquire throughout your runs has be
 
 Phase 1 of this project is focusing only on the Warrior, as its layout is the simplest. In the future, other characters or episodes may be included.
 
-## What is the goal of Castlevania 64 when randomized?
+## What is the goal of Dicey Dungeons when randomized?
 
 For phase 1, the goal is to clear all 6 episodes for the Warrior.
 

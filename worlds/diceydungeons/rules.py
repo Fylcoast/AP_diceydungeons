@@ -16,21 +16,31 @@ def set_all_rules(world: DiceyDungeonsWorld) -> None:
 
 
 def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
-    # episode_one = world.get_entrance("Episode One")
-    # episode_two = world.get_entrance("Episode Two")
-    # episode_three = world.get_entrance("Episode Three")
-    # episode_four = world.get_entrance("Episode Four")
-    # episode_five = world.get_entrance("Episode Five")
-    # episode_six = world.get_entrance("Episode Six")
+    # episode_one = world.get_entrance("Episode 1")
+    # episode_two = world.get_entrance("Episode 2")
+    # episode_three = world.get_entrance("Episode 3")
+    # episode_four = world.get_entrance("Episode 4")
+    # episode_five = world.get_entrance("Episode 5")
+    # episode_six = world.get_entrance("Episode 6")
 
     # TODO: Figure out what region entrance rules will be. Lock episodes behind other episodes?
     pass
 
 
 def set_all_location_rules(world: DiceyDungeonsWorld) -> None:
-    # Only goal location currently has a rule. Since episodes can be run many times, defining location-specific rules seems difficult.
+    # Since episodes can be run many times, defining location-specific rules seems difficult.
+
+    # Level location rules
+    # Each level up is behind the level up before it. So we need rules on 3-6 to unlock based on 2-5 
+    if world.options.levelsanity:
+        for episode in range(1, 7):
+            for level in range(3, 7):
+                level_num = world.get_location("Episode - " + episode + " - Level " + level)
+                add_rule(level_num, lambda state: state.has("Episode - " + episode + " - Level " + level - 1, world.player))
+
+    # Goal location rule
     all_episodes_completed = world.get_location("All episodes completed")
-    add_rule(all_episodes_completed, lambda state: state.has_all(("Episode One", "Episode Two", "Episode Three", "Episode Four", "Episode Five", "Episode Six"), world.player))
+    add_rule(all_episodes_completed, lambda state: state.has_all(("Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"), world.player))
 
 
 def set_completion_condition(world: DiceyDungeonsWorld) -> None:

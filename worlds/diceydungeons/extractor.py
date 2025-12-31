@@ -7,6 +7,8 @@
 # collects all string literals from those arrays. The result is printed as a
 # JSON array of unique strings.
 
+# Author note: Copilot wrote this for me, but it works, so :3
+
 from __future__ import annotations
 
 import argparse

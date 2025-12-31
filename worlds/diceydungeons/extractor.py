@@ -67,8 +67,8 @@ def extract_strings_from_array_content(content: str) -> List[str]:
 		results.append(decoded)
 	return results
 
-
-def parse_vanilla_file(path: str, exclude_var: str = "vampireitem") -> Set[str]:
+# TODO: "tradeoffer" itempool has "any" in it (not a real equip) but excluding it removes others? Investigate.
+def parse_vanilla_file(path: str, exclude_vars: list[str] = ["vampireitem", "tradeoffer"]) -> Set[str]:
 	text = open(path, "r", encoding="utf-8", errors="ignore").read()
 	results: Set[str] = set()
 
@@ -76,7 +76,7 @@ def parse_vanilla_file(path: str, exclude_var: str = "vampireitem") -> Set[str]:
 	var_assign_pattern = re.compile(r"([A-Za-z_]\w*)\s*=\s*\[")
 	for m in var_assign_pattern.finditer(text):
 		varname = m.group(1)
-		if varname.lower() == exclude_var.lower():
+		if varname in exclude_vars:
 			continue
 		start_idx = m.end() - 1  # position of '['
 		end_idx = find_matching_bracket(text, start_idx)

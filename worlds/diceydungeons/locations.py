@@ -5,35 +5,46 @@ from typing import TYPE_CHECKING
 from BaseClasses import ItemClassification, Location
 
 from . import items
+from .extracted_data import * # *_items lists
 
 if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
 
-LOCATION_NAME_TO_ID: dict[str, int] = {
-    # Convention:
-    # Location name: <Episode> - <Floor> - <Location Type> <Number>
-    # ID: <Episode Number><Floor Number><Location Code><Location Count>
-    # Episode code is 1-6
-    # Floor code is 1-6
-    # Location code:
-    #   1: Chest
-    #   2: Shop
-    "Episode 1 - Floor 1 - Chest 1": 1111,
-    "Episode 1 - Floor 1 - Chest 2": 1112,
-    "Episode 1 - Floor 2 - Chest 1": 1211,
-    "Episode 1 - Floor 2 - Shop 1": 1221,
-}
+# Need locations to match items. We have a good idea of what our items are, so
+# we just match locations to fit.
+# When more than just warrior, we will need to concat lists and determine unique items.
+NEEDED_NUMBER_OF_LOCATIONS: int = len(warrior_items)
 
-# Level up locations convention:
-# Location name: <Episode> - Level <level>
-# ID: 10<Episode Number><Level Number>
-    # "Episode 1 - Level 2": 1012,
-    # "Episode 1 - Level 3": 1013,
-    # "Episode 2 - Level 2": 1022
-    # etc
+LOCATION_NAME_TO_ID: dict[str, int] = {}
+
 for episode in range(1, 7):
+    # Level up locations convention:
+    # Location name: <Episode> - Level <level>
+    # ID: 10<Episode Number><Level Number>
+        # "Episode 1 - Level 2": 1012,
+        # "Episode 1 - Level 3": 1013,
+        # "Episode 2 - Level 2": 1022
+        # etc
     for level in range(2, 7):
         LOCATION_NAME_TO_ID["Episode " + episode + " - Level " + level] = 1000 + 10 * episode + level
+
+
+# Physical locations convention:
+# Location name: <Episode> - <Floor> - <Location Type> <Number>
+# ID: <Episode Number><Floor Number><Location Code><Location Count>
+# Episode code is 1-6
+# Floor code is 1-6
+# Location code:
+#   1: Chest
+#   2: Shop
+# "Episode 1 - Floor 1 - Chest 1": 1111,
+# "Episode 1 - Floor 1 - Chest 2": 1112,
+# "Episode 1 - Floor 2 - Chest 1": 1211,
+# "Episode 1 - Floor 2 - Shop 1": 1221,
+# etc
+#TODO: Finish this, or script it out, or something
+# May not be able to script? May be episode dependent, character dependent. Maybe find a way to extract?
+# Or maybe we script anyway and randomizer / client decides if you get checks on a run or not? Examine generators to see if feasible.
 
 class DiceyDungeonsLocation(Location):
     game: str = "Dicey Dungeons"

@@ -2,7 +2,33 @@ from dataclasses import dataclass
 
 from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, DefaultOnToggle
 
+# Defined for location creation
+MAX_MAXIMUM_CHECKS_PER_CHEST: int = 5
+MAX_MAXIMUM_CHECKS_PER_SHOP: int = 5
+
 #TODO: Add more options?
+
+class MaximumChecksPerChest(Range):
+    '''
+    Determines the maximum number of AP items that can
+    be found within any individual chest (e.g. 
+    in Episode 1, Floor 1 chest) across runs.
+    '''
+    display_name = "Maximum checks per chest"
+    range_start = 0
+    range_end = MAX_MAXIMUM_CHECKS_PER_CHEST
+    default = 2
+
+class MaximumChecksPerShop(Range):
+    '''
+    Determines the maximum number of AP items that can
+    be found within any individual shop (e.g. 
+    in Episode 1, Floor 2 shop) across runs.
+    '''
+    display_name = "Maximum checks per shop"
+    range_start = 0
+    range_end = MAX_MAXIMUM_CHECKS_PER_SHOP
+    default = 3
 
 class Levelsanity(DefaultOnToggle):
     '''
@@ -23,11 +49,13 @@ class GuaranteeSomeChecks(DefaultOnToggle):
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
     guarantee_some_checks: GuaranteeSomeChecks
+    maximum_checks_per_chest: MaximumChecksPerChest
+    maximum_checks_per_shop: MaximumChecksPerShop
 
 option_groups = [
     OptionGroup(
         "Location Options",
-        [Levelsanity],
+        [Levelsanity, MaximumChecksPerShop, MaximumChecksPerChest],
     ),
     OptionGroup(
         "Quality of Life Options",

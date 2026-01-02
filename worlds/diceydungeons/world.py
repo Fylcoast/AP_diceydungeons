@@ -33,11 +33,11 @@ class DiceyDungeonsWorld(World):
     def create_items(self) -> None:
         items.create_all_items(self)
 
-    def create_item(self, name: str) -> items.APQuestItem:
+    def create_item(self, name: str) -> items.DiceyDungeonsItem:
         return items.create_item_with_correct_classification(self, name)
     
     def get_filler_item_name(self) -> str:
-        return items.get_random_filler_item_name(self)
+        return items.get_filler_item_name(self)
     
     def fill_slot_data(self) -> Mapping[str, Any]:
         # If you need access to the player's chosen options on the client side, there is a helper for that.

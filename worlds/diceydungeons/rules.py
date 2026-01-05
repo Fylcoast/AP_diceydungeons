@@ -24,6 +24,7 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
     # episode_six = world.get_entrance("Episode 6")
 
     # TODO: Figure out what region entrance rules will be. Lock episodes behind other episodes?
+    #TODO: Also, consider reconfiguring Floors to be regions, to ensure we could get enough useful items to actually play the game.
     pass
 
 
@@ -31,6 +32,7 @@ def set_all_location_rules(world: DiceyDungeonsWorld) -> None:
     # Since episodes can be run many times, defining location-specific rules seems difficult.
 
     #TODO: Rules to say X progression items required for each additional floor's checks? May help the randomness.
+    # Could this be done with regions? maybe each floor is a region, can only unlock floor 2 with 1 item, floor 3 with 2-3 items...?
 
     # Level location rules
     # Each level up is behind the level up before it. So we need rules on 3-6 to unlock based on 2-5 

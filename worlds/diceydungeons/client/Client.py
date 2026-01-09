@@ -12,6 +12,9 @@ import functools
 import websockets
 from copy import deepcopy
 from typing import List, Any, Iterable, Optional, Dict
+from queue import Queue, Empty
+
+import worlds.diceydungeons.client.launch_and_capture as launcher
 
 import Utils
 from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart, 
@@ -19,6 +22,13 @@ from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart,
 from MultiServer import Endpoint
 from CommonClient import (CommonContext, gui_enabled, ClientCommandProcessor, 
                           logger, get_base_parser)
+
+# Import item metadata for categorization
+try:
+    from worlds.diceydungeons.data.extracted_data import item_metadata
+except ImportError:
+    logger.warning("Could not import item_metadata from extracted_data")
+    item_metadata = {}
 
 DEBUG = True
 
@@ -33,9 +43,13 @@ class DiceyDungeonsCommandProcessor(ClientCommandProcessor):
     """Command processor for Dicey Dungeons specific commands"""
     
     def _cmd_dicey(self):
-        """Check Dicey Dungeons connection state"""
+        #"""Check Dicey Dungeons connection state"""
+        # if isinstance(self.ctx, DiceyDungeonsContext):
+        #     logger.info(f"Dicey Dungeons Status: {self.ctx.get_dicey_status()}")
+        """Launch Dicey Dungeons"""
         if isinstance(self.ctx, DiceyDungeonsContext):
-            logger.info(f"Dicey Dungeons Status: {self.ctx.get_dicey_status()}")
+            self.ctx.launch_game()
+
 
 
 class DiceyDungeonsContext(CommonContext):
@@ -72,8 +86,58 @@ class DiceyDungeonsContext(CommonContext):
         
         # Location checking
         self.checked_locations_ids: set[int] = set()
+        
+        # Game launcher queue for receiving messages
+        self.game_message_queue: Optional[Queue] = None
 
-    def get_dicey_status(self) -> str:
+    #TODO: replace string with, some variable or something? Will also need to update generators so, maybe we get some path to install 
+    # then go from there?
+    def launch_game(self, game_path: str = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons\\diceydungeons.exe"):
+        """Launch the game and attach to the message queue."""
+        logger.info(f"Launching game from: {game_path}")
+        self.game_message_queue = launcher.launch(game_path)
+        logger.info("Game launched, message queue attached.")
+    
+    def process_game_messages(self):
+        """Process any pending messages from the game queue.
+        
+        Call this periodically from the main loop to handle incoming messages.
+        """
+        if not self.game_message_queue:
+            return
+        
+        try:
+            while True:
+                if not self.game_message_queue:
+                    break
+                message = self.game_message_queue.get_nowait()
+                self.handle_game_message(message)
+        except Empty:
+            pass
+    
+    def handle_game_message(self, message: dict):
+        """Handle a message received from the game.
+        
+        Args:
+            message: A dict with 'type' and 'data' keys.
+                     type='game_message' for JSON parsed from [AP] prefix
+                     type='process_exit' when the game closes
+                     type='error' for launch errors
+        """
+        msg_type = message.get("type", "unknown")
+        data = message.get("data")
+        
+        if msg_type == "game_message":
+            logger.info(f"Game message received: {data}")
+            # TODO: React to the game message (e.g., check locations, send items)
+            
+        elif msg_type == "process_exit":
+            logger.warning(f"Game process exited with code: {data}")
+            self.game_message_queue = None
+            
+        elif msg_type == "error":
+            logger.error(f"Game launcher error: {data}")
+            self.game_message_queue = None
         """Get current connection status"""
         if not self.is_proxy_connected():
             return "Not connected to Dicey Dungeons"
@@ -120,16 +184,100 @@ class DiceyDungeonsContext(CommonContext):
         """Disconnect from server and game"""
         await super().disconnect(allow_autoreconnect)
 
-    def update_items(self):
-        """Send inventory update to the game"""
-        if not self.is_connected():
-            return
-
-        self.server_msgs.append(encode([{
+    def get_items_filtered(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Get items for the player with optional filtering and categorization.
+        
+        This supports the pull-based item model where the game requests items
+        instead of having them pushed automatically. Items are returned categorized
+        by location type (chest, shop, heal, upgrade, trade) based on metadata.
+        
+        Args:
+            filters: Optional dictionary of filters:
+                - 'episode': Int (1-6) - filter by episode
+                - 'location_type': Str or List[Str] - filter by location type(s)
+                  (e.g., "chest", "shop", ["chest", "shop"])
+                - 'role': Str or List[Str] - filter by role
+                - 'item_type': Str or List[Str] - filter by item type
+            
+        Returns:
+            Dictionary with:
+            - 'cmd': "ReceivedItems"
+            - 'total_items': Total items available
+            - 'filters_applied': The filters that were used
+            - Items grouped by location_type: 'chest_items', 'shop_items', etc.
+              Each group is a list of [name, id, player_id, flags]
+        """
+        if filters is None:
+            filters = {}
+        
+        # Normalize filter values to lists for easier processing
+        normalized_filters = {}
+        for key, value in filters.items():
+            if isinstance(value, (list, tuple)):
+                normalized_filters[key] = value
+            else:
+                normalized_filters[key] = [value] if value is not None else []
+        
+        # Categorize all items by location_type
+        categorized_items: Dict[str, List] = {}
+        
+        for item in self.full_inventory:
+            item_name = item[0]  # item is [name, id, player_id, flags]
+            metadata = item_metadata.get(item_name, {})
+            
+            # Check if item matches all filters
+            matches_filters = True
+            
+            # Filter by episode
+            if 'episode' in normalized_filters and normalized_filters['episode']:
+                if metadata.get('episode') not in normalized_filters['episode']:
+                    matches_filters = False
+            
+            # Filter by location_type
+            if 'location_type' in normalized_filters and normalized_filters['location_type']:
+                if metadata.get('location_type') not in normalized_filters['location_type']:
+                    matches_filters = False
+            
+            # Filter by role
+            if 'role' in normalized_filters and normalized_filters['role']:
+                if metadata.get('role') not in normalized_filters['role']:
+                    matches_filters = False
+            
+            # Filter by item_type
+            if 'item_type' in normalized_filters and normalized_filters['item_type']:
+                if metadata.get('item_type') not in normalized_filters['item_type']:
+                    matches_filters = False
+            
+            if matches_filters:
+                location_type = metadata.get('location_type', 'unknown')
+                category_key = f"{location_type}_items"
+                
+                if category_key not in categorized_items:
+                    categorized_items[category_key] = []
+                
+                categorized_items[category_key].append(item)
+        
+        response = {
             "cmd": "ReceivedItems",
-            "index": 0,
-            "items": self.full_inventory
-        }]))
+            "total_items": len(self.full_inventory),
+            "total_matching": sum(len(items) for items in categorized_items.values()),
+            "filters_applied": filters,
+        }
+        
+        # Add categorized items to response
+        response.update(categorized_items)
+        
+        return response
+
+    def update_items(self):
+        """
+        DEPRECATED: This method is kept for backward compatibility.
+        In the pull-based model, items are not automatically sent to the game.
+        The game requests items via GetItems command instead.
+        """
+        # No longer auto-sends items; game pulls them via GetItems
+        pass
 
     def on_print_json(self, args: dict):
         """Handle print JSON messages from the server"""
@@ -182,14 +330,15 @@ class DiceyDungeonsContext(CommonContext):
             self.server_msgs.append(encode(json))
 
         elif cmd == "ReceivedItems":
-            # Update our inventory
+            # Update our inventory but don't push to game
+            # Game will pull items via GetItems command
             if args["index"] == 0:
                 self.full_inventory.clear()
 
             for item in args["items"]:
                 self.full_inventory.append(NetworkItem(*item))
-
-            self.server_msgs.append(encode([args]))
+            
+            logger.info(f"Items updated: now have {len(self.full_inventory)} total items available")
 
         elif cmd == "RoomInfo":
             self.seed_name = args["seed_name"]
@@ -217,6 +366,8 @@ async def proxy(websocket, path: str = "/", ctx: DiceyDungeonsContext = None):
     """
     WebSocket proxy handler for game connections.
     Receives messages from the game and forwards them to the Archipelago server.
+    
+    Supports pull-based item model where game requests items via GetItems command.
     """
     ctx.endpoint = Endpoint(websocket)
     try:
@@ -267,11 +418,18 @@ async def proxy(websocket, path: str = "/", ctx: DiceyDungeonsContext = None):
                         # Send connection info if we're already connected to server
                         if ctx.connected_msg and ctx.is_connected():
                             await ctx.send_msgs_proxy(ctx.connected_msg)
-                            ctx.update_items()
                         continue
 
                     if not ctx.is_proxy_connected():
                         break
+
+                    # Handle GetItems request (pull-based model with filtering)
+                    if msg["cmd"] == "GetItems":
+                        # Extract optional filters from the message
+                        filters = msg.get("filters", {})
+                        items_response = ctx.get_items_filtered(filters)
+                        await ctx.send_msgs_proxy(encode([items_response]))
+                        continue
 
                     # Forward game messages to the server
                     if msg["cmd"] == "LocationCheck":
@@ -302,6 +460,7 @@ async def proxy_loop(ctx: DiceyDungeonsContext):
     """
     Main proxy loop that forwards messages from the server to the game.
     Runs continuously while the client is active.
+    Also processes incoming messages from the game.
     """
     try:
         while not ctx.exit_event.is_set():
@@ -309,6 +468,9 @@ async def proxy_loop(ctx: DiceyDungeonsContext):
                 for msg in ctx.server_msgs:
                     await ctx.send_msgs_proxy(msg)
                 ctx.server_msgs.clear()
+            
+            # Process any messages from the game
+            ctx.process_game_messages()
             
             await asyncio.sleep(0.1)
     except Exception as e:

@@ -13,11 +13,6 @@ from .options import MAX_MAXIMUM_CHECKS_PER_CHEST, MAX_MAXIMUM_CHECKS_PER_SHOP
 if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
 
-# Need locations to match items. We have a good idea of what our items are, so
-# we just match locations to fit.
-# When more than just warrior, we will need to concat lists and determine unique items.
-NEEDED_NUMBER_OF_LOCATIONS: int = len(warrior_items)
-
 LOCATION_NAME_TO_ID: dict[str, int] = {}
 
 for episode in range(1, 7):

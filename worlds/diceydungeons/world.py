@@ -4,7 +4,8 @@ from typing import Any
 from worlds.AutoWorld import World
 
 from . import items, locations, regions, rules, web_world
-from . import options as diceydungeon_options
+from . import options as diceydungeons_options
+from .mod import DiceyDungeonsModGenerator
 
 class DiceyDungeonsWorld(World):
     """
@@ -15,8 +16,8 @@ class DiceyDungeonsWorld(World):
 
     web = web_world.DiceyDungeonsWebWorld()
 
-    options_dataclass = diceydungeon_options.DiceyDungeonsOptions
-    options: diceydungeon_options.DiceyDungeonsOptions
+    options_dataclass = diceydungeons_options.DiceyDungeonsOptions
+    options: diceydungeons_options.DiceyDungeonsOptions
 
     location_name_to_id = locations.LOCATION_NAME_TO_ID
     item_name_to_id = items.ITEM_NAME_TO_ID
@@ -44,3 +45,9 @@ class DiceyDungeonsWorld(World):
         return self.options.as_dict(
             "levelsanity", "guarantee_some_checks", "maximum_checks_per_chest", "maximum_checks_per_shop"
         )
+    
+    def generate_output(self, output_directory: str):
+        gen = DiceyDungeonsModGenerator(output_directory, 
+                                        self.multiworld.get_out_file_name_base(self.player), 
+                                        self.multiworld.get_items())
+        gen.generate()

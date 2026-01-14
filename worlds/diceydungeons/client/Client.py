@@ -97,6 +97,32 @@ class DiceyDungeonsContext(CommonContext):
         logger.info(f"Launching game from: {game_path}")
         self.game_message_queue = launcher.launch(game_path)
         logger.info("Game launched, message queue attached.")
+        asyncio.create_task(self._wait_locations_and_get_items())
+        logger.info(f"11101 = {self.location_names.lookup_in_game(11101)}")
+
+    async def _wait_locations_and_get_items(self, timeout: float = 10.0):
+        """Request location information from server and parse the response."""
+        # Request item information for all our locations
+        await self.send_msgs([{"cmd": "LocationScouts", "locations": list(self.server_locations)}])
+
+        # Wait for LocationInfo response (sets locations_info dictionary)
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            if self.locations_info:
+                logger.info(f"Received location item mappings for {len(self.locations_info)} locations")
+                self.get_items_by_location()
+                return
+            remaining = deadline - time.time()
+            try:
+                await asyncio.wait_for(self.watcher_event.wait(), remaining)
+            except asyncio.TimeoutError:
+                logger.warning(f"Timeout waiting for LocationInfo from server")
+                return
+            finally:
+                try:
+                    self.watcher_event.clear()
+                except Exception:
+                    pass
     
     def process_game_messages(self):
         """Process any pending messages from the game queue.
@@ -129,7 +155,8 @@ class DiceyDungeonsContext(CommonContext):
         
         if msg_type == "game_message":
             logger.info(f"Game message received: {data}")
-            # TODO: React to the game message (e.g., check locations, send items)
+            # Schedule the async command handler so we don't create an un-awaited coroutine
+            asyncio.create_task(self.handle_game_command(data))
             
         elif msg_type == "process_exit":
             logger.warning(f"Game process exited with code: {data}")
@@ -145,6 +172,30 @@ class DiceyDungeonsContext(CommonContext):
         game_status = "Connected to Dicey Dungeons"
         server_status = " and Archipelago Server" if self.is_connected() else " (disconnected from Archipelago)"
         return game_status + server_status
+    
+    async def handle_game_command(self, data: dict):
+        command = data.get("command")
+
+        if command == "send_item":
+            logger.info(f"Sending item " + data.get("payload"))
+            logger.info(f"Location checked: {11101}")
+            self.locations_checked.add(11101)
+            await self.send_msgs([{"cmd": 'LocationChecks', "locations": [11101]}])
+            #TODO: make it work
+        
+        elif command == "reload_generator":
+            logger.info(f"Reloading generator")
+            #TODO: make it work
+    
+    def get_items_by_location(self):
+        if not self.locations_info:
+            logger.info(f"No location info, something went wrong")
+        for loc_id, net_item in sorted(self.locations_info.items()):
+            logger.info(f"{loc_id} | {net_item}")
+            loc_name = self.location_names.lookup_in_game(loc_id, self.game)
+            item_name = self.item_names.lookup_in_slot(net_item.item, net_item.player)
+            logger.info(f"{loc_id}: {loc_name} -> {item_name} (player {net_item.player})")
+
 
     async def server_auth(self, password_requested: bool = False):
         """Authenticate with the server"""
@@ -297,6 +348,8 @@ class DiceyDungeonsContext(CommonContext):
 
     def on_package(self, cmd: str, args: dict):
         """Handle packages received from the server"""
+        # if DEBUG:
+        #     logger.info(f"cmd: {cmd} | args: {args}")
         
         if cmd == "Connected":
             json = args
@@ -343,6 +396,12 @@ class DiceyDungeonsContext(CommonContext):
         elif cmd == "RoomInfo":
             self.seed_name = args["seed_name"]
             self.room_info = encode([args])
+                    
+        # Handle location item mappings from the server
+        elif cmd == "LocationInfo":
+            for item in [NetworkItem(*item) for item in args['locations']]:
+                self.locations_info[item.location] = item
+            self.watcher_event.set()
 
         else:
             if cmd != "PrintJSON":

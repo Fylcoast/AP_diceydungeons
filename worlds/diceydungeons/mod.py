@@ -16,12 +16,10 @@ class DiceyDungeonsModGenerator():
     def generate(self):
         diceyap_path = os.path.join(self.output_directory, self.mod_name)
         output_zip_full = os.path.join(self.output_directory, self.output_zip_name)
-        # data = "{'json': 'yee'}"
         
         os.mkdir(diceyap_path)
         filename = os.path.join(diceyap_path, "Equipment.txt")
         with open(filename, 'w') as f:
-            # json.dump(data, f)
             f.writelines([item.name + '\n' for item in self.equipment])
 
         shutil.make_archive(output_zip_full, 'zip', self.output_directory, self.mod_name)
@@ -29,6 +27,3 @@ class DiceyDungeonsModGenerator():
         # Delete the working folder
         if os.path.exists(diceyap_path):
             shutil.rmtree(diceyap_path)
-
-        #TODO: Make this like, a <something>.apdicey archive which contains the 'diceyap' folder to put in the mods directory.
-        # Generating this will be... pretty involved.

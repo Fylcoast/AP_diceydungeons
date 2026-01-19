@@ -13,6 +13,7 @@ import websockets
 from copy import deepcopy
 from typing import List, Any, Iterable, Optional, Dict
 from queue import Queue, Empty
+import ast
 
 import worlds.diceydungeons.client.launch_and_capture as launcher
 
@@ -177,10 +178,11 @@ class DiceyDungeonsContext(CommonContext):
         command = data.get("command")
 
         if command == "send_item":
-            logger.info(f"Sending item " + data.get("payload"))
-            logger.info(f"Location checked: {11101}")
-            self.locations_checked.add(11101)
-            await self.send_msgs([{"cmd": 'LocationChecks', "locations": [11101]}])
+            new_loc = ast.literal_eval(data.get("payload"))[0]
+            logger.info(f"Sending item " + str(new_loc))
+            logger.info(f"Location checked: {str(new_loc)}")
+            self.locations_checked.add(new_loc)
+            await self.send_msgs([{"cmd": 'LocationChecks', "locations": [new_loc]}]) 
             #TODO: make it work
         
         elif command == "reload_generator":
@@ -195,6 +197,7 @@ class DiceyDungeonsContext(CommonContext):
             loc_name = self.location_names.lookup_in_game(loc_id, self.game)
             item_name = self.item_names.lookup_in_slot(net_item.item, net_item.player)
             logger.info(f"{loc_id}: {loc_name} -> {item_name} (player {net_item.player})")
+            #NOTE: must save location ID of Dicey Dungeons with item name! uniqueness needed.
 
 
     async def server_auth(self, password_requested: bool = False):

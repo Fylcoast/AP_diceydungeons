@@ -47,7 +47,5 @@ class DiceyDungeonsWorld(World):
         )
     
     def generate_output(self, output_directory: str):
-        gen = DiceyDungeonsModGenerator(output_directory, 
-                                        self.multiworld.get_out_file_name_base(self.player), 
-                                        self.multiworld.get_items())
+        gen = DiceyDungeonsModGenerator(self, output_directory)
         gen.generate()

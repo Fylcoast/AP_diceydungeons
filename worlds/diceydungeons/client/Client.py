@@ -179,11 +179,9 @@ class DiceyDungeonsContext(CommonContext):
 
         if command == "send_item":
             new_loc = ast.literal_eval(data.get("payload"))[0]
-            logger.info(f"Sending item " + str(new_loc))
             logger.info(f"Location checked: {str(new_loc)}")
             self.locations_checked.add(new_loc)
             await self.send_msgs([{"cmd": 'LocationChecks', "locations": [new_loc]}]) 
-            #TODO: make it work
         
         elif command == "reload_generator":
             logger.info(f"Reloading generator")
@@ -198,6 +196,7 @@ class DiceyDungeonsContext(CommonContext):
             item_name = self.item_names.lookup_in_slot(net_item.item, net_item.player)
             logger.info(f"{loc_id}: {loc_name} -> {item_name} (player {net_item.player})")
             #NOTE: must save location ID of Dicey Dungeons with item name! uniqueness needed.
+            #TODO: Use this info to make generator reload.
 
 
     async def server_auth(self, password_requested: bool = False):

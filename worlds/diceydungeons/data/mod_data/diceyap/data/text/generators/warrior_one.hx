@@ -1,38 +1,7 @@
-var thisgenerator = "warrior_normal";
-var warriorshops = [];
-var strangeshop = [];
-var awesomelist = [];
-var floor2gooditem = [];
-var floor3item = [];
-var floor5item = [];
-var vampireitem = [];
-var itempools = [warriorshops, strangeshop, awesomelist, floor2gooditem, floor3item, floor5item, vampireitem]; //Initialize lists like this for clarity
-
-/*NOTICE TO MODDERS:
-  All you need to do to get your items in here is append the name of your mod to:
-    diceydungeons/itempools/[this generator's name minus file extension]/scriptstorun.txt
-  Then add a .hx script of the appropriate name to that directory that returns an array containing arrays of items
-  you want to add to each of the generator's item pools. Use the vanilla script for this generator for reference -
-  it's important you return the right amount of arrays!
-  
-  (If you want to replace the generator entirely, in case you have an extremely specific item pool in mind, you should
-  get rid of declaring itempools and add items directly to the above lists (or replace pops from them with strings).
-  Note however that other mods will no longer be able to add items here.)*/
-  
-itempools = runscript("diceydungeons/flexible_generator",[thisgenerator,itempools]);
-
-var warriorshops = itempools[0];
-var strangeshop = itempools[1];
-var awesomelist = itempools[2];
-var floor2gooditem = itempools[3];
-var floor3item = itempools[4];
-var floor5item = itempools[5];
-var vampireitem = itempools[6];
-
-
-
 usestandardenemies();
 
+var generator = "warrior_one";
+var episode = "1";
 var items = [];
 var gooditems = [];
 var otherstuff = [];
@@ -40,9 +9,9 @@ var goodotherstuff = [];
 
 //Floor 1:
 items = [];
-gooditems = ["Kingdom Hearts Item 1"];
+gooditems = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "1", "1"]);
 otherstuff = [];
-goodotherstuff = [shop(["upgrade", "health"])];
+goodotherstuff = [];
 
 addfloor("tiny")
   .additems(items, gooditems)
@@ -51,9 +20,9 @@ addfloor("tiny")
 
 //Floor 2:
 items = [];
-gooditems = [floor2gooditem.pop()];
+gooditems = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "2", "1"]);
 otherstuff = [health()];
-goodotherstuff = [shop([warriorshops.pop(), warriorshops.pop(), warriorshops.pop()])];
+goodotherstuff = [shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "2", "1"]))];
 
 addfloor("small")
   .additems(items, gooditems)
@@ -61,14 +30,13 @@ addfloor("small")
   .generate();
 
 //Floor 3:
-items = [];
-items.push(floor3item.pop());
+items = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "3", "1"]);
 gooditems = [];
 
 otherstuff = [health(), health()];
 
 goodotherstuff = [
-  shop([warriorshops.pop(), warriorshops.pop(), warriorshops.pop()]),
+  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "3", "1"])),
   upgrade()
 ];
 
@@ -79,11 +47,11 @@ addfloor("normal")
   
 //Floor 4:
 items = [];
-gooditems = [awesomelist.pop()];
+gooditems = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "4", "1"]);
 
 otherstuff = [health()];
 goodotherstuff = [
-  trade(["any"], [awesomelist.pop()])
+  trade(["any"], ["Dice Shard"])
 ];
 
 addfloor("normal")
@@ -92,14 +60,13 @@ addfloor("normal")
   .generate();
   
 //Floor 5:
-items = [];
-items.push(floor5item.pop());
+items = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "5", "1"]);
 gooditems = [];
 
 otherstuff = [health(), health()];
 goodotherstuff = [
   upgrade(),
-  shop(["upgrade", strangeshop.pop(), "health"], [4, 4, 4])
+  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "5", "1"]), runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "5", "2"]))
 ];
 
 addfloor("big")
@@ -116,7 +83,7 @@ goodotherstuff = [];
 var lastfloor = addfloor("boss");
 
 if (getfinalboss() == "Drake"){
-  items.push(vampireitem.pop());
+  items.push("Wooden Stake");
 }
 
 lastfloor

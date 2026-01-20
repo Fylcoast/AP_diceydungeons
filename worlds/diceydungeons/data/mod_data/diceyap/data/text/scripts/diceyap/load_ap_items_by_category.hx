@@ -14,7 +14,7 @@ var res = [];
 
 for (item in apdata) {
   if (item.generator == gen && item.episode == episode && item.list == list && item.floor == floor && (!iter || item.iter == iter)) {
-    trace("Adding item!: " + item.name + " at " + args);
+    //trace("Adding item!: " + item.name + " at " + args);
     res.push(item.name);
   }
 }

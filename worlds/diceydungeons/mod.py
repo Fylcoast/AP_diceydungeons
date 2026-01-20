@@ -8,12 +8,12 @@ from BaseClasses import Location, Item, ItemClassification
 
 #TODO: List of files we need to include in output:
 # DONE - _append/data/text/equipment.csv - dynamic 
-# data/text/episodes.csv - static
-# data/text/generators for warrior_one through _six - static - 3 is current focus, check all after!
+# data/text/episodes.csv - static - do level up rewards?
+# DONE? data/text/generators for warrior_one through _six - static
 # data/text/scripts/diceyap
-#       ap_data.csv - dynamic - maybe do from client only?
-#       load_ap_items_by_category - static
-#       send_location_checks - static
+#       ap_data.csv - dynamic - maybe do from client only? can generate on /dicey call and whenever we get call from game.
+#       DONE load_ap_items_by_category - static
+#       DONE send_location_checks - static
 
 
 if TYPE_CHECKING:
@@ -60,7 +60,7 @@ item_classification_text_mapping: dict = {
     ItemClassification.deprioritized: 'They probably don''t|need this...',
     ItemClassification.progression_deprioritized: 'They probably don''t|need this...',
     ItemClassification.progression_deprioritized_skip_balancing: 'They probably don''t|need this...',
-    ItemClassification.progression_skip_balancing: 'They might need this',
+    ItemClassification.progression_skip_balancing: 'They might need this.',
     ItemClassification.skip_balancing: 'This might be useful.'
 }
 
@@ -100,26 +100,15 @@ class DiceyDungeonsModGenerator():
         base_file_path = os.path.join(os.path.dirname(__file__), 'data', 'mod_data', self.mod_name)
         shutil.copytree(base_file_path, diceyap_path, dirs_exist_ok=True)
 
-        # filename = os.path.join(diceyap_path, "equipment.txt")
-        # with open(filename, 'w') as f:
-        #     f.writelines([item.name + '\n' for item in self.equipment])
-
         data_text_directory = os.path.join(diceyap_path, '_append', 'data', 'text')
-        # os.makedirs(data_text_directory, exist_ok=True)
+        
+        # Generate equipment.csv
         equipment_filename = os.path.join(data_text_directory, "equipment.csv")
         with open(equipment_filename, 'w', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=equipment_field_list)
             writer.writeheader()
             rows = []
             for location in self.world.get_locations():
-                # if location_name in self.world.disabled_locations:
-                    # continue
-                # location_name = location.name
-                # location_id = location.address
-                # location = self.world.get_location(location_name)
-                # item = location.item
-                # f.write(str(location_id) + " --> " + item.name)
-                # writer.writerow({'location_id': })
                 rows.append(self.get_equipment_row(location))
             writer.writerows(rows)
 

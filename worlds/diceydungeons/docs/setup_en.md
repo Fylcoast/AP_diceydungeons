@@ -17,6 +17,6 @@ Download Dicey Dungeons (current patch) and start it at least once.
 
 Room generation will create an archive containing a folder named "diceyap". Place this in the games local files, under the "mod" directory.
 
-Configure your launch options for the game in its Properties in Steam to include "mod=diceyap".
+Launch the Dicey Dungeons Client from Archipelago, add the URL:Port and your slot name, and Connect.
 
-(Speculation) Launch the Dicey Dungeons Client from Archipelago, add the URL:Port and your slot name, and Connect!
+Launch the game with /dicey, and you're off and running!

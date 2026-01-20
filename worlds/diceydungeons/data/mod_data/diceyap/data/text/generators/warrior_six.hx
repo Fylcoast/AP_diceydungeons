@@ -1,7 +1,7 @@
 usestandardenemies();
 
-var generator = "warrior_three";
-var episode = "3";
+var generator = "warrior_six";
+var episode = "6";
 var items = [];
 var gooditems = [];
 var otherstuff = [];

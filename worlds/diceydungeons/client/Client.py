@@ -14,8 +14,10 @@ from copy import deepcopy
 from typing import List, Any, Iterable, Optional, Dict
 from queue import Queue, Empty
 import ast
+import random
 
 import worlds.diceydungeons.client.launch_and_capture as launcher
+import worlds.diceydungeons.generator.generator as generator
 
 import Utils
 from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart, 
@@ -50,6 +52,11 @@ class DiceyDungeonsCommandProcessor(ClientCommandProcessor):
         """Launch Dicey Dungeons"""
         if isinstance(self.ctx, DiceyDungeonsContext):
             self.ctx.launch_game()
+    
+    def _cmd_generate(self):
+        """Generate new layout for episodes"""
+        if isinstance(self.ctx, DiceyDungeonsContext):
+            self.ctx.generate_items()
 
 
 
@@ -61,6 +68,10 @@ class DiceyDungeonsContext(CommonContext):
     
     command_processor = DiceyDungeonsCommandProcessor
     game = "Dicey Dungeons"
+
+    #TODO: replace string with, some variable or something? Will also need to update generators so, maybe we get some path to install 
+    # then go from there?
+    game_path: str = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons\\diceydungeons.exe"
 
     def __init__(self, server_address: Optional[str], password: Optional[str]):
         super().__init__(server_address, password)
@@ -90,16 +101,43 @@ class DiceyDungeonsContext(CommonContext):
         
         # Game launcher queue for receiving messages
         self.game_message_queue: Optional[Queue] = None
+    
+    def generate_items(self):
+        """Generate newly randomized items to find in episodes, based on collected items."""
+        asyncio.create_task(self._generate_items_for_game())
+    
+    async def _generate_items_for_game(self):
+        """Asynchronously update ap_data for game to read in generators."""
+        logger.info("Generating new options for game!")
+        # self.locations_info holds locations and items in those locations
+        # is a dict of location_id --> NetworkItem
+        # NetworkItem has .item (item id), .player (player id)
+        # for loc_id, net_item in self.locations_info.items(): 
+        #       Name for ap_data.csv: f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]"
+        # We will need to know all locations, which ones we've picked up already, and which game items we have access to.
+        # all locations: self.locations_info, explained above
+        # locations we've sent already (don't want to spawn those in): self.checked_locations
+        # items we've received in multiworld: self.items_received
+        # logger.info(f"all our location info: {self.locations_info}")
+        # logger.info(f"all locations we've already checked: {self.checked_locations}")
+        # logger.info(f"all items we've received: {self.items_received}")
+        # These all work (once game has launched!), so next is figuring out how to use them to generate ap_data.csv...
+        ap_item_names = dict([(loc_id, f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]") for loc_id, net_item in self.locations_info.items()])
+        items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+        # Get unique items and shuffle order
+        items_received_str = list(set(items_received_str))
+        random.shuffle(items_received_str)
+        # logger.info(ap_item_names)
+        generator.DiceyDungeonsAPItemGenerator(ap_item_names, self.locations_info, self.checked_locations, items_received_str).generate()
+        logger.info("Done generating new options for game?")
 
-    #TODO: replace string with, some variable or something? Will also need to update generators so, maybe we get some path to install 
-    # then go from there?
-    def launch_game(self, game_path: str = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons\\diceydungeons.exe"):
+    
+    def launch_game(self):
         """Launch the game and attach to the message queue."""
-        logger.info(f"Launching game from: {game_path}")
-        self.game_message_queue = launcher.launch(game_path)
+        logger.info(f"Launching game from: {self.game_path}")
+        self.game_message_queue = launcher.launch(self.game_path)
         logger.info("Game launched, message queue attached.")
         asyncio.create_task(self._wait_locations_and_get_items())
-        logger.info(f"11101 = {self.location_names.lookup_in_game(11101)}")
 
     async def _wait_locations_and_get_items(self, timeout: float = 10.0):
         """Request location information from server and parse the response."""
@@ -197,6 +235,11 @@ class DiceyDungeonsContext(CommonContext):
             logger.info(f"{loc_id}: {loc_name} -> {item_name} (player {net_item.player})")
             #NOTE: must save location ID of Dicey Dungeons with item name! uniqueness needed.
             #TODO: Use this info to make generator reload.
+            # self.locations_info holds locations and items in those locations
+            # is a dict of location_id --> NetworkItem
+            # NetworkItem has .item (item id), .player (player id)
+            # for loc_id, net_item in self.locations_info.items(): 
+            #       Name for ap_data.csv: f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]"
 
 
     async def server_auth(self, password_requested: bool = False):

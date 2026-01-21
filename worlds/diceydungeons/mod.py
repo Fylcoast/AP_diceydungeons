@@ -52,6 +52,69 @@ default_item_info: OrderedDict = {
 
 equipment_field_list: list[str] = default_item_info.keys()
 
+# Insta-kill for testing
+murder_spell: dict = {
+    'Name': 'Murder Spell',
+    'Description': 'DEATH',
+    'Size': '1',
+    'Script: On Execute': 'attack(999);',
+    'Gadget': 'Refrigerator',
+    'Slots': 'NORMAL',
+    'NEED TOTAL?': '',
+    'Colour': 'BRIGHTCYAN',
+    'Upgrade': 'change_power',
+    'Weaken': 'change_power',
+    'Alternate Status Trigger':	'',
+    'SFX': 'none',
+    'Uses?': '0',
+    'Cast Backwards?': 'NO',
+    'Single use?': 'NO',
+    'Tags': '',
+    'Witch Spell': '',
+    'Script: Before Combat': '',
+    'Script: After Combat': '',
+    'Script: Before Start Turn': '',
+    'Script: On Start Turn': '',
+    'Script: On any equipment use': '',
+    'Script: On any countdown reduce': '',
+    'Script: End Turn': '',
+    'Script: Before execute': '',
+    'Script: On Snap': '',
+    'Script: On Fury': '',
+    'Script: On Dodge': ''
+}
+
+dice_shard: dict = {
+    'Name': 'Dice Shard',
+    'Description': 'Merely a fragment of a die.',
+    'Size': '1',
+    'Script: On Execute': '',
+    'Gadget': '',
+    'Slots': '',
+    'NEED TOTAL?': '',
+    'Colour': 'GRAY',
+    'Upgrade': '',
+    'Weaken': '',
+    'Alternate Status Trigger':	'',
+    'SFX': 'none',
+    'Uses?': '0',
+    'Cast Backwards?': 'NO',
+    'Single use?': 'NO',
+    'Tags': 'excludefromrandomlists|cannotsteal|skillcard',
+    'Witch Spell': '',
+    'Script: Before Combat': '',
+    'Script: After Combat': '',
+    'Script: Before Start Turn': '',
+    'Script: On Start Turn': '',
+    'Script: On any equipment use': '',
+    'Script: On any countdown reduce': '',
+    'Script: End Turn': '',
+    'Script: Before execute': '',
+    'Script: On Snap': '',
+    'Script: On Fury': '',
+    'Script: On Dodge': ''
+}
+
 item_classification_text_mapping: dict = {
     ItemClassification.filler: 'They probably don''t|need this...',
     ItemClassification.progression: 'They could probably|use this!',
@@ -65,11 +128,16 @@ item_classification_text_mapping: dict = {
 }
 
 class DiceyDungeonsModGenerator():
-    world: "DiceyDungeonsWorld" # Dicey Dungeons World
-    output_directory: str # Exclusively the output path, aka output/AP_...
-    output_zip_name: str # Will be the name of zip which will live in output directory
-    equipment: list[str] # List of items from multiworld we want in our equipment.csv
-    mod_name: str # Name of the mod (probably 'diceyap')
+    world: "DiceyDungeonsWorld"
+    """Dicey Dungeons World"""
+    output_directory: str
+    """Exclusively the output path, aka output/AP_..."""
+    output_zip_name: str
+    """Will be the name of zip which will live in output directory"""
+    equipment: list[str]
+    """List of items from multiworld we want in our equipment.csv"""
+    mod_name: str
+    """Name of the mod (probably 'diceyap')"""
 
     def __init__(self, world: "DiceyDungeonsWorld", output_dir: str):
         self.world = world
@@ -110,6 +178,10 @@ class DiceyDungeonsModGenerator():
             rows = []
             for location in self.world.get_locations():
                 rows.append(self.get_equipment_row(location))
+            # Testing spell
+            rows.append(murder_spell)
+            # Dice shard, for our filler.
+            rows.append(dice_shard)
             writer.writerows(rows)
 
         shutil.make_archive(output_zip_full, 'zip', self.output_directory, self.mod_name)

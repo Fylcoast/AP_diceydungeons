@@ -76,7 +76,7 @@ class FloorItems:
                 row: dict = {}
                 row['name'] = item
                 row['generator'] = generator_names[self.episode_num - 1]
-                row['list'] = 'chests'
+                row['list'] = 'shops'
                 row['episode'] = self.episode_num
                 row['floor'] = self.floor_num
                 row['iter'] = shop.shop_num # To handle grabbing multiple shops from the generators.

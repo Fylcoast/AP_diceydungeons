@@ -129,7 +129,7 @@ class DiceyDungeonsContext(CommonContext):
         random.shuffle(items_received_str)
         # logger.info(ap_item_names)
         generator.DiceyDungeonsAPItemGenerator(ap_item_names, self.locations_info, self.checked_locations, items_received_str).generate()
-        logger.info("Done generating new options for game?")
+        logger.info("Game generators updated!")
 
     
     def launch_game(self):
@@ -150,6 +150,7 @@ class DiceyDungeonsContext(CommonContext):
             if self.locations_info:
                 logger.info(f"Received location item mappings for {len(self.locations_info)} locations")
                 self.get_items_by_location()
+                self.generate_items()
                 return
             remaining = deadline - time.time()
             try:
@@ -233,13 +234,6 @@ class DiceyDungeonsContext(CommonContext):
             loc_name = self.location_names.lookup_in_game(loc_id, self.game)
             item_name = self.item_names.lookup_in_slot(net_item.item, net_item.player)
             logger.info(f"{loc_id}: {loc_name} -> {item_name} (player {net_item.player})")
-            #NOTE: must save location ID of Dicey Dungeons with item name! uniqueness needed.
-            #TODO: Use this info to make generator reload.
-            # self.locations_info holds locations and items in those locations
-            # is a dict of location_id --> NetworkItem
-            # NetworkItem has .item (item id), .player (player id)
-            # for loc_id, net_item in self.locations_info.items(): 
-            #       Name for ap_data.csv: f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]"
 
 
     async def server_auth(self, password_requested: bool = False):

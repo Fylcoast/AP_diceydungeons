@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 # Warrior items only, to start
 ITEM_NAME_TO_ID = dict(
     [
-        (item, i) for i, item in enumerate(warrior_items)
+        (item, i) for i, item in enumerate(warrior_items, 1)
     ]
 )
 # ITEM_NAME_TO_ID = dict(

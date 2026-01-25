@@ -131,7 +131,7 @@ class DiceyDungeonsContext(CommonContext):
         items_received_str = list(set(items_received_str))
         random.shuffle(items_received_str)
         # logger.info(ap_item_names)
-        generator.DiceyDungeonsAPItemGenerator(ap_item_names, self.locations_info, self.checked_locations, items_received_str).generate()
+        generator.DiceyDungeonsAPItemGenerator(ap_item_names, self.locations_info, self.checked_locations.union(self.locations_checked), items_received_str).generate()
         logger.info("Game generators updated!")
 
     
@@ -230,16 +230,16 @@ class DiceyDungeonsContext(CommonContext):
             self.generate_items()
     
     async def check_for_victory(self):
-        items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
-        if "Episode 1 - Episode Completed" in items_received_str and \
-            "Episode 2 - Episode Completed" in items_received_str and \
-            "Episode 3 - Episode Completed" in items_received_str and \
-            "Episode 4 - Episode Completed" in items_received_str and \
-            "Episode 5 - Episode Completed" in items_received_str and \
-            "Episode 6 - Episode Completed" in items_received_str and \
-            self.finished_game == False:
-            await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
-            self.finished_game = True
+        if self.finished_game == False:
+            items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+            if "Episode 1 - Episode Completed" in items_received_str and \
+                "Episode 2 - Episode Completed" in items_received_str and \
+                "Episode 3 - Episode Completed" in items_received_str and \
+                "Episode 4 - Episode Completed" in items_received_str and \
+                "Episode 5 - Episode Completed" in items_received_str and \
+                "Episode 6 - Episode Completed" in items_received_str:
+                await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+                self.finished_game = True
 
     
     def get_items_by_location(self):

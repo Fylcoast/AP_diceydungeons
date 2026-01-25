@@ -3,8 +3,8 @@ import csv
 
 from NetUtils import NetworkItem
 
-from worlds.diceydungeons.data.episode_data import *
-import worlds.diceydungeons.generator.generator_helper as gen_helper
+from ..data.episode_data import *
+from . import generator_helper as gen_helper
     
 
 ap_data_column_list: list[str] = [

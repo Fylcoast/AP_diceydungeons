@@ -1,20 +1,12 @@
 import os
-import shutil
 from typing import TYPE_CHECKING, Optional
 import csv
 from collections import OrderedDict
+import zipfile
+import io
+from importlib.resources import files
 
 from BaseClasses import Location, Item, ItemClassification
-
-#TODO: List of files we need to include in output:
-# DONE - _append/data/text/equipment.csv - dynamic 
-# data/text/episodes.csv - static - do level up rewards?
-# DONE? data/text/generators for warrior_one through _six - static
-# data/text/scripts/diceyap
-#       ap_data.csv - dynamic - maybe do from client only? can generate on /dicey call and whenever we get call from game.
-#       DONE load_ap_items_by_category - static
-#       DONE send_location_checks - static
-
 
 if TYPE_CHECKING:
     from . import DiceyDungeonsWorld
@@ -156,36 +148,46 @@ class DiceyDungeonsModGenerator():
         row['Description'] = f"Owner: {owner}| |{item_classification_text_mapping[item.classification]}"
 
         return row
+    
+    def _write_package_files_to_zip(self, zf: zipfile.ZipFile, base_path, mod_name: str):
+        """Recursively write files from package resources to zip file."""
+        def walk_files(path, prefix=''):
+            for item in path.iterdir():
+                if item.is_file():
+                    content = item.read_bytes()
+                    arcname = f'{prefix}/{item.name}'.lstrip('/')
+                    zf.writestr(arcname, content)
+                elif item.is_dir():
+                    walk_files(item, f'{prefix}/{item.name}')
+        
+        walk_files(base_path, mod_name)
+    
+    def _generate_equipment_csv_string(self) -> str:
+        """Generate equipment.csv content as a string."""
+        output = io.StringIO()
+        writer = csv.DictWriter(output, fieldnames=equipment_field_list)
+        writer.writeheader()
+        rows = []
+        for location in self.world.get_locations():
+            rows.append(self.get_equipment_row(location))
+        # Testing spell
+        rows.append(murder_spell)
+        # Dice shard, for our filler.
+        rows.append(dice_shard)
+        writer.writerows(rows)
+        return output.getvalue()
         
     
     def generate(self):
-        diceyap_path = os.path.join(self.output_directory, self.mod_name)
-        output_zip_full = os.path.join(self.output_directory, self.output_zip_name)
+        output_zip_full = os.path.join(self.output_directory, self.output_zip_name + '.zip')
         
-        os.mkdir(diceyap_path)
-
-        # Copy base files first.
-        base_file_path = os.path.join(os.path.dirname(__file__), 'data', 'mod_data', self.mod_name)
-        shutil.copytree(base_file_path, diceyap_path, dirs_exist_ok=True)
-
-        data_text_directory = os.path.join(diceyap_path, '_append', 'data', 'text')
+        # Get the base mod data from package resources
+        base_files = files(__package__).joinpath('data', 'mod_data', self.mod_name)
         
-        # Generate equipment.csv
-        equipment_filename = os.path.join(data_text_directory, "equipment.csv")
-        with open(equipment_filename, 'w', newline='') as f:
-            writer = csv.DictWriter(f, fieldnames=equipment_field_list)
-            writer.writeheader()
-            rows = []
-            for location in self.world.get_locations():
-                rows.append(self.get_equipment_row(location))
-            # Testing spell
-            rows.append(murder_spell)
-            # Dice shard, for our filler.
-            rows.append(dice_shard)
-            writer.writerows(rows)
-
-        shutil.make_archive(output_zip_full, 'zip', self.output_directory, self.mod_name)
-
-        # Delete the working folder
-        if os.path.exists(diceyap_path):
-            shutil.rmtree(diceyap_path)
+        with zipfile.ZipFile(output_zip_full, 'w', zipfile.ZIP_DEFLATED) as zf:
+            # Copy base files first
+            self._write_package_files_to_zip(zf, base_files, self.mod_name)
+            
+            # Generate and write equipment.csv
+            equipment_csv_content = self._generate_equipment_csv_string()
+            zf.writestr(f'{self.mod_name}/_append/data/text/equipment.csv', equipment_csv_content)

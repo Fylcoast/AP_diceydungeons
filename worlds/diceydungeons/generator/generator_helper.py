@@ -1,4 +1,4 @@
-from worlds.diceydungeons.data.episode_data import *
+from ..data.episode_data import *
 
 generator_names: list[str] = ['warrior_one', 'warrior_two', 'warrior_three', 'warrior_four', 'warrior_five', 'warrior_six']
 """Names for generators, accessed with generator_names[<episode_num - 1>]"""

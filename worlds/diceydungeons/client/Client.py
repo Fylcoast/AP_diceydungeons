@@ -16,8 +16,8 @@ from queue import Queue, Empty
 import ast
 import random
 
-import worlds.diceydungeons.client.launch_and_capture as launcher
-import worlds.diceydungeons.generator.generator as generator
+from . import launch_and_capture as launcher
+from ..generator import generator as generator
 
 import Utils
 from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart, ClientStatus,
@@ -28,7 +28,7 @@ from CommonClient import (CommonContext, gui_enabled, ClientCommandProcessor,
 
 # Import item metadata for categorization
 try:
-    from worlds.diceydungeons.data.extracted_data import item_metadata
+    from ..data.extracted_data import item_metadata
 except ImportError:
     logger.warning("Could not import item_metadata from extracted_data")
     item_metadata = {}

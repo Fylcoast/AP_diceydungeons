@@ -43,34 +43,6 @@ class DiceyDungeonsAPItemGenerator:
         with open(self.output_file, 'w', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=ap_data_column_list)
             writer.writeheader()
-            #TODO: add in our own items, and shuffle lists so they don't get them all just what they need based on episode_data.py
-            # rows = []
-            # for loc_id, net_item in self.locations.items(): 
-            #     # Don't add it if we've already picked it up!
-            #     if loc_id in self.checked_locations:
-            #         continue
-            #     # Parse loc_id to figure out where in the game they should be.
-            #     loc_str: str = str(loc_id)
-            #     # First digit is episode number 1-6
-            #     episode = loc_str[0]
-            #     # Second digit is floor number, 1-5
-            #     floor = loc_str[1]
-            #     # Third digit is location code
-            #     item_list = ['chests', 'shops', 'heals', 'upgrades', 'trades'][int(loc_str[2]) - 1]
-            #     # Final 2 digits are location count. Only used for multiple shops on a floor.
-            #     item_count = int(loc_str[3:])
-            #     iter = (item_count - 1) // 3 + 1 if item_list == 'shops' else 1 # 3 items per shop
-            #     # Generator for now is defined based on episode only
-            #     generator = ['warrior_one', 'warrior_two', 'warrior_three', 'warrior_four', 'warrior_five', 'warrior_six'][int(episode) - 1]
-
-            #     row: dict = {}
-            #     row['name'] = self.ap_item_mapping[loc_id]
-            #     row['generator'] = generator
-            #     row['list'] = item_list
-            #     row['episode'] = episode
-            #     row['floor'] = floor
-            #     row['iter'] = iter
-            #     rows.append(row)
 
             generator = gen_helper.GeneratedItems()
             # Add remaining AP items
@@ -80,6 +52,7 @@ class DiceyDungeonsAPItemGenerator:
                 generator.add_item_if_possible(loc_id, item_str)
             
             # Add real items to fill
+            #TODO: This will prioritize filling Episode 1 and down in order, does not allow dupes across episodes. Problem?
             for item in self.items_received:
                 generator.add_item_anywhere(item)
             

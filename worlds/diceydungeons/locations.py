@@ -25,6 +25,11 @@ for episode in range(1, 7):
         # etc
     for level in range(2, 7):
         LOCATION_NAME_TO_ID["Episode " + str(episode) + " - Level " + str(level)] = 1000 + 10 * episode + level
+    
+    # Episode completion convention:
+    # Location name: Episode <Episode> - Episode Completed
+    # ID: 99<Episode>
+    LOCATION_NAME_TO_ID["Episode " + str(episode) + " - Episode Completed"] = 990 + episode
 
 
 # Physical locations convention:
@@ -148,6 +153,17 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
     # episode_six_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode 6" in item[0]])
     # episode_six.add_locations(episode_six_locations, DiceyDungeonsLocation)
 
+    # Populate episode completions
+    menu = world.get_region("Menu")
+    # completion_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode Completed" in item[0]])
+    # menu.add_locations(completion_locations, DiceyDungeonsLocation)
+    for episode in range(1, 7):
+        loc_name = "Episode " + str(episode) + " - Episode Completed"
+        episode_completed = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], menu)
+        menu.locations.append(episode_completed)
+        episode_item = items.DiceyDungeonsItem(loc_name, ItemClassification.progression, items.ITEM_NAME_TO_ID[loc_name], world.player)
+        episode_completed.place_locked_item(episode_item)
+
     # Populate level locations if enabled
     if world.options.levelsanity:
         for episode in range(1, 7):
@@ -160,30 +176,31 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
 
 def create_events(world: DiceyDungeonsWorld) -> None:
     menu = world.get_region("Menu")
-    episode_one = world.get_region("Episode 1")
-    episode_two = world.get_region("Episode 2")
-    episode_three = world.get_region("Episode 3")
-    episode_four = world.get_region("Episode 4")
-    episode_five = world.get_region("Episode 5")
-    episode_six = world.get_region("Episode 6")
+    # episode_one = world.get_region("Episode 1")
+    # episode_two = world.get_region("Episode 2")
+    # episode_three = world.get_region("Episode 3")
+    # episode_four = world.get_region("Episode 4")
+    # episode_five = world.get_region("Episode 5")
+    # episode_six = world.get_region("Episode 6")
 
-    episode_list = [
-        episode_one,
-        episode_two,
-        episode_three,
-        episode_four,
-        episode_five,
-        episode_six
-    ]
+    # episode_list = [
+    #     episode_one,
+    #     episode_two,
+    #     episode_three,
+    #     episode_four,
+    #     episode_five,
+    #     episode_six
+    # ]
 
     # Add one event for completing each episode
-    for episode in episode_list:
-        episode.add_event(
-            episode.name + " - Episode Completed",
-            episode.name + " - Episode Completed",
-            location_type=DiceyDungeonsLocation,
-            item_type=items.DiceyDungeonsItem,
-        )
+    # for episode in episode_list:
+    #     episode.add_event(
+    #         episode.name + " - Episode Completed",
+    #         episode.name + " - Episode Completed",
+    #         location_type=DiceyDungeonsLocation,
+    #         item_type=items.DiceyDungeonsItem,
+    #         show_in_spoiler=False
+    #     )
 
     # And finally one event for beating all episodes
-    menu.add_event("All episodes completed", "All episodes completed", location_type=DiceyDungeonsLocation, item_type=items.DiceyDungeonsItem)
+    menu.add_event("All episodes completed", "All episodes completed", location_type=DiceyDungeonsLocation, item_type=items.DiceyDungeonsItem, show_in_spoiler=False)

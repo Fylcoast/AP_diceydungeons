@@ -20,7 +20,7 @@ import worlds.diceydungeons.client.launch_and_capture as launcher
 import worlds.diceydungeons.generator.generator as generator
 
 import Utils
-from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart, 
+from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart, ClientStatus,
                       NetworkItem, NetworkPlayer)
 from MultiServer import Endpoint
 from CommonClient import (CommonContext, gui_enabled, ClientCommandProcessor, 
@@ -121,10 +121,13 @@ class DiceyDungeonsContext(CommonContext):
         # logger.info(f"all our location info: {self.locations_info}")
         # logger.info(f"all locations we've already checked: {self.checked_locations}")
         # logger.info(f"all items we've received: {self.items_received}")
-        # These all work (once game has launched!), so next is figuring out how to use them to generate ap_data.csv...
-        ap_item_names = dict([(loc_id, f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]") for loc_id, net_item in self.locations_info.items()])
+        ap_item_names_list: list[tuple[int, str]] = [(loc_id, f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]") for loc_id, net_item in self.locations_info.items()]
+        # Filter out Completion items
+        ap_item_names_list = [item for item in ap_item_names_list if "Completed" not in item[1]]
+        ap_item_names = dict(ap_item_names_list)
         items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
         # Get unique items and shuffle order
+        # Bonus: Only 1 Dice Shard can be sent this way
         items_received_str = list(set(items_received_str))
         random.shuffle(items_received_str)
         # logger.info(ap_item_names)
@@ -224,7 +227,20 @@ class DiceyDungeonsContext(CommonContext):
         
         elif command == "reload_generator":
             logger.info(f"Reloading generator")
-            #TODO: make it work
+            self.generate_items()
+    
+    async def check_for_victory(self):
+        items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+        if "Episode 1 - Episode Completed" in items_received_str and \
+            "Episode 2 - Episode Completed" in items_received_str and \
+            "Episode 3 - Episode Completed" in items_received_str and \
+            "Episode 4 - Episode Completed" in items_received_str and \
+            "Episode 5 - Episode Completed" in items_received_str and \
+            "Episode 6 - Episode Completed" in items_received_str and \
+            self.finished_game == False:
+            await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+            self.finished_game = True
+
     
     def get_items_by_location(self):
         if not self.locations_info:
@@ -569,6 +585,9 @@ async def proxy_loop(ctx: DiceyDungeonsContext):
             
             # Process any messages from the game
             ctx.process_game_messages()
+
+            # Check for victory
+            await ctx.check_for_victory()
             
             await asyncio.sleep(0.1)
     except Exception as e:

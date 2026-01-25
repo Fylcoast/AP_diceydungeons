@@ -21,6 +21,10 @@ ITEM_NAME_TO_ID = dict(
 #     ]
 # )
 
+# Episode completions
+for episode in range(1, 7):
+    ITEM_NAME_TO_ID["Episode " + str(episode) + " - Episode Completed"] = 990 + episode
+
 DEFAULT_ITEM_CLASSIFICATIONS = dict(
     [
         (item, ItemClassification.useful) for item in warrior_items

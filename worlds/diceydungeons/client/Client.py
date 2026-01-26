@@ -46,9 +46,6 @@ class DiceyDungeonsCommandProcessor(ClientCommandProcessor):
     """Command processor for Dicey Dungeons specific commands"""
     
     def _cmd_dicey(self):
-        #"""Check Dicey Dungeons connection state"""
-        # if isinstance(self.ctx, DiceyDungeonsContext):
-        #     logger.info(f"Dicey Dungeons Status: {self.ctx.get_dicey_status()}")
         """Launch Dicey Dungeons"""
         if isinstance(self.ctx, DiceyDungeonsContext):
             self.ctx.launch_game()
@@ -108,7 +105,8 @@ class DiceyDungeonsContext(CommonContext):
     
     async def _generate_items_for_game(self):
         """Asynchronously update ap_data for game to read in generators."""
-        logger.info("Generating new options for game!")
+        if DEBUG:
+            logger.info("Generating new options for game!")
         # self.locations_info holds locations and items in those locations
         # is a dict of location_id --> NetworkItem
         # NetworkItem has .item (item id), .player (player id)
@@ -118,9 +116,10 @@ class DiceyDungeonsContext(CommonContext):
         # all locations: self.locations_info, explained above
         # locations we've sent already (don't want to spawn those in): self.checked_locations
         # items we've received in multiworld: self.items_received
-        # logger.info(f"all our location info: {self.locations_info}")
-        # logger.info(f"all locations we've already checked: {self.checked_locations}")
-        # logger.info(f"all items we've received: {self.items_received}")
+        if DEBUG:
+            logger.info(f"all our location info: {self.locations_info}")
+            logger.info(f"all locations we've already checked: {self.checked_locations}")
+            logger.info(f"all items we've received: {self.items_received}")
         ap_item_names_list: list[tuple[int, str]] = [(loc_id, f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]") for loc_id, net_item in self.locations_info.items()]
         # Filter out Completion items
         ap_item_names_list = [item for item in ap_item_names_list if "Completed" not in item[1]]
@@ -132,14 +131,17 @@ class DiceyDungeonsContext(CommonContext):
         random.shuffle(items_received_str)
         # logger.info(ap_item_names)
         generator.DiceyDungeonsAPItemGenerator(ap_item_names, self.locations_info, self.checked_locations.union(self.locations_checked), items_received_str).generate()
-        logger.info("Game generators updated!")
+        if DEBUG:
+            logger.info("Game generators updated!")
 
     
     def launch_game(self):
         """Launch the game and attach to the message queue."""
-        logger.info(f"Launching game from: {self.game_path}")
+        if DEBUG:
+            logger.info(f"Launching game from: {self.game_path}")
         self.game_message_queue = launcher.launch(self.game_path)
-        logger.info("Game launched, message queue attached.")
+        if DEBUG:
+            logger.info("Game launched, message queue attached.")
         asyncio.create_task(self._wait_locations_and_get_items())
 
     async def _wait_locations_and_get_items(self, timeout: float = 10.0):
@@ -151,8 +153,9 @@ class DiceyDungeonsContext(CommonContext):
         deadline = time.time() + timeout
         while time.time() < deadline:
             if self.locations_info:
-                logger.info(f"Received location item mappings for {len(self.locations_info)} locations")
-                self.get_items_by_location()
+                if DEBUG:
+                    logger.info(f"Received location item mappings for {len(self.locations_info)} locations")
+                    self.get_items_by_location()
                 self.generate_items()
                 return
             remaining = deadline - time.time()
@@ -197,7 +200,8 @@ class DiceyDungeonsContext(CommonContext):
         data = message.get("data")
         
         if msg_type == "game_message":
-            logger.info(f"Game message received: {data}")
+            if DEBUG:
+                logger.info(f"Game message received: {data}")
             # Schedule the async command handler so we don't create an un-awaited coroutine
             asyncio.create_task(self.handle_game_command(data))
             
@@ -221,12 +225,12 @@ class DiceyDungeonsContext(CommonContext):
 
         if command == "send_item":
             new_loc = ast.literal_eval(data.get("payload"))[0]
-            logger.info(f"Location checked: {str(new_loc)}")
+            if DEBUG:
+                logger.info(f"Location checked: {str(new_loc)}")
             self.locations_checked.add(new_loc)
             await self.send_msgs([{"cmd": 'LocationChecks', "locations": [new_loc]}]) 
         
         elif command == "reload_generator":
-            logger.info(f"Reloading generator")
             self.generate_items()
     
     async def check_for_victory(self):
@@ -446,7 +450,8 @@ class DiceyDungeonsContext(CommonContext):
             for item in args["items"]:
                 self.full_inventory.append(NetworkItem(*item))
             
-            logger.info(f"Items updated: now have {len(self.full_inventory)} total items available")
+            if DEBUG:
+                logger.info(f"Items updated: now have {len(self.full_inventory)} total items available")
 
         elif cmd == "RoomInfo":
             self.seed_name = args["seed_name"]
@@ -551,7 +556,8 @@ async def proxy(websocket, path: str = "/", ctx: DiceyDungeonsContext = None):
                         location_id = msg.get("location_id")
                         if location_id:
                             ctx.checked_locations_ids.add(location_id)
-                            logger.info(f"Location checked: {location_id}")
+                            if DEBUG:
+                                logger.info(f"Location checked: {location_id}")
 
                     await ctx.send_msgs([msg])
 

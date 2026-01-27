@@ -16,4 +16,4 @@ components.append(
     )
 )
 
-icon_paths['diceydungeons'] = local_path('worlds', 'diceydungeons', 'data', 'warrior.ico')
+icon_paths['diceydungeons'] = f"ap:{__name__}/data/warrior.png"

@@ -15,6 +15,7 @@ from typing import List, Any, Iterable, Optional, Dict
 from queue import Queue, Empty
 import ast
 import random
+import os
 
 from . import launch_and_capture as launcher
 from ..generator import generator as generator
@@ -45,15 +46,27 @@ class DiceyDungeonsJSONToTextParser(JSONtoTextParser):
 class DiceyDungeonsCommandProcessor(ClientCommandProcessor):
     """Command processor for Dicey Dungeons specific commands"""
     
-    def _cmd_dicey(self):
+    def _cmd_dicey(self) -> bool:
         """Launch Dicey Dungeons"""
         if isinstance(self.ctx, DiceyDungeonsContext):
             self.ctx.launch_game()
+            return True
+        return False
     
-    def _cmd_generate(self):
+    def _cmd_generate(self) -> bool:
         """Generate new layout for episodes"""
         if isinstance(self.ctx, DiceyDungeonsContext):
             self.ctx.generate_items()
+            return True
+        return False
+    
+    def _cmd_install_location(self, installation_location: str) -> bool:
+        """Define installation location for Dicey Dungeons"""
+        if isinstance(self.ctx, DiceyDungeonsContext):
+            self.ctx.game_path = installation_location
+            logger.info(f"Game path set to: {installation_location}")
+            return True
+        return False
 
 
 
@@ -65,7 +78,7 @@ class DiceyDungeonsContext(CommonContext):
     
     command_processor = DiceyDungeonsCommandProcessor
     game = "Dicey Dungeons"
-    game_path: str = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons\\diceydungeons.exe"
+    game_path: str = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons"
 
     def __init__(self, server_address: Optional[str], password: Optional[str]):
         super().__init__(server_address, password)
@@ -119,18 +132,19 @@ class DiceyDungeonsContext(CommonContext):
         items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
         # Get unique items and shuffle order
         # Bonus: Only 1 Dice Shard can be sent this way
-        items_received_str = list(set(items_received_str))
+        items_received_str = list(set([item for item in items_received_str if "Completed" not in item]))
         random.shuffle(items_received_str)
         # logger.info(ap_item_names)
-        generator.DiceyDungeonsAPItemGenerator(ap_item_names, self.locations_info, self.checked_locations.union(self.locations_checked), items_received_str).generate()
+        generator.DiceyDungeonsAPItemGenerator(self.game_path, ap_item_names, self.locations_info, self.checked_locations.union(self.locations_checked), items_received_str).generate()
         if DEBUG:
             logger.info("Game generators updated!")
 
     
     def launch_game(self):
         """Launch the game and attach to the message queue."""
+        game_exe = os.path.join(self.game_path, "diceydungeons.exe")
         logger.info(f"Launching game from: {self.game_path}")
-        self.game_message_queue = launcher.launch(self.game_path)
+        self.game_message_queue = launcher.launch(game_exe)
         if DEBUG:
             logger.info("Game launched, message queue attached.")
         asyncio.create_task(self._wait_locations_and_get_items())

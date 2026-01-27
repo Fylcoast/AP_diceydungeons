@@ -20,7 +20,7 @@ ap_data_column_list: list[str] = [
 
 class DiceyDungeonsAPItemGenerator:
     """Generator for telling game which items to pick up where."""
-    output_file: str = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons\\mods\\diceyap\\data\\text\\scripts\\diceyap\\ap_data.csv"
+    output_file: str
     """Path and name of our output file, where our generators will read our items from."""
     locations: dict[int, NetworkItem]
     """Useless? - All fillable locations in our game, and the item they are filled with."""
@@ -32,11 +32,12 @@ class DiceyDungeonsAPItemGenerator:
     """ap item names mapping with loc_id --> string to be put into csv"""
 
 
-    def __init__(self, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem]):
+    def __init__(self, install_location: str, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem]):
         self.ap_item_mapping = ap_item_names
         self.locations = locations_info
         self.checked_locations = checked_locations
         self.items_received = items_received
+        self.output_file = os.path.join(install_location, "mods", "diceyap", "data", "text", "scripts", "diceyap", "ap_data.csv")
     
     def generate(self):
         os.makedirs(os.path.dirname(self.output_file), exist_ok=True)

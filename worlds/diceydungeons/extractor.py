@@ -69,7 +69,7 @@ def extract_strings_from_array_content(content: str) -> List[str]:
 		results.append(decoded)
 	return results
 
-# TODO: "tradeoffer" itempool has "any" in it (not a real equip) but excluding it removes others? Investigate.
+
 def parse_vanilla_file(path: str, exclude_vars: list[str] = ["vampireitem", "tradeoffer"]) -> Set[str]:
 	text = open(path, "r", encoding="utf-8", errors="ignore").read()
 	results: Set[str] = set()

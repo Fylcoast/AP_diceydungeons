@@ -52,7 +52,6 @@ class DiceyDungeonsAPItemGenerator:
                 generator.add_item_if_possible(loc_id, item_str)
             
             # Add real items to fill
-            #TODO: This will prioritize filling Episode 1 and down in order, does not allow dupes across episodes. Problem?
             for item in self.items_received:
                 generator.add_item_anywhere(item)
             

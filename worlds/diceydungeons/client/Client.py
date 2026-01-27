@@ -65,9 +65,6 @@ class DiceyDungeonsContext(CommonContext):
     
     command_processor = DiceyDungeonsCommandProcessor
     game = "Dicey Dungeons"
-
-    #TODO: replace string with, some variable or something? Will also need to update generators so, maybe we get some path to install 
-    # then go from there?
     game_path: str = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons\\diceydungeons.exe"
 
     def __init__(self, server_address: Optional[str], password: Optional[str]):

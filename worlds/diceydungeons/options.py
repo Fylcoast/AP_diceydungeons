@@ -6,8 +6,6 @@ from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, De
 MAX_MAXIMUM_CHECKS_PER_CHEST: int = 5
 MAX_MAXIMUM_CHECKS_PER_SHOP: int = 5
 
-#TODO: Add more options?
-
 class MaximumChecksPerChest(Range):
     '''
     Determines the maximum number of AP items that can

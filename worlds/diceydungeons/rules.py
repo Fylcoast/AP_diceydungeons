@@ -23,7 +23,20 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
     # episode_five = world.get_entrance("Episode 5")
     # episode_six = world.get_entrance("Episode 6")
 
-    pass
+    # Fine tune if needed? Main goal is just to make sure they can play the game, so, looser side the better.
+    items_needed: dict[str, int] = {
+        "Floor 2": 1, 
+        "Floor 3": 2, 
+        "Floor 4": 4, 
+        "Floor 5": 5, 
+        "Floor 6": 6
+    }
+
+    for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
+        for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
+            entrance = world.get_entrance(episode + " - " + floor)
+            set_rule(entrance, lambda state, required=items_needed[floor]: state.has_group("Warrior Items", world.player, required))
+    
 
 
 def set_all_location_rules(world: DiceyDungeonsWorld) -> None:

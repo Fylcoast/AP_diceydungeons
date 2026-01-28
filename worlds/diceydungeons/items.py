@@ -27,13 +27,16 @@ for episode in range(1, 7):
 
 DEFAULT_ITEM_CLASSIFICATIONS = dict(
     [
-        (item, ItemClassification.useful) for item in warrior_items
+        (item, ItemClassification.progression) for item in warrior_items
     ]
 )
 
 # Filler
 ITEM_NAME_TO_ID["Dice Shard"] = 9999
 DEFAULT_ITEM_CLASSIFICATIONS["Dice Shard"] = ItemClassification.filler
+
+# Groups
+item_name_groups: dict[str, set[str]] = {"Warrior Items": set(warrior_items)}
 
 class DiceyDungeonsItem(Item):
     game = "Dicey Dungeons"

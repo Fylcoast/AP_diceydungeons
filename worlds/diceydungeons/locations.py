@@ -78,25 +78,27 @@ def create_all_locations(world: DiceyDungeonsWorld) -> None:
     create_events(world)
 
 def create_regular_locations(world: DiceyDungeonsWorld) -> None:
-    episode_one = world.get_region("Episode 1")
-    episode_two = world.get_region("Episode 2")
-    episode_three = world.get_region("Episode 3")
-    episode_four = world.get_region("Episode 4")
-    episode_five = world.get_region("Episode 5")
-    episode_six = world.get_region("Episode 6")
-    episode_regions = [episode_one, episode_two, episode_three, episode_four, episode_five, episode_six]
+    # episode_one = world.get_region("Episode 1")
+    # episode_two = world.get_region("Episode 2")
+    # episode_three = world.get_region("Episode 3")
+    # episode_four = world.get_region("Episode 4")
+    # episode_five = world.get_region("Episode 5")
+    # episode_six = world.get_region("Episode 6")
+    # episode_regions = [episode_one, episode_two, episode_three, episode_four, episode_five, episode_six]
 
     # Populate episode locations
     for episode_num, episode in enumerate(warrior_episodes):
-        episode_locations = []
+        # episode_locations = []
         for floor_num, floor in enumerate(episode.floors):
             episode_floor_str = "Episode " + str(episode_num + 1) + " - Floor " + str(floor_num + 1)
+            region = world.get_region(episode_floor_str)
+            locs = []
             # Chests
             for chest in range(floor.num_chests * world.options.maximum_checks_per_chest):
-                episode_locations.append(episode_floor_str + " - Chest " + str(chest + 1))
+                locs.append(episode_floor_str + " - Chest " + str(chest + 1))
             # Shops
             for shop in range(floor.num_shops * floor.num_shop_slots * world.options.maximum_checks_per_shop):
-                episode_locations.append(episode_floor_str + " - Shop " + str(shop + 1))
+                locs.append(episode_floor_str + " - Shop " + str(shop + 1))
             # # Heals - Not used yet but maybe someday
             # for heal in range(floor.num_heals):
             #     LOCATION_NAME_TO_ID["Episode " + episode_num + 1 + " - Floor " + floor_num + 1 + " - Heal " + heal + 1]
@@ -107,60 +109,19 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
             # for trade in range(floor.num_trades):
             #     LOCATION_NAME_TO_ID["Episode " + episode_num + 1 + " - Floor " + floor_num + 1 + " - Trade " + trade + 1]
         
-        episode_regions[episode_num].add_locations(get_location_names_with_ids(episode_locations), DiceyDungeonsLocation)
+            region.add_locations(get_location_names_with_ids(locs), DiceyDungeonsLocation)
 
-
-    
-    # for location_name, location_id in LOCATION_NAME_TO_ID.items():
-    #     location = DiceyDungeonsLocation(
-    #         player=world.player,
-    #         name=location_name,
-    #         address=location_id,
-    #     )
-        # for episode in warrior_episodes:
-        #     if episode.name in location_name:
-        #         # Chests
-        #         if "Chest" in location_name and location_id % 100 <= world.options.maximum_checks_per_chest
-        #         # Shops
-        # if "Episode 1" in location_name:
-        #     episode_one.locations.append(location)
-        # elif "Episode 2" in location_name:
-        #     episode_two.locations.append(location)
-        # elif "Episode 3" in location_name:
-        #     episode_three.locations.append(location)
-        # elif "Episode 4" in location_name:
-        #     episode_four.locations.append(location)
-        # elif "Episode 5" in location_name:
-        #     episode_five.locations.append(location)
-        # elif "Episode 6" in location_name:
-        #     episode_six.locations.append(location)
-
-    # episode_one_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode 1" in item[0]])
-    # episode_one.add_locations(episode_one_locations, DiceyDungeonsLocation)
-
-    # episode_two_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode 2" in item[0]])
-    # episode_two.add_locations(episode_two_locations, DiceyDungeonsLocation)
-
-    # episode_three_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode 3" in item[0]])
-    # episode_three.add_locations(episode_three_locations, DiceyDungeonsLocation)
-
-    # episode_four_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode 4" in item[0]])
-    # episode_four.add_locations(episode_four_locations, DiceyDungeonsLocation)
-
-    # episode_five_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode 5" in item[0]])
-    # episode_five.add_locations(episode_five_locations, DiceyDungeonsLocation)
-
-    # episode_six_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode 6" in item[0]])
-    # episode_six.add_locations(episode_six_locations, DiceyDungeonsLocation)
 
     # Populate episode completions
-    menu = world.get_region("Menu")
+    # menu = world.get_region("Menu")
     # completion_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode Completed" in item[0]])
     # menu.add_locations(completion_locations, DiceyDungeonsLocation)
     for episode in range(1, 7):
         loc_name = "Episode " + str(episode) + " - Episode Completed"
-        episode_completed = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], menu)
-        menu.locations.append(episode_completed)
+        region_name = "Episode " + str(episode) + " - Floor 6"
+        region = world.get_region(region_name)
+        episode_completed = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
+        region.locations.append(episode_completed)
         episode_item = items.DiceyDungeonsItem(loc_name, ItemClassification.progression, items.ITEM_NAME_TO_ID[loc_name], world.player)
         episode_completed.place_locked_item(episode_item)
 
@@ -176,31 +137,6 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
 
 def create_events(world: DiceyDungeonsWorld) -> None:
     menu = world.get_region("Menu")
-    # episode_one = world.get_region("Episode 1")
-    # episode_two = world.get_region("Episode 2")
-    # episode_three = world.get_region("Episode 3")
-    # episode_four = world.get_region("Episode 4")
-    # episode_five = world.get_region("Episode 5")
-    # episode_six = world.get_region("Episode 6")
 
-    # episode_list = [
-    #     episode_one,
-    #     episode_two,
-    #     episode_three,
-    #     episode_four,
-    #     episode_five,
-    #     episode_six
-    # ]
-
-    # Add one event for completing each episode
-    # for episode in episode_list:
-    #     episode.add_event(
-    #         episode.name + " - Episode Completed",
-    #         episode.name + " - Episode Completed",
-    #         location_type=DiceyDungeonsLocation,
-    #         item_type=items.DiceyDungeonsItem,
-    #         show_in_spoiler=False
-    #     )
-
-    # And finally one event for beating all episodes
+    # Add one event for beating all episodes
     menu.add_event("All episodes completed", "All episodes completed", location_type=DiceyDungeonsLocation, item_type=items.DiceyDungeonsItem, show_in_spoiler=False)

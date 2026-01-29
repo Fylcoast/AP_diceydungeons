@@ -50,11 +50,11 @@ class DiceyDungeonsAPItemGenerator:
             for loc_id, item_str in self.ap_item_mapping.items():
                 if loc_id in self.checked_locations:
                     continue
-                generator.add_item_if_possible(loc_id, item_str)
+                generator.add_ap_item_if_possible(loc_id, item_str)
             
-            # Add real items to fill
+            # Add real items to fill, up to 1 per episode
             for item in self.items_received:
-                generator.add_item_anywhere(item)
+                generator.add_item_to_episodes(item)
             
             # Fill up rest with filler
             generator.fill_with_item("Dice Shard")

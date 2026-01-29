@@ -132,7 +132,7 @@ class DiceyDungeonsContext(CommonContext):
         items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
         # Get unique items and shuffle order
         # Bonus: Only 1 Dice Shard can be sent this way
-        items_received_str = list(set([item for item in items_received_str if "Completed" not in item]))
+        items_received_str = list(set([item for item in items_received_str if "Completed" not in item and item != "Dice Shard"]))
         random.shuffle(items_received_str)
         # logger.info(ap_item_names)
         generator.DiceyDungeonsAPItemGenerator(self.game_path, ap_item_names, self.locations_info, self.checked_locations.union(self.locations_checked), items_received_str).generate()
@@ -330,13 +330,13 @@ class DiceyDungeonsContext(CommonContext):
             self.server_msgs.append(encode(json))
 
         elif cmd == "ReceivedItems":
-            # Update our inventory but don't push to game
-            # Game will pull items via GetItems command
             if args["index"] == 0:
                 self.full_inventory.clear()
 
             for item in args["items"]:
                 self.full_inventory.append(NetworkItem(*item))
+            
+            self.generate_items()
             
             if DEBUG:
                 logger.info(f"Items updated: now have {len(self.full_inventory)} total items available")

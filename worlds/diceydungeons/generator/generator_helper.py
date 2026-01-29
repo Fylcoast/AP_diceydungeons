@@ -1,4 +1,5 @@
 from ..data.episode_data import *
+from ..data.extracted_data import *
 
 generator_names: list[str] = ['warrior_one', 'warrior_two', 'warrior_three', 'warrior_four', 'warrior_five', 'warrior_six']
 """Names for generators, accessed with generator_names[<episode_num - 1>]"""
@@ -55,6 +56,22 @@ class FloorItems:
     def is_floor_full(self) -> bool:
         """Are all lists full to capacity for floor?"""
         return self.are_floor_chests_filled() and self.are_floor_shops_filled()
+    
+    def add_item_if_possible(self, item: str) -> bool:
+        """Try to add item to our floor. If we added it, return True, else, return False."""
+        if self.is_floor_full():
+            return False
+        
+        if not self.are_floor_chests_filled():
+            self.add_to_chests(item)
+            return True
+        
+        if not self.are_floor_shops_filled():
+            self.add_to_shops(item)
+            return True
+        
+        return False
+
 
     def get_floor_items(self) -> list[dict]:
         """Return all items for chests and shops on floor"""
@@ -109,7 +126,7 @@ class GeneratedItems:
     def __init__(self):
         self.warrior = [EpisodeItems(1), EpisodeItems(2), EpisodeItems(3), EpisodeItems(4), EpisodeItems(5), EpisodeItems(6)]
     
-    def add_item_if_possible(self, location_id: int, item: str) -> bool:
+    def add_ap_item_if_possible(self, location_id: int, item: str) -> bool:
         """Add item to generation if there is space. Returns true if added, false if not (no space)"""
         # self.warrior[<episode number - 1>].floors[<floor_num - 1>].chests/shops to get string lists or add to them
         # Location ID: <Episode Number><Floor Number><Location Code><Location Count, 2 digits>
@@ -150,6 +167,16 @@ class GeneratedItems:
                     return True
         
         return False
+    
+    def add_item_to_episodes(self, item: str):
+        """Add item to generation up to once for each episode it can be added to."""
+        for episode in self.warrior:
+            # Add item to the episode in earliest floor/location it can.
+            if episode.episode_num in item_metadata[item]['episode']:
+                for floor in episode.floors:
+                    # Try to add. If added, continue
+                    if floor.add_item_if_possible(item):
+                        continue
     
     def fill_with_item(self, item: str) -> bool:
         """Fill all open spaces with given item. Returns true if any items added, false if no items added"""

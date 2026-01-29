@@ -19,6 +19,7 @@ import os
 
 from . import launch_and_capture as launcher
 from ..generator import generator as generator
+from .. import mod as patcher
 
 import Utils
 from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart, ClientStatus,
@@ -67,6 +68,12 @@ class DiceyDungeonsCommandProcessor(ClientCommandProcessor):
             logger.info(f"Game path set to: {installation_location}")
             return True
         return False
+    
+    def _cmd_patch(self) -> bool:
+        """Patch your version of Dicey Dungeons to work with this multiworld!"""
+        if isinstance(self.ctx, DiceyDungeonsContext):
+            self.ctx.patch_game()
+
 
 
 
@@ -103,6 +110,21 @@ class DiceyDungeonsContext(CommonContext):
         
         # Game launcher queue for receiving messages
         self.game_message_queue: Optional[Queue] = None
+    
+    def patch_game(self):
+        """Patch Dicey Dungeons"""
+        asyncio.create_task(self._patch_game())
+        
+
+    async def _patch_game(self):
+        """Asynchronously patch the game."""
+        if not self.locations_info:
+            if DEBUG:
+                logger.info("Locations not retrieved from server yet. Grabbing those first!")
+            await self._wait_locations_and_get_items()
+        ap_items: list[tuple[str, str, int]] = [(f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]", self.player_names[net_item.player], net_item.flags) for loc_id, net_item in self.locations_info.items()]
+        patcher.DiceyDungeonsClientModGenerator(self.game_path, ap_items).generate()
+        logger.info("Patched Dicey Dungeons!")
     
     def generate_items(self):
         """Generate newly randomized items to find in episodes, based on collected items."""

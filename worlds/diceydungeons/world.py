@@ -48,5 +48,7 @@ class DiceyDungeonsWorld(World):
         )
     
     def generate_output(self, output_directory: str):
-        gen = DiceyDungeonsModGenerator(self, output_directory)
-        gen.generate()
+        pass
+        # Commented out for now - mod installed via /patch from Client.
+        # gen = DiceyDungeonsModGenerator(self, output_directory)
+        # gen.generate()

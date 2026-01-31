@@ -39,7 +39,7 @@ episode1 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 2, 3, 2, 1, 0)
+    FloorData(1, 1, 3, 2, 1, 0)
 )
 
 episode2 = EpisodeData(
@@ -48,7 +48,7 @@ episode2 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 2, 3, 2, 1, 0)
+    FloorData(1, 1, 3, 2, 1, 0)
 )
 
 episode3 = EpisodeData(
@@ -57,7 +57,7 @@ episode3 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 2, 3, 2, 1, 0)
+    FloorData(1, 1, 3, 2, 1, 0)
 )
 
 episode4 = EpisodeData(
@@ -66,7 +66,7 @@ episode4 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 2, 3, 2, 1, 0)
+    FloorData(1, 1, 3, 2, 1, 0)
 )
 
 episode5 = EpisodeData(
@@ -75,7 +75,7 @@ episode5 = EpisodeData(
     FloorData(2, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 2, 3, 2, 1, 0)
+    FloorData(1, 1, 3, 2, 1, 0)
 )
 
 episode6 = EpisodeData(
@@ -84,7 +84,7 @@ episode6 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 2, 3, 2, 1, 0)
+    FloorData(1, 1, 3, 2, 1, 0)
 )
 
 warrior_episodes = [episode1, episode2, episode3, episode4, episode5, episode6]

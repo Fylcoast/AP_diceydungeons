@@ -66,7 +66,7 @@ gooditems = [];
 otherstuff = [health(), health()];
 goodotherstuff = [
   upgrade(),
-  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "5", "1"]), runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "5", "2"]))
+  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "5", "1"]), [4, 4, 4])
 ];
 
 addfloor("big")

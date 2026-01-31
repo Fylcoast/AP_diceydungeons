@@ -38,18 +38,9 @@ class Levelsanity(DefaultOnToggle):
     '''
     display_name = "Levelsanity"
 
-# Client will have to implement this one
-class GuaranteeSomeChecks(DefaultOnToggle):
-    '''
-    Guarantees at least 1 AP item will be an option for any location with checks remaining
-    (e.g. Shops will always have 1 AP item, as long as there are AP items left for that particular shop)
-    '''
-    display_name = "Guarantee some checks"
-
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
-    guarantee_some_checks: GuaranteeSomeChecks
     maximum_checks_per_chest: MaximumChecksPerChest
     maximum_checks_per_shop: MaximumChecksPerShop
 
@@ -57,9 +48,5 @@ option_groups = [
     OptionGroup(
         "Location Options",
         [Levelsanity, MaximumChecksPerShop, MaximumChecksPerChest],
-    ),
-    OptionGroup(
-        "Quality of Life Options",
-        [GuaranteeSomeChecks],
     ),
 ]

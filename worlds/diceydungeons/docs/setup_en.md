@@ -13,10 +13,13 @@ First, you need a room to connect to. For this, you or someone you know has to g
 This will not be explained here,
 but you can check the [Archipelago Setup Guide](/tutorial/Archipelago/setup_en#generating-a-game).
 
-Download Dicey Dungeons (current patch) and start it at least once.
-
-Room generation will create an archive containing a folder named "diceyap". Place this in the games local files, under the "mod" directory.
+Download Dicey Dungeons (current patch).
 
 Launch the Dicey Dungeons Client from Archipelago, add the URL:Port and your slot name, and Connect.
 
-Launch the game with /dicey, and you're off and running!
+Your Dicey Dungeons installation path needs configured by client command /install_location [install location].
+If you installed into the default Steam installation location on your C: drive, you can skip this.
+
+You then need to patch your local installation with client command /patch.
+
+Finally, launch the game with /dicey, and you're off and running!

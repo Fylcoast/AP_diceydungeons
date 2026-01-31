@@ -30,7 +30,7 @@ from CommonClient import (CommonContext, gui_enabled, ClientCommandProcessor,
 
 # Import item metadata for categorization
 try:
-    from ..data.extracted_data import item_metadata
+    from ..data.game_data import item_metadata
 except ImportError:
     logger.warning("Could not import item_metadata from extracted_data")
     item_metadata = {}

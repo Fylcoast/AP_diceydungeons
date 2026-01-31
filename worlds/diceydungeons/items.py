@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Item, ItemClassification
 
-from .data.extracted_data import *
+from .data.game_data import *
 
 if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
@@ -36,7 +36,14 @@ ITEM_NAME_TO_ID["Dice Shard"] = 9999
 DEFAULT_ITEM_CLASSIFICATIONS["Dice Shard"] = ItemClassification.filler
 
 # Groups
-item_name_groups: dict[str, set[str]] = {"Warrior Items": set(warrior_items)}
+item_name_groups: dict[str, set[str]] = {
+    "Warrior Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['episode']]),
+    "Warrior Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['episode']]),
+    "Warrior Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['episode']]),
+    "Warrior Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['episode']]),
+    "Warrior Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['episode']]),
+    "Warrior Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['episode']])
+}
 
 class DiceyDungeonsItem(Item):
     game = "Dicey Dungeons"

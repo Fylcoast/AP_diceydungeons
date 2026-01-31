@@ -35,7 +35,7 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
     for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
         for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
             entrance = world.get_entrance(episode + " - " + floor)
-            set_rule(entrance, lambda state, required=items_needed[floor]: state.has_group("Warrior Items", world.player, required))
+            set_rule(entrance, lambda state, required=items_needed[floor]: state.has_group(f"Warrior {episode} Items", world.player, required))
     
 
 

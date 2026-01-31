@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from BaseClasses import ItemClassification, Location
 
 from . import items
-from .data.extracted_data import * # *_items lists
+from .data.game_data import * # *_items lists
 from .data.episode_data import * # episode location objects
 
 from .options import MAX_MAXIMUM_CHECKS_PER_CHEST, MAX_MAXIMUM_CHECKS_PER_SHOP

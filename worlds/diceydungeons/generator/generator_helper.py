@@ -1,5 +1,5 @@
 from ..data.episode_data import *
-from ..data.extracted_data import *
+from ..data.game_data import *
 
 generator_names: list[str] = ['warrior_one', 'warrior_two', 'warrior_three', 'warrior_four', 'warrior_five', 'warrior_six']
 """Names for generators, accessed with generator_names[<episode_num - 1>]"""
@@ -62,11 +62,13 @@ class FloorItems:
         if self.is_floor_full():
             return False
         
-        if not self.are_floor_chests_filled():
+        item_data: dict = item_metadata[item]
+        
+        if not self.are_floor_chests_filled() and self.episode_num in item_data['episode'] and 'chest' in item_data['location_types']:
             self.add_to_chests(item)
             return True
         
-        if not self.are_floor_shops_filled():
+        if not self.are_floor_shops_filled() and self.episode_num in item_data['episode'] and 'shop' in item_data['location_types']:
             self.add_to_shops(item)
             return True
         
@@ -172,11 +174,11 @@ class GeneratedItems:
         """Add item to generation up to once for each episode it can be added to."""
         for episode in self.warrior:
             # Add item to the episode in earliest floor/location it can.
-            if episode.episode_num in item_metadata[item]['episode']:
-                for floor in episode.floors:
-                    # Try to add. If added, continue
-                    if floor.add_item_if_possible(item):
-                        continue
+            # It doesn't matter if episodes are samey, because will regenerate before player could play another one.
+            for floor in episode.floors:
+                # Try to add. If added, go to next episode
+                if floor.add_item_if_possible(item):
+                    break
     
     def fill_with_item(self, item: str) -> bool:
         """Fill all open spaces with given item. Returns true if any items added, false if no items added"""

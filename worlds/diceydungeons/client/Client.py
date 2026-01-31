@@ -86,6 +86,7 @@ class DiceyDungeonsContext(CommonContext):
     command_processor = DiceyDungeonsCommandProcessor
     game = "Dicey Dungeons"
     game_path: str = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons"
+    slot_data: dict
 
     def __init__(self, server_address: Optional[str], password: Optional[str]):
         super().__init__(server_address, password)
@@ -157,7 +158,7 @@ class DiceyDungeonsContext(CommonContext):
         items_received_str = list(set([item for item in items_received_str if "Completed" not in item and item != "Dice Shard"]))
         random.shuffle(items_received_str)
         # logger.info(ap_item_names)
-        generator.DiceyDungeonsAPItemGenerator(self.game_path, ap_item_names, self.locations_info, self.checked_locations.union(self.locations_checked), items_received_str).generate()
+        generator.DiceyDungeonsAPItemGenerator(self.game_path, self.slot_data, ap_item_names, self.locations_info, self.checked_locations.union(self.locations_checked), items_received_str).generate()
         if DEBUG:
             logger.info("Game generators updated!")
 
@@ -343,6 +344,10 @@ class DiceyDungeonsContext(CommonContext):
                 self.server_msgs.append(self.room_info)
                 self.update_items()
                 self.awaiting_info = False
+
+            self.slot_data = json["slot_data"]
+            if DEBUG:
+                logger.info(f"Received the following player Options: {self.slot_data}")
 
         elif cmd == "RoomUpdate":
             # Don't send full player list to game

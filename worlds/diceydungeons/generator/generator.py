@@ -30,9 +30,12 @@ class DiceyDungeonsAPItemGenerator:
     """All items which we have been given from our base game, according to the server."""
     ap_item_mapping: dict[int, str]
     """ap item names mapping with loc_id --> string to be put into csv"""
+    slot_data: dict
+    """Player options information"""
 
 
-    def __init__(self, install_location: str, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem]):
+    def __init__(self, install_location: str, slot_data: dict, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem]):
+        self.slot_data = slot_data
         self.ap_item_mapping = ap_item_names
         self.locations = locations_info
         self.checked_locations = checked_locations
@@ -45,7 +48,7 @@ class DiceyDungeonsAPItemGenerator:
             writer = csv.DictWriter(f, fieldnames=ap_data_column_list)
             writer.writeheader()
 
-            generator = gen_helper.GeneratedItems()
+            generator = gen_helper.GeneratedItems(self.slot_data)
             # Add remaining AP items
             for loc_id, item_str in self.ap_item_mapping.items():
                 if loc_id in self.checked_locations:

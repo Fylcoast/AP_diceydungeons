@@ -19,14 +19,17 @@ class MaximumChecksPerChest(Range):
 
 class MaximumChecksPerShop(Range):
     '''
-    Determines the maximum number of AP items that can
-    be found within any individual shop (e.g. 
-    in Episode 1, Floor 2 shop) across runs.
+    Determines the number of AP items that generate
+    for any individual shop (e.g. 
+    in Episode 1, Floor 2 shop). Also determines the number
+    (up to 3) of items in a shop which can be AP at a time.
+    Items above 3 will fill in to those shops as they're
+    purchased (aka as the location checks are sent).
     '''
     display_name = "Maximum checks per shop"
     range_start = 0
     range_end = MAX_MAXIMUM_CHECKS_PER_SHOP
-    default = 3
+    default = 2
 
 class Levelsanity(DefaultOnToggle):
     '''

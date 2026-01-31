@@ -23,6 +23,10 @@ class ShopItems:
         shop_limit = warrior_episodes[self.episode_num - 1].floors[self.floor_num - 1].num_shop_slots
         return len(self.items) >= shop_limit
 
+    def ap_items_allowed(self, shop_limit: int) -> bool:
+        """Returns True if there is room in the shop for more AP items, False if not, based on player Options."""
+        return sum("[AP]" in item for item in self.items) < shop_limit
+
 class FloorItems:
     floor_num: int
     episode_num: int
@@ -44,6 +48,12 @@ class FloorItems:
                 shop.add_to_shop(item)
                 return
     
+    def add_to_shops_ap(self, item: str, shop_limit: int):
+        for shop in self.shops:
+            if not shop.is_shop_filled() and shop.ap_items_allowed(shop_limit):
+                shop.add_to_shop(item)
+                return
+    
     def are_floor_chests_filled(self) -> bool:
         """Are all chests full on floor, for particular episode limits?"""
         floor_limit = warrior_episodes[self.episode_num - 1].floors[self.floor_num - 1].num_chests
@@ -52,6 +62,10 @@ class FloorItems:
     def are_floor_shops_filled(self) -> bool:
         """Are all shops full on floor, for particular episode limits?"""
         return all([shop.is_shop_filled() for shop in self.shops])
+    
+    def are_floor_shops_filled_ap(self, shop_limit: int) -> bool:
+        """Are all shops full on floor, for particular episode limits AND AP Options?"""
+        return all([shop.is_shop_filled() or not shop.ap_items_allowed(shop_limit) for shop in self.shops])
     
     def is_floor_full(self) -> bool:
         """Are all lists full to capacity for floor?"""
@@ -124,9 +138,12 @@ class EpisodeItems:
 class GeneratedItems:
     warrior: list[EpisodeItems]
     """list of warrior episodes, each of which has deeper structure"""
+    slot_data: dict
+    """Player options information"""
 
-    def __init__(self):
+    def __init__(self, slot_data: dict):
         self.warrior = [EpisodeItems(1), EpisodeItems(2), EpisodeItems(3), EpisodeItems(4), EpisodeItems(5), EpisodeItems(6)]
+        self.slot_data = slot_data
     
     def add_ap_item_if_possible(self, location_id: int, item: str) -> bool:
         """Add item to generation if there is space. Returns true if added, false if not (no space)"""
@@ -149,9 +166,10 @@ class GeneratedItems:
             floor.add_to_chests(item)
         elif location_code == 2:
             # shops
-            if floor.are_floor_shops_filled():
+            shop_limit: int = self.slot_data["maximum_checks_per_shop"]
+            if floor.are_floor_shops_filled_ap(shop_limit):
                 return False
-            floor.add_to_shops(item)
+            floor.add_to_shops_ap(item, shop_limit)
         
         return True
     

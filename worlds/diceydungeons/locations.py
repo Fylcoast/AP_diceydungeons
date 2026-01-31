@@ -97,7 +97,7 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
             for chest in range(floor.num_chests * world.options.maximum_checks_per_chest):
                 locs.append(episode_floor_str + " - Chest " + str(chest + 1))
             # Shops
-            for shop in range(floor.num_shops * floor.num_shop_slots * world.options.maximum_checks_per_shop):
+            for shop in range(floor.num_shops * world.options.maximum_checks_per_shop):
                 locs.append(episode_floor_str + " - Shop " + str(shop + 1))
             # # Heals - Not used yet but maybe someday
             # for heal in range(floor.num_heals):

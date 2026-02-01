@@ -166,7 +166,7 @@ class GeneratedItems:
             floor.add_to_chests(item)
         elif location_code == 2:
             # shops
-            shop_limit: int = self.slot_data["maximum_checks_per_shop"]
+            shop_limit: int = self.slot_data["checks_per_shop"]
             if floor.are_floor_shops_filled_ap(shop_limit):
                 return False
             floor.add_to_shops_ap(item, shop_limit)

@@ -16,13 +16,6 @@ def set_all_rules(world: DiceyDungeonsWorld) -> None:
 
 
 def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
-    # episode_one = world.get_entrance("Episode 1")
-    # episode_two = world.get_entrance("Episode 2")
-    # episode_three = world.get_entrance("Episode 3")
-    # episode_four = world.get_entrance("Episode 4")
-    # episode_five = world.get_entrance("Episode 5")
-    # episode_six = world.get_entrance("Episode 6")
-
     # Fine tune if needed? Main goal is just to make sure they can play the game, so, looser side the better.
     items_needed: dict[str, int] = {
         "Floor 2": 1, 
@@ -36,6 +29,7 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
         for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
             entrance = world.get_entrance(episode + " - " + floor)
             set_rule(entrance, lambda state, required=items_needed[floor]: state.has_group(f"Warrior {episode} Items", world.player, required))
+            # if levelsanity is set, consider adding rules for progressive level up to get to X floors. doing whole thing with 2 dice... rough
     
 
 

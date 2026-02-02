@@ -9,27 +9,32 @@ from .data.game_data import *
 if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
 
+# Current Warrior location ID blocks taken:
+# 1-70ish: warrior items
+# 991-996: Episode completion
+# 1011-1016: Progressive level ups
+
 # Warrior items only, to start
 ITEM_NAME_TO_ID = dict(
     [
         (item, i) for i, item in enumerate(warrior_items, 1)
     ]
 )
-# ITEM_NAME_TO_ID = dict(
-#     [
-#         (item, i) for i, item in enumerate(list(set(<all item lists from extracted_data?>)))
-#     ]
-# )
-
-# Episode completions
-for episode in range(1, 7):
-    ITEM_NAME_TO_ID["Episode " + str(episode) + " - Episode Completed"] = 990 + episode
 
 DEFAULT_ITEM_CLASSIFICATIONS = dict(
     [
         (item, ItemClassification.progression) for item in warrior_items
     ]
 )
+
+for episode in range(1, 7):
+    # Episode completions
+    ITEM_NAME_TO_ID["Episode " + str(episode) + " - Episode Completed"] = 990 + episode
+
+    # Progressive level ups
+    ITEM_NAME_TO_ID["Episode " + str(episode) + " Progressive Level Up"] = 1010 + episode
+    DEFAULT_ITEM_CLASSIFICATIONS["Episode " + str(episode) + " Progressive Level Up"] = ItemClassification.progression
+
 
 # Filler
 ITEM_NAME_TO_ID["Dice Shard"] = 9999
@@ -60,6 +65,10 @@ def create_all_items(world: DiceyDungeonsWorld) -> None:
     itempool: list[Item] = [
         world.create_item(item) for item in warrior_items
     ]
+
+    if world.options.levelsanity:
+        for episode in range(1, 7):
+            itempool += [world.create_item(f"Episode {episode} Progressive Level Up") for _ in range(1, 6)]
 
     # Fill filler slots
     number_of_items = len(itempool)

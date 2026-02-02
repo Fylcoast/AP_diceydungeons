@@ -15,6 +15,11 @@ if TYPE_CHECKING:
 
 LOCATION_NAME_TO_ID: dict[str, int] = {}
 
+# Current Warrior location ID blocks taken:
+# 991-996: Episode completion
+# 1012-1066: Level ups
+# 11101-65599: chests/shops
+
 for episode in range(1, 7):
     # Level up locations convention:
     # Location name: <Episode> - Level <level>
@@ -119,10 +124,22 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
 
     # Populate level locations if enabled
     if world.options.levelsanity:
+        # Place level up locations in floor AFTER the level up is first available
+        floor_required: dict[int, str] = {
+            2: "Floor 2",
+            3: "Floor 3",
+            4: "Floor 4",
+            5: "Floor 5",
+            6: "Floor 6"
+        }
+
         for episode in range(1, 7):
-            level_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Level" in item[0] and "Episode " + str(episode) in item[0]])
-            region = world.get_region("Episode " + str(episode))
-            region.add_locations(level_locations, DiceyDungeonsLocation)
+            for level in range(2, 7):
+                # level_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Level" in item[0] and "Episode " + str(episode) in item[0]])
+                loc_name = f"Episode {episode} - Level {level}"
+                region = world.get_region("Episode " + str(episode) + " - " + floor_required[level])
+                level_location = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
+                region.locations.append(level_location)
 
 
 

@@ -126,6 +126,8 @@ class EpisodeItems:
     floor5: FloorItems
     floors: list[FloorItems]
 
+    levels: dict[int, str]
+
     def __init__(self, num: int):
         self.episode_num = num
         self.floor1 = FloorItems(1, self.episode_num)
@@ -134,6 +136,30 @@ class EpisodeItems:
         self.floor4 = FloorItems(4, self.episode_num)
         self.floor5 = FloorItems(5, self.episode_num)
         self.floors = [self.floor1, self.floor2, self.floor3, self.floor4, self.floor5]
+
+        self.levels = {}
+    
+    def is_level_filled(self, level: int) -> bool:
+        """Check if level in this episode is filled. T/F"""
+        return level in self.levels
+    
+    def add_to_level(self, level: int, item: str):
+        self.levels[level] = item
+    
+    def get_level_items(self) -> list[dict]:
+        """Return all items for levels in episode."""
+        rows: list[dict] = []
+
+        for level, item in self.levels.items():
+            row: dict = {}
+            row['name'] = item
+            row['generator'] = generator_names[self.episode_num - 1]
+            row['list'] = 'levels'
+            row['episode'] = self.episode_num
+            row['iter'] = level
+            rows.append(row)
+        
+        return rows
 
 class GeneratedItems:
     warrior: list[EpisodeItems]
@@ -147,29 +173,45 @@ class GeneratedItems:
     
     def add_ap_item_if_possible(self, location_id: int, item: str) -> bool:
         """Add item to generation if there is space. Returns true if added, false if not (no space)"""
-        # self.warrior[<episode number - 1>].floors[<floor_num - 1>].chests/shops to get string lists or add to them
-        # Location ID: <Episode Number><Floor Number><Location Code><Location Count, 2 digits>
-        # Episode code is 1-6
-        # Floor code is 1-6
-        # Location code is 1 = chests, 2 = shops
         loc_str: str = str(location_id)
-        episode_num: int = int(loc_str[0])
-        floor_num: int = int(loc_str[1])
-        location_code: int = int(loc_str[2])
 
-        floor: FloorItems = self.warrior[episode_num - 1].floors[floor_num - 1]
+        # Branch for floor locations vs level locations
+        # Currently hardcoded but will need to change if we shift location IDs
+        if location_id < 10000:
+            # Level up location
+            # Location name: <Episode> - Level <level>
+            # ID: 10<Episode Number><Level Number>
+            episode_num: int = int(loc_str[2])
+            level_num: int = int(loc_str[3])
 
-        if location_code == 1:
-            # chests
-            if floor.are_floor_chests_filled():
+            episode: EpisodeItems = self.warrior[episode_num - 1]
+            if episode.is_level_filled(level_num):
                 return False
-            floor.add_to_chests(item)
-        elif location_code == 2:
-            # shops
-            shop_limit: int = self.slot_data["checks_per_shop"]
-            if floor.are_floor_shops_filled_ap(shop_limit):
-                return False
-            floor.add_to_shops_ap(item, shop_limit)
+            episode.add_to_level(level_num, f"Equipment:{item}")
+
+        else:
+            # self.warrior[<episode number - 1>].floors[<floor_num - 1>].chests/shops to get string lists or add to them
+            # Location ID: <Episode Number><Floor Number><Location Code><Location Count, 2 digits>
+            # Episode code is 1-6
+            # Floor code is 1-6
+            # Location code is 1 = chests, 2 = shops
+            episode_num: int = int(loc_str[0])
+            floor_num: int = int(loc_str[1])
+            location_code: int = int(loc_str[2])
+
+            floor: FloorItems = self.warrior[episode_num - 1].floors[floor_num - 1]
+
+            if location_code == 1:
+                # chests
+                if floor.are_floor_chests_filled():
+                    return False
+                floor.add_to_chests(item)
+            elif location_code == 2:
+                # shops
+                shop_limit: int = self.slot_data["checks_per_shop"]
+                if floor.are_floor_shops_filled_ap(shop_limit):
+                    return False
+                floor.add_to_shops_ap(item, shop_limit)
         
         return True
     
@@ -217,6 +259,7 @@ class GeneratedItems:
         """Export a list of dicts, for writing to ap_data.csv"""
         rows: list[dict] = []
         for episode in self.warrior:
+            rows.extend(episode.get_level_items())
             for floor in episode.floors:
                 rows.extend(floor.get_floor_items())
         

@@ -138,7 +138,7 @@ class DiceyDungeonsClientModGenerator():
     mod_name: str
     """Name of the mod (probably 'diceyap')"""
 
-    def __init__(self, game_path: str, equipment: dict[str, int]):
+    def __init__(self, game_path: str, equipment: list[tuple[str, str, int]]):
         self.game_path = game_path
         self.equipment = equipment
         self.mod_name = 'diceyap'

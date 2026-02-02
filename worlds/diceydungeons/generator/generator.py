@@ -32,14 +32,17 @@ class DiceyDungeonsAPItemGenerator:
     """ap item names mapping with loc_id --> string to be put into csv"""
     slot_data: dict
     """Player options information"""
+    level_ups: dict[str, int]
+    """Level up items we've received for each episode. Key is episode, value is count."""
 
 
-    def __init__(self, install_location: str, slot_data: dict, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem]):
+    def __init__(self, install_location: str, slot_data: dict, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem], level_ups: dict[str, int]):
         self.slot_data = slot_data
         self.ap_item_mapping = ap_item_names
         self.locations = locations_info
         self.checked_locations = checked_locations
         self.items_received = items_received
+        self.level_ups = level_ups
         self.output_file = os.path.join(install_location, "mods", "diceyap", "data", "text", "scripts", "diceyap", "ap_data.csv")
     
     def generate(self):

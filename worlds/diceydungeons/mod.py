@@ -55,7 +55,7 @@ murder_spell: dict = {
     'Slots': 'NORMAL',
     'NEED TOTAL?': '',
     'Colour': 'BRIGHTCYAN',
-    'Upgrade': 'change_power',
+    'Upgrade': '',
     'Weaken': 'change_power',
     'Alternate Status Trigger':	'',
     'SFX': 'none',

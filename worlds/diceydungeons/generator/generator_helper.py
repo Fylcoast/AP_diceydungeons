@@ -166,10 +166,13 @@ class GeneratedItems:
     """list of warrior episodes, each of which has deeper structure"""
     slot_data: dict
     """Player options information"""
+    level_ups: dict[str, int]
+    """Amount of level up items received for each episode"""
 
-    def __init__(self, slot_data: dict):
+    def __init__(self, slot_data: dict, level_ups: dict[str, int]):
         self.warrior = [EpisodeItems(1), EpisodeItems(2), EpisodeItems(3), EpisodeItems(4), EpisodeItems(5), EpisodeItems(6)]
         self.slot_data = slot_data
+        self.level_ups = level_ups
     
     def add_ap_item_if_possible(self, location_id: int, item: str) -> bool:
         """Add item to generation if there is space. Returns true if added, false if not (no space)"""
@@ -216,8 +219,8 @@ class GeneratedItems:
         return True
     
     def add_item_anywhere(self, item: str) -> bool:
-        """Add item to generation if there is space ANYWHERE. Returns true if added, false if not (no space)"""
-        
+        """Add item to generation if there is space ANYWHERE. Returns true if added, false if not (no space).
+        Largely deprecated in favor of add_item_to_episodes"""
         # Adds in ascending order of episode number, floor number, and location type (chest before shop)
         for episode in self.warrior:
             for floor in episode.floors:
@@ -230,11 +233,30 @@ class GeneratedItems:
         
         return False
     
+    def prefill_level_locations(self):
+        """Prefill level locations for any guaranteed items."""
+        for episode in self.warrior:
+            max_level = self.level_ups[warrior_episodes[episode.episode_num - 1].name] + 1
+            for level in range(2, 7):
+                # Want to fill in an item if:
+                # 1. If there's a defined prefill item
+                # 2. We have unlocked enough level ups for this episode to cover it
+                # 3. It's not already filled, somehow
+                if level in warrior_episodes[episode.episode_num - 1].level_items and level <= max_level and not episode.is_level_filled(level):
+                    episode.add_to_level(level, warrior_episodes[episode.episode_num - 1].level_items[level])
+    
     def add_item_to_episodes(self, item: str):
         """Add item to generation up to once for each episode it can be added to."""
         for episode in self.warrior:
-            # Add item to the episode in earliest floor/location it can.
+            # Add item to the episode in earliest level/floor/location it can.
             # It doesn't matter if episodes are samey, because will regenerate before player could play another one.
+            max_level = self.level_ups[warrior_episodes[episode.episode_num - 1].name] + 1
+
+            for level in range(2, 7):
+                if level <= max_level and not episode.is_level_filled(level):
+                    episode.add_to_level(level, f"Equipment:{item}")
+                    break
+
             for floor in episode.floors:
                 # Try to add. If added, go to next episode
                 if floor.add_item_if_possible(item):
@@ -245,6 +267,11 @@ class GeneratedItems:
         ret: bool = False
 
         for episode in self.warrior:
+            for level in range(2, 7):
+                if not episode.is_level_filled(level):
+                    episode.add_to_level(level, f"Equipment:{item}")
+                    ret = True
+
             for floor in episode.floors:
                 while not floor.are_floor_chests_filled():
                     floor.add_to_chests(item)

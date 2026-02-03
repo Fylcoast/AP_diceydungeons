@@ -92,7 +92,3 @@ lastfloor
   .addotherstuff(otherstuff, goodotherstuff)
   .generate();
 
-var rewards = loaddata("flexiblerewards/rewards/warrior_1");
-var rewards2 = getcolumn(rewards, "rewards2"); 
-trace("input");
-trace(getcolumn(rewards, "rewards1"));

@@ -51,12 +51,15 @@ class DiceyDungeonsAPItemGenerator:
             writer = csv.DictWriter(f, fieldnames=ap_data_column_list)
             writer.writeheader()
 
-            generator = gen_helper.GeneratedItems(self.slot_data)
+            generator = gen_helper.GeneratedItems(self.slot_data, self.level_ups)
             # Add remaining AP items
             for loc_id, item_str in self.ap_item_mapping.items():
                 if loc_id in self.checked_locations:
                     continue
                 generator.add_ap_item_if_possible(loc_id, item_str)
+            
+            # Prefill level locations, if earned.
+            generator.prefill_level_locations()
             
             # Add real items to fill, up to 1 per episode
             for item in self.items_received:

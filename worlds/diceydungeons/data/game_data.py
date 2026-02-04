@@ -321,11 +321,6 @@ item_metadata = {
         'episode': [1, 2, 3, 4, 6],
         'location_types': ['chest'],
     },
-    'Dice Shard': {
-        'character': 'warrior',
-        'episode': [1, 2, 3, 4, 5, 6],
-        'location_types': ['chest', 'shop'],
-    },
 }
 
 # Legacy lists for backward compatibility

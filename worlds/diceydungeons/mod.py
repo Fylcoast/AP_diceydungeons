@@ -55,7 +55,7 @@ murder_spell: dict = {
     'Slots': 'NORMAL',
     'NEED TOTAL?': '',
     'Colour': 'BRIGHTCYAN',
-    'Upgrade': 'change_power',
+    'Upgrade': '',
     'Weaken': 'change_power',
     'Alternate Status Trigger':	'',
     'SFX': 'none',
@@ -138,7 +138,7 @@ class DiceyDungeonsClientModGenerator():
     mod_name: str
     """Name of the mod (probably 'diceyap')"""
 
-    def __init__(self, game_path: str, equipment: dict[str, int]):
+    def __init__(self, game_path: str, equipment: list[tuple[str, str, int]]):
         self.game_path = game_path
         self.equipment = equipment
         self.mod_name = 'diceyap'

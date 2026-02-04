@@ -154,11 +154,16 @@ class DiceyDungeonsContext(CommonContext):
         ap_item_names = dict(ap_item_names_list)
         items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
         # Get unique items and shuffle order
-        # Bonus: Only 1 Dice Shard can be sent this way
-        items_received_str = list(set([item for item in items_received_str if "Completed" not in item and item != "Dice Shard"]))
+        items_received_str = list(set([item for item in items_received_str if item in item_metadata.keys()]))
         random.shuffle(items_received_str)
         # logger.info(ap_item_names)
-        generator.DiceyDungeonsAPItemGenerator(self.game_path, self.slot_data, ap_item_names, self.locations_info, self.checked_locations.union(self.locations_checked), items_received_str).generate()
+        generator.DiceyDungeonsAPItemGenerator(self.game_path, 
+                                               self.slot_data, 
+                                               ap_item_names, 
+                                               self.locations_info, 
+                                               self.checked_locations.union(self.locations_checked), 
+                                               items_received_str,
+                                               self.get_level_ups_received()).generate()
         if DEBUG:
             logger.info("Game generators updated!")
 
@@ -281,6 +286,14 @@ class DiceyDungeonsContext(CommonContext):
             loc_name = self.location_names.lookup_in_game(loc_id, self.game)
             item_name = self.item_names.lookup_in_slot(net_item.item, net_item.player)
             logger.info(f"{loc_id}: {loc_name} -> {item_name} (player {net_item.player})")
+    
+    def get_level_ups_received(self) -> dict[str, int]:
+        items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+        level_ups: dict[str, int] = {}
+        for episode in range(1, 7):
+            level_ups[f"Episode {episode}"] = items_received_str.count(f"Episode {episode} Progressive Level Up")
+        
+        return level_ups
 
 
     async def server_auth(self, password_requested: bool = False):

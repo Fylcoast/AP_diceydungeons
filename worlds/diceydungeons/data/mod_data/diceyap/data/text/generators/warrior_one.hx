@@ -92,4 +92,3 @@ lastfloor
   .addotherstuff(otherstuff, goodotherstuff)
   .generate();
 
-  trace("[AP] {\"command\": \"reload_generator\"}");

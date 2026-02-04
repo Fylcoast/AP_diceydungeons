@@ -25,9 +25,12 @@ class EpisodeData:
     # Floor 6 is always just the boss
 
     level_items: dict[int, str]
-    """Any level present here has a predefined item it gives (e.g. Dice)"""
+    """Any level present here has a predefined item it gives (e.g. Dice) instead of a random item"""
 
-    def __init__(self, name: str, floor1: FloorData, floor2: FloorData, floor3: FloorData, floor4: FloorData, floor5: FloorData, level_items: dict[int, str]):
+    standard_level_items: dict[int, list[str]]
+    """Full list of base level up rewards, for when levelsanity is off"""
+
+    def __init__(self, name: str, floor1: FloorData, floor2: FloorData, floor3: FloorData, floor4: FloorData, floor5: FloorData, level_items: dict[int, str], standard_level_items: dict[int, list[str]]):
         self.name = name
         self.floor1 = floor1
         self.floor2 = floor2
@@ -36,6 +39,7 @@ class EpisodeData:
         self.floor5 = floor5
         self.floors = [self.floor1, self.floor2, self.floor3, self.floor4, self.floor5]
         self.level_items = level_items
+        self.standard_level_items = standard_level_items
 
 episode1 = EpisodeData(
     "Episode 1",
@@ -44,7 +48,8 @@ episode1 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"}
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:Boomerang"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Upgrade"], 6: ["Dice"]}
 )
 
 episode2 = EpisodeData(
@@ -54,7 +59,8 @@ episode2 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"}
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Spiked Shield+", "Equipment:Boomerang+"], 4: ["Dice"], 5: ["Equipment:Shield Bash+", "Equipment:Pirate Hook+", "Equipment:Midnight Charm+"], 6: ["Dice"]}
 )
 
 episode3 = EpisodeData(
@@ -64,7 +70,8 @@ episode3 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"}
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:iron Shield"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Equipment:Last Stand"], 6: ["Dice"]}
 )
 
 episode4 = EpisodeData(
@@ -74,7 +81,8 @@ episode4 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"}
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:Boomerang"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Upgrade"], 6: ["Dice"]}
 )
 
 episode5 = EpisodeData(
@@ -84,7 +92,8 @@ episode5 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"}
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Crescent Moon Blade", "Equipment:Polar Star"], 4: ["Dice"], 5: ["Equipment:Battering Ram", "Upgrade"], 6: ["Dice"]}
 )
 
 episode6 = EpisodeData(
@@ -94,7 +103,8 @@ episode6 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"}
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Crescent Moon Blade", "Equipment:Polar Star"], 4: ["Dice"], 5: ["Equipment:Battering Ram", "Upgrade"], 6: ["Dice"]}
 )
 
 warrior_episodes = [episode1, episode2, episode3, episode4, episode5, episode6]

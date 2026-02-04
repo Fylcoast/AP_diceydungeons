@@ -4,6 +4,25 @@ from ..data.game_data import *
 generator_names: list[str] = ['warrior_one', 'warrior_two', 'warrior_three', 'warrior_four', 'warrior_five', 'warrior_six']
 """Names for generators, accessed with generator_names[<episode_num - 1>]"""
 
+class LevelItems:
+    episode_num: int
+    level_num: int
+    items: list[str]
+
+    def __init__(self, num: int, episode: int):
+        self.level_num = num
+        self.episode_num = episode
+        self.items = []
+    
+    def is_level_full(self) -> bool:
+        return len(self.items) > 0
+    
+    def add_to_level(self, item: str):
+        self.items.append(item)
+    
+    def add_to_level_list(self, items: list[str]):
+        self.items.extend(items)
+
 class ShopItems:
     shop_num: int
     floor_num: int
@@ -126,7 +145,7 @@ class EpisodeItems:
     floor5: FloorItems
     floors: list[FloorItems]
 
-    levels: dict[int, str]
+    levels: list[LevelItems]
 
     def __init__(self, num: int):
         self.episode_num = num
@@ -137,27 +156,34 @@ class EpisodeItems:
         self.floor5 = FloorItems(5, self.episode_num)
         self.floors = [self.floor1, self.floor2, self.floor3, self.floor4, self.floor5]
 
-        self.levels = {}
+        self.levels =   [
+                            LevelItems(2, self.episode_num),
+                            LevelItems(3, self.episode_num),
+                            LevelItems(4, self.episode_num),
+                            LevelItems(5, self.episode_num),
+                            LevelItems(6, self.episode_num)
+                        ]
     
     def is_level_filled(self, level: int) -> bool:
         """Check if level in this episode is filled. T/F"""
-        return level in self.levels
+        return self.levels[level - 2].is_level_full()
     
     def add_to_level(self, level: int, item: str):
-        self.levels[level] = item
+        self.levels[level - 2].add_to_level(item)
     
     def get_level_items(self) -> list[dict]:
         """Return all items for levels in episode."""
         rows: list[dict] = []
 
-        for level, item in self.levels.items():
-            row: dict = {}
-            row['name'] = item
-            row['generator'] = generator_names[self.episode_num - 1]
-            row['list'] = 'levels'
-            row['episode'] = self.episode_num
-            row['iter'] = level
-            rows.append(row)
+        for level in self.levels:
+            for item in level.items:
+                row: dict = {}
+                row['name'] = item
+                row['generator'] = generator_names[self.episode_num - 1]
+                row['list'] = 'levels'
+                row['episode'] = self.episode_num
+                row['iter'] = level.level_num
+                rows.append(row)
         
         return rows
 
@@ -245,22 +271,31 @@ class GeneratedItems:
                 if level in warrior_episodes[episode.episode_num - 1].level_items and level <= max_level and not episode.is_level_filled(level):
                     episode.add_to_level(level, warrior_episodes[episode.episode_num - 1].level_items[level])
     
+    def assign_standard_level_ups(self):
+        """For Levelsanity = off, give normal level ups"""
+        for episode in self.warrior:
+            for level in episode.levels:
+                level.add_to_level_list(warrior_episodes[episode.episode_num - 1].standard_level_items[level.level_num])
+    
     def add_item_to_episodes(self, item: str):
         """Add item to generation up to once for each episode it can be added to."""
         for episode in self.warrior:
             # Add item to the episode in earliest level/floor/location it can.
             # It doesn't matter if episodes are samey, because will regenerate before player could play another one.
             max_level = self.level_ups[warrior_episodes[episode.episode_num - 1].name] + 1
+            filled: bool = False
 
             for level in range(2, 7):
                 if level <= max_level and not episode.is_level_filled(level):
                     episode.add_to_level(level, f"Equipment:{item}")
+                    filled = True
                     break
-
-            for floor in episode.floors:
-                # Try to add. If added, go to next episode
-                if floor.add_item_if_possible(item):
-                    break
+                
+            if not filled:
+                for floor in episode.floors:
+                    # Try to add. If added, go to next episode
+                    if floor.add_item_if_possible(item):
+                        break
     
     def fill_with_item(self, item: str) -> bool:
         """Fill all open spaces with given item. Returns true if any items added, false if no items added"""

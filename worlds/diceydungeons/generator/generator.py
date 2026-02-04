@@ -58,8 +58,12 @@ class DiceyDungeonsAPItemGenerator:
                     continue
                 generator.add_ap_item_if_possible(loc_id, item_str)
             
-            # Prefill level locations, if earned.
-            generator.prefill_level_locations()
+            if self.slot_data["levelsanity"]:
+                # Prefill level locations, if earned.
+                generator.prefill_level_locations()
+            else:
+                # Give normal level ups
+                generator.assign_standard_level_ups()
             
             # Add real items to fill, up to 1 per episode
             for item in self.items_received:

@@ -9,7 +9,7 @@ var goodotherstuff = [];
 
 //Floor 1:
 items = [];
-gooditems = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "1", "1"]);
+gooditems = runscript("diceyap/load_upgraded_ap_items_by_category", [generator, episode, "chests", "1", "1"]);
 otherstuff = [];
 goodotherstuff = [];
 
@@ -20,9 +20,9 @@ addfloor("tiny")
 
 //Floor 2:
 items = [];
-gooditems = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "2", "1"]);
+gooditems = runscript("diceyap/load_upgraded_ap_items_by_category", [generator, episode, "chests", "2", "1"]);
 otherstuff = [health()];
-goodotherstuff = [shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "2", "1"]))];
+goodotherstuff = [shop(runscript("diceyap/load_upgraded_ap_items_by_category", [generator, episode, "shops", "2", "1"]))];
 
 addfloor("small")
   .additems(items, gooditems)
@@ -30,13 +30,13 @@ addfloor("small")
   .generate();
 
 //Floor 3:
-items = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "3", "1"]);
+items = runscript("diceyap/load_upgraded_ap_items_by_category", [generator, episode, "chests", "3", "1"]);
 gooditems = [];
 
 otherstuff = [health(), health()];
 
 goodotherstuff = [
-  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "3", "1"])),
+  shop(runscript("diceyap/load_upgraded_ap_items_by_category", [generator, episode, "shops", "3", "1"])),
   upgrade()
 ];
 
@@ -47,7 +47,7 @@ addfloor("normal")
   
 //Floor 4:
 items = [];
-gooditems = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "4", "1"]);
+gooditems = runscript("diceyap/load_upgraded_ap_items_by_category", [generator, episode, "chests", "4", "1"]);
 
 otherstuff = [health()];
 goodotherstuff = [
@@ -60,13 +60,13 @@ addfloor("normal")
   .generate();
   
 //Floor 5:
-items = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "5", "1"]);
+items = runscript("diceyap/load_upgraded_ap_items_by_category", [generator, episode, "chests", "5", "1"]);
 gooditems = [];
 
 otherstuff = [health(), health()];
 goodotherstuff = [
   upgrade(),
-  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "5", "1"]), [4, 4, 4])
+  shop(runscript("diceyap/load_upgraded_ap_items_by_category", [generator, episode, "shops", "5", "1"]), [4, 4, 4])
 ];
 
 addfloor("big")

@@ -4,7 +4,7 @@ item_metadata = {
     'Battle Axe': {
         'character': 'warrior',
         'episode': [1, 2, 3, 4, 6],
-        'location_types': ['chest'],
+        'location_types': ['chest', 'trade'],
     },
     'Battle Cry': {
         'character': 'warrior',
@@ -59,7 +59,7 @@ item_metadata = {
     'Claw': {
         'character': 'warrior',
         'episode': [1, 2, 3, 4, 6],
-        'location_types': ['chest', 'shop'],
+        'location_types': ['chest', 'shop', 'trade'],
     },
     'Copper Shield': {
         'character': 'warrior',
@@ -114,7 +114,7 @@ item_metadata = {
     'Fishing Net': {
         'character': 'warrior',
         'episode': [5, 6],
-        'location_types': ['chest', 'shop'],
+        'location_types': ['chest', 'shop', 'trade'],
     },
     'Flying Skull': {
         'character': 'warrior',
@@ -124,7 +124,7 @@ item_metadata = {
     'Gemstone Staff': {
         'character': 'warrior',
         'episode': [5, 6],
-        'location_types': ['chest'],
+        'location_types': ['chest', 'trade'],
     },
     'Half Moon Charm': {
         'character': 'warrior',
@@ -134,7 +134,7 @@ item_metadata = {
     'Hammer': {
         'character': 'warrior',
         'episode': [1, 2, 3, 4, 6],
-        'location_types': ['chest', 'shop'],
+        'location_types': ['chest', 'shop', 'trade'],
     },
     'Healing Crystal': {
         'character': 'warrior',
@@ -199,7 +199,7 @@ item_metadata = {
     'Nail Bat': {
         'character': 'warrior',
         'episode': [5, 6],
-        'location_types': ['chest'],
+        'location_types': ['chest', 'trade'],
     },
     'Nightstick': {
         'character': 'warrior',
@@ -224,12 +224,12 @@ item_metadata = {
     'Pickaxe': {
         'character': 'warrior',
         'episode': [5],
-        'location_types': ['chest'],
+        'location_types': ['chest', 'trade'],
     },
     'Quarterstaff': {
         'character': 'warrior',
         'episode': [5, 6],
-        'location_types': ['chest'],
+        'location_types': ['chest', 'trade'],
     },
     'Scissors': {
         'character': 'warrior',
@@ -239,7 +239,7 @@ item_metadata = {
     'Shovel': {
         'character': 'warrior',
         'episode': [1, 2, 3, 4, 6],
-        'location_types': ['chest'],
+        'location_types': ['chest', 'trade'],
     },
     'Shriek': {
         'character': 'warrior',
@@ -264,7 +264,7 @@ item_metadata = {
     'Sledgehammer': {
         'character': 'warrior',
         'episode': [5, 6],
-        'location_types': ['chest', 'shop'],
+        'location_types': ['chest', 'shop', 'trade'],
     },
     'Slingshot': {
         'character': 'warrior',
@@ -289,7 +289,7 @@ item_metadata = {
     'Staff': {
         'character': 'warrior',
         'episode': [1, 2, 3, 4, 6],
-        'location_types': ['chest'],
+        'location_types': ['chest', 'trade'],
     },
     'Target Shield': {
         'character': 'warrior',
@@ -309,17 +309,17 @@ item_metadata = {
     'Toxic Ooze': {
         'character': 'warrior',
         'episode': [1, 2, 3, 4, 6],
-        'location_types': ['chest', 'shop'],
+        'location_types': ['chest', 'shop', 'trade'],
     },
     'Trident': {
         'character': 'warrior',
         'episode': [5, 6],
-        'location_types': ['chest'],
+        'location_types': ['chest', 'trade'],
     },
     'Whip': {
         'character': 'warrior',
         'episode': [1, 2, 3, 4, 6],
-        'location_types': ['chest'],
+        'location_types': ['chest', 'trade'],
     },
 }
 

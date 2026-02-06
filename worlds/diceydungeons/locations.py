@@ -8,7 +8,7 @@ from . import items
 from .data.game_data import * # *_items lists
 from .data.episode_data import * # episode location objects
 
-from .options import MAXIMUM_CHECKS_PER_CHEST, MAXIMUM_CHECKS_PER_SHOP
+from .options import MAXIMUM_CHECKS_PER_CHEST, MAXIMUM_CHECKS_PER_SHOP, MAXIMUM_CHECKS_PER_TRADE
 
 if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
@@ -69,7 +69,7 @@ for episode_num, episode in enumerate(warrior_episodes):
         for upgrade in range(floor.num_upgrades):
             LOCATION_NAME_TO_ID[episode_floor_str + " - Upgrade " + str(upgrade + 1)] = 10000 * (episode_num + 1) + 1000 * (floor_num + 1) + 400 + (upgrade + 1)
         # Trades
-        for trade in range(floor.num_trades):
+        for trade in range(floor.num_trades * MAXIMUM_CHECKS_PER_TRADE):
             LOCATION_NAME_TO_ID[episode_floor_str + " - Trade " + str(trade + 1)] = 10000 * (episode_num + 1) + 1000 * (floor_num + 1) + 500 + (trade + 1)
 
 class DiceyDungeonsLocation(Location):
@@ -104,7 +104,10 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
             # Shops
             for shop in range(floor.num_shops * world.options.checks_per_shop):
                 locs.append(episode_floor_str + " - Shop " + str(shop + 1))
-            # Heals, Upgrades, and Trades to go here, someday
+            # Trades
+            for trade in range(floor.num_trades * world.options.checks_per_trade):
+                locs.append(episode_floor_str + " - Trade " + str(trade + 1))
+            # Heals AND Upgrades to go here, someday
         
             region.add_locations(get_location_names_with_ids(locs), DiceyDungeonsLocation)
 

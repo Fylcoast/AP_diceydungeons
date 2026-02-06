@@ -23,6 +23,25 @@ class LevelItems:
     def add_to_level_list(self, items: list[str]):
         self.items.extend(items)
 
+class TradeItems:
+    trade_num: int
+    floor_num: int
+    episode_num: int
+    items: list[str]
+
+    def __init__(self, num: int, episode: int, floor: int):
+        self.trade_num = num
+        self.episode_num = episode
+        self.floor_num = floor
+        self.items = []
+    
+    def add_to_trade(self, item: str):
+        self.items.append(item)
+    
+    def is_trade_filled(self) -> bool:
+        # Trade limit is always 1. I think.
+        return len(self.items) >= 1
+
 class ShopItems:
     shop_num: int
     floor_num: int
@@ -51,12 +70,14 @@ class FloorItems:
     episode_num: int
     chests: list[str]
     shops: list[ShopItems]
+    trades: list[TradeItems]
 
     def __init__(self, num: int, episode: int):
         self.floor_num = num
         self.episode_num = episode
         self.chests = []
         self.shops = [ShopItems(i + 1, self.episode_num, self.floor_num) for i in range(warrior_episodes[self.episode_num - 1].floors[self.floor_num - 1].num_shops)]
+        self.trades = [TradeItems(i + 1, self.episode_num, self.floor_num) for i in range(warrior_episodes[self.episode_num - 1].floors[self.floor_num - 1].num_trades)]
     
     def add_to_chests(self, item: str):
         self.chests.append(item)
@@ -73,6 +94,12 @@ class FloorItems:
                 shop.add_to_shop(item)
                 return
     
+    def add_to_trades(self, item: str):
+        for trade in self.trades:
+            if not trade.is_trade_filled():
+                trade.add_to_trade(item)
+                return
+    
     def are_floor_chests_filled(self) -> bool:
         """Are all chests full on floor, for particular episode limits?"""
         floor_limit = warrior_episodes[self.episode_num - 1].floors[self.floor_num - 1].num_chests
@@ -85,10 +112,14 @@ class FloorItems:
     def are_floor_shops_filled_ap(self, shop_limit: int) -> bool:
         """Are all shops full on floor, for particular episode limits AND AP Options?"""
         return all([shop.is_shop_filled() or not shop.ap_items_allowed(shop_limit) for shop in self.shops])
+
+    def are_floor_trades_filled(self) -> bool:
+        """Are all trades full on floor, for particular episode limits?"""
+        return all([trade.is_trade_filled() for trade in self.trades])
     
     def is_floor_full(self) -> bool:
         """Are all lists full to capacity for floor?"""
-        return self.are_floor_chests_filled() and self.are_floor_shops_filled()
+        return self.are_floor_chests_filled() and self.are_floor_shops_filled() and self.are_floor_trades_filled()
     
     def add_item_if_possible(self, item: str) -> bool:
         """Try to add item to our floor. If we added it, return True, else, return False."""
@@ -103,6 +134,10 @@ class FloorItems:
         
         if not self.are_floor_shops_filled() and self.episode_num in item_data['episode'] and 'shop' in item_data['location_types']:
             self.add_to_shops(item)
+            return True
+        
+        if not self.are_floor_trades_filled() and self.episode_num in item_data['episode'] and 'trade' in item_data['location_types']:
+            self.add_to_trades(item)
             return True
         
         return False
@@ -132,6 +167,18 @@ class FloorItems:
                 row['episode'] = self.episode_num
                 row['floor'] = self.floor_num
                 row['iter'] = shop.shop_num # To handle grabbing multiple shops from the generators.
+                rows.append(row)
+        
+        # Trades
+        for trade in self.trades:
+            for item in trade.items:
+                row: dict = {}
+                row['name'] = item
+                row['generator'] = generator_names[self.episode_num - 1]
+                row['list'] = 'trades'
+                row['episode'] = self.episode_num
+                row['floor'] = self.floor_num
+                row['iter'] = trade.trade_num # To handle grabbing multiple trades from the generators, if that ever happens.
                 rows.append(row)
 
         return rows
@@ -223,7 +270,7 @@ class GeneratedItems:
             # Location ID: <Episode Number><Floor Number><Location Code><Location Count, 2 digits>
             # Episode code is 1-6
             # Floor code is 1-6
-            # Location code is 1 = chests, 2 = shops
+            # Location code is 1 = chests, 2 = shops, 5 = trades
             episode_num: int = int(loc_str[0])
             floor_num: int = int(loc_str[1])
             location_code: int = int(loc_str[2])
@@ -241,6 +288,11 @@ class GeneratedItems:
                 if floor.are_floor_shops_filled_ap(shop_limit):
                     return False
                 floor.add_to_shops_ap(item, shop_limit)
+            elif location_code == 5:
+                # trades
+                if floor.are_floor_trades_filled():
+                    return False
+                floor.add_to_trades(item)
         
         return True
     
@@ -313,6 +365,9 @@ class GeneratedItems:
                     ret = True
                 while not floor.are_floor_shops_filled():
                     floor.add_to_shops(item)
+                    ret = True
+                while not floor.are_floor_trades_filled():
+                    floor.add_to_trades(item)
                     ret = True
         
         return ret

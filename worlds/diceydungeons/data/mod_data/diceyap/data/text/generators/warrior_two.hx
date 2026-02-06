@@ -51,7 +51,7 @@ gooditems = runscript("diceyap/load_upgraded_ap_items_by_category", [generator, 
 
 otherstuff = [health()];
 goodotherstuff = [
-  trade(["any"], ["Dice Shard"])
+  trade(["any"], runscript("diceyap/load_upgraded_ap_items_by_category", [generator, episode, "trades", "4", "1"]))
 ];
 
 addfloor("normal")

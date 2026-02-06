@@ -5,6 +5,7 @@ from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, De
 # Defined for location creation
 MAXIMUM_CHECKS_PER_CHEST: int = 5
 MAXIMUM_CHECKS_PER_SHOP: int = 5
+MAXIMUM_CHECKS_PER_TRADE: int = 5
 
 class ChecksPerChest(Range):
     '''
@@ -31,6 +32,18 @@ class ChecksPerShop(Range):
     range_end = MAXIMUM_CHECKS_PER_SHOP
     default = 2
 
+class ChecksPerTrade(Range):
+    '''
+    Determines the number of AP items that generate
+    for any individual trade (e.g. 
+    in Episode 1, Floor 4 trade). Only one will be
+    given at a time. (Adds 1 check per episode)
+    '''
+    display_name = "Checks per trade"
+    range_start = 0
+    range_end = MAXIMUM_CHECKS_PER_TRADE
+    default = 1
+
 class Levelsanity(DefaultOnToggle):
     '''
     Determines whether level up rewards grants checks
@@ -43,10 +56,11 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
     checks_per_chest: ChecksPerChest
     checks_per_shop: ChecksPerShop
+    checks_per_trade: ChecksPerTrade
 
 option_groups = [
     OptionGroup(
         "Location Options",
-        [Levelsanity, ChecksPerShop, ChecksPerChest],
+        [Levelsanity, ChecksPerShop, ChecksPerChest, ChecksPerTrade],
     ),
 ]

@@ -1,0 +1,57 @@
+Name,Description,Image,ImageOffset,Rule Change,Apply On Continue
+Random,A different rule change[;] chosen randomly.,_random,,,YES
+Lady Luck,All enemy equipment is upgraded.,_ladyluck,-50|-22,Rules.upgradeenemyequipment = true;,YES
+Wolf Puppy,Both you and your enemies start each|fight with [fury]Fury[].,wolfpuppy,0|0,Rules.addplayerinnatestatus(FURY[;] 1[;] true); Rules.addenemyinnatestatus(FURY[;] 1[;] true); ,YES
+Sorceress,Enemies can throw unused dice at you.,sorceress,0|0,Rules.enemiescanthrowdice = true;,YES
+Drake,Enemies get 20% extra health.,vampire,-30|10,Rules.enemyhpadjust = 1.2;,YES
+Scathach,You are [curse]Cursed[] at the start of|every turn.,scahatch,-60|-30,Rules.addplayerinnatestatus(CURSE);,YES
+Loud Bird,Enemies will [dodge]Dodge[] your first|attack every turn.,loudbird,0|-50,Rules.addenemyinnatestatus(DODGE);,YES
+Buster,Burning dice cost [heart]5[] hp to extinguish.,dragon,-130|-60,Rules.burningdicecost = 5;,YES
+Snowman,One of your dice is [ice]Frozen at the|start of every turn.,snowman,-10|-50,Rules.addplayerinnatestatus(ICE); ,YES
+Fireman,One of your dice is [fire]Burning at the|start of every turn.,fireman,-20|-30,Rules.addplayerinnatestatus(FIRE); ,YES
+Singer,On your first turn[;] all your dice rolls|are the same number.,singer,-20|0,Rules.addextrascript(~Rules.stackplayerdice([[rand([1[;]2[;]3[;]4[;]5[;]6])]][;] false[;] false);~[;] ~startcombat~);,YES
+Vacuum,Enemies get 10% extra health.,vacuum,-100|50,Rules.enemyhpadjust = 1.1;,YES
+Sticky Hands,Enemies have a chance to go first.,stickyhands,-90|10,Rules.addextrascript(~var goesfirst = false; if((self.maxhp / self.hp) < 2) { goesfirst = chance(60); } else { goesfirst = chance(20); } if(goesfirst){ target.innate.push(\~goesfirst\~); }~[;] ~startcombat~);,YES
+Mimic,Everything in the dungeon looks like|a treasure chest.,mimic,,Rules.mimiccurse=true;,YES
+Baby Squid,One of your dice is [blind]Blinded at the|start of every turn.,squid,30|0,Rules.addplayerinnatestatus(BLIND); ,YES
+Haunted Jar,Poison is no longer reduced by 1|each turn.,hauntedjar,0|0,Rules.playerpoisondelta = 0; Rules.enemypoisondelta = 0;,YES
+Paper Knight,Start with 2 extra dice. Lose 1 dice|every turn[;] until you have just 1 left.,cardboardwarrior,-90|0,Rules.addextrascript(~self.extradice = 3;~[;] ~startcombat~); Rules.addextrascript(~self.extradice--; if(self.dice + self.extradice < 1) self.extradice = 1- self.dice;~[;] ~beforestartturn~);,YES
+Robobot,If your CPU counter exceeds the|target[;] take [heart]5[] damage.,robobot,-70|-50,Rules.robot_errorpenalty = 5;,YES
+Dire Wolf,The odds of [curse]Curse[] triggering is|reduced to 25%.,direwolf,-40|0,Rules.curseodds = 25;,YES
+Banshee,Instead of causing equipment to fail[;]|[curse]Curse[] reverses your target.,banshee,-20|0,Rules.setalternate(~curse~);,YES
+Madison,Enemies start each fight with [fury]Fury[].,girlscout,-10|-30,Rules.addenemyinnatestatus(FURY[;] 1[;] true); ,YES
+Bully,All enemies get a Rock.,bully,-50|-10,Rules.addextrascript(~if(target.spaceleft() >= 1) { if(Rules.upgradeenemyequipment) { giveenemyequipment(\~Rock+\~| false| false); } else { giveenemyequipment(\~Rock\~| false| false); } }~[;] ~startcombat~);,YES
+Skeleton,Lose a dice.,skeleton,-20|-80,self.dice--;,NO
+Cornelius,Lose [heart]10[] max health.,cornelius,0|-40,self.maxhp -= 10; if(self.hp > self.maxhp) { self.hp = self.maxhp; },NO
+Cowboy,Enemies always roll a 6.,cowboy,10|0,Rules.stackenemydice([[6]][;] true[;] true[;] true);,YES
+Handyman,You need an even dice to unshock|[shock]Shocked[] equipment.,handyman,-30|-10,Rules.shocktype = ~EVEN~;,YES
+Warlock,Status effects are different.,warlock,-70|-50,Rules.setalternate(~all~);,YES
+Alchemist,After 4 turns[;] all enemies transform|into bears.,potionmixer,-20|-70,Rules.addenemyinnatestatus(~beartransform~[;] 4[;] true);,YES
+Bounty Hunter,You will never roll a 6.,bountyhunter,-20|0,Rules.playerdicerange([1[;]2[;] 3[;] 4[;] 5]);,YES
+Rose,Both you and your enemies do +[sword]1|extra damage with each attack.,rose,-20|-40,Rules.bonusdamage = 1; Rules.addenemyinnatestatus(~extradamage~[;] 1[;] true); Rules.addplayerinnatestatus(~extradamage~[;] 1[;] true);,YES
+Cactus,When you defeat an enemy[;] excessive|damage is reflected back at you.,cactuswarrior,-20|0,Rules.addenemyinnatestatus(~reflectexcess~[;] 1[;] false);,YES
+The Thief,Switch to [quote]Finders Keepers[quote] rules.,_thief,-90|-20,Rules.switchtofinderskeepers();,YES
+Ned,All equipment you find is upgraded.,*anvil,-75|15,Rules.switchtoitllbefine();,YES
+Slime,Start each fight with [poison]2 poison.,slime,10|-20,Rules.addplayerinnatestatus(POISON[;] 2[;] true); Rules.addextrascript(~if(turn == 1){ removestatusself(POISON[;] 1); pierceattackself(2|POISON); sfxdamage(self[;]2); sfx(\~_poison\~[;]\~\~[;]0.2); }~[;] ~onstartturn~);,YES
+Wisp,No duplicates! Matching dice vanish|as soon as they are created.,wisp,20|-60,Rules.addplayerinnatestatus(VANISH); Rules.addenemyinnatestatus(VANISH); ,YES
+Sneezy,Using any piece of equipment will|reroll a random dice.,sneezey,-20|-10,runscript(~diceydungeons/remixes/sneezy~);,YES
+Val,At the start of each turn[;] replace one|of your items with a random item.,*tradingpost,-75|-80,runscript(~diceydungeons/remixes/val~);,YES
+Rat King,Add two super enemies.,ratking,-60|-10,Rules.addsuperenemies(2);,YES
+Kraken,Cannot see enemy health after|the first turn.,kraken,-80|-60,Rules.addextrascript(~if(turn == 1 && target.hp > 0) { inflict(\~cannotseeenemyhealth\~); sfx(\~_blind\~); }~[;] ~endturn~);,YES
+Hothead,If you or your enemy rolls a six[;] it|automatically catches on fire.,hothead,-30|-20,Rules.ignitedice = true; Rules.igniterange = [6];,YES
+Pirate,Both you and your enemies start each|fight with [recycle]Re-Equip_Next[].,pirate,-40|-60,Rules.addplayerinnatestatus(REEQUIPNEXT[;] 1[;] true); Rules.addenemyinnatestatus(REEQUIPNEXT[;] 1[;] true); ,YES
+Rotten Apple,Maximum health no longer increases|when you level up.,applemimic,0|0,Rules.hpchangeonlevelup = 0;,YES
+The Inventor,Reduce scrap choices to two. The|second choice is hidden.,_inventor,-90|-40,Rules.inventor_blindinspiration = true;,YES
+Marshmallow,Swap all [fire]Fire equipment for [ice]Ice|equipment[;] and vice versa.,marshmallow,10|-10,var database = loaddata(~diceydungeons/remixes/marshmallow~); for(eq in database) Rules.swap(eq.fire_equipment[;] eq.ice_equipment);,YES
+Space Marine,Enemies countdowns reduce at|double the normal rate.,spacemarine,-30|-10,Rules.enemycountdownrate = 2;,YES
+Wizard,All enemies get an extra dice.,wizard,-50|-20,Rules.addextrascript(~target.extradice = 1;~[;] ~startcombat~); ,YES
+Beatrice,On your first turn[;] all of your|equipment is [shock]Shocked.,queenbee,-40|-30,Rules.addplayerinnatestatus(SHOCK[;] 6[;] true);,YES
+Keymaster,You can't make more than six|moves per turn.,keymaster,-30|-40,Rules.movelimit = 6;,YES
+Crystalina,Keep unused dice until your next turn.|Lose [heart]1 hp for each dice you keep.,crystalina,-10|0,Rules.addplayerinnatestatus(~crystalinaremix~[;]1[;]false);,YES
+The Witch,One spell slot contains a completely|random spell each turn.,_witch,-90|-30,runscript(~diceydungeons/remixes/thewitch~);,YES
+Wicker Man,Instead of causing damage[;] burning|dice disables equipment.,wickerman,10|-20,Rules.setalternate(FIRE);,YES
+Yeti,Change [ice]Freeze to instead reduce|the value of all dice by 1.,yeti,-60|0,Rules.setalternate(ICE);,YES
+Drain Monster,When [poison]Poison deals damage[;] it also|inflicts [weaken]1 weaken.,sewermonster,0|0,Rules.addplayerinnatestatus(~bindweakentopoison~); Rules.addenemyinnatestatus(~bindweakentopoison~);,YES
+Rhino Beetle,Take [heart]2 damage at the start of each|turn[;] unless your limit break is full.,beetlewarrior,-10|-50,Rules.addextrascript(~if(self.limitvalue < self.limitmax){ attackself(2); sfx(\~_takedamage\~); }~[;]~onstartturn~);,YES
+Magician,At the start of your turn[;] change the|dice requirements for a random item.,streetmagician,-30|-60,runscript(~diceydungeons/remixes/magician~);,YES
+The Robot,Switch to [quote]You Choose[;] You Lose[quote]|rules.,_robot,-90|-20,runscript(~diceydungeons/remixes/therobot~);,YES

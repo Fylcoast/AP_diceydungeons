@@ -5,7 +5,6 @@ from worlds.AutoWorld import World
 
 from . import items, locations, regions, rules, web_world
 from . import options as diceydungeons_options
-from .mod import DiceyDungeonsModGenerator
 
 class DiceyDungeonsWorld(World):
     """
@@ -46,9 +45,3 @@ class DiceyDungeonsWorld(World):
         return self.options.as_dict(
             "levelsanity", "checks_per_chest", "checks_per_shop", "checks_per_trade"
         )
-    
-    def generate_output(self, output_directory: str):
-        pass
-        # Commented out for now - mod installed via /patch from Client.
-        # gen = DiceyDungeonsModGenerator(self, output_directory)
-        # gen.generate()

@@ -60,7 +60,7 @@ for episode_num, episode in enumerate(warrior_episodes):
         for chest in range(floor.num_chests * MAXIMUM_CHECKS_PER_CHEST):
             LOCATION_NAME_TO_ID[episode_floor_str + " - Chest " + str(chest + 1)] = 10000 * (episode_num + 1) + 1000 * (floor_num + 1) + 100 + (chest + 1)
         # Shops
-        for shop in range(floor.num_shops * floor.num_shop_slots * MAXIMUM_CHECKS_PER_SHOP):
+        for shop in range(floor.num_shops * MAXIMUM_CHECKS_PER_SHOP):
             LOCATION_NAME_TO_ID[episode_floor_str + " - Shop " + str(shop + 1)] = 10000 * (episode_num + 1) + 1000 * (floor_num + 1) + 200 + (shop + 1)
         # Heals
         for heal in range(floor.num_heals):

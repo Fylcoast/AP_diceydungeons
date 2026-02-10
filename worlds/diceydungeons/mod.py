@@ -201,6 +201,7 @@ class DiceyDungeonsClientModGenerator():
 
 
 class DiceyDungeonsModGenerator():
+    """Zip exporter for mod. Not used anymore, in favor of generating mod from client directly."""
     world: "DiceyDungeonsWorld"
     """Dicey Dungeons World"""
     output_directory: str

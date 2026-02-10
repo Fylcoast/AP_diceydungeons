@@ -19,7 +19,7 @@ The game is Completed once you have beaten all 6 episodes for the Warrior.
 
 ## What items and locations get shuffled?
 
-All items in the item pool will get shuffled, and will only be re-added when the item is received. Locations will be (if configured) chests and shops.
+All items in the item pool will get shuffled, and will only be re-added when the item is received. Locations will be (if configured) chests, shops, trades, and Level ups.
 
 ## Which items can be in another player's world?
 

@@ -1,6 +1,7 @@
 // Loop through equipment and send any we picked up!
-//trace("[AP] {\"command\": \"send_equipment_debug\", \"payload\": \"" + self.equipment + "\"}");
-var equipment = self.equipment;
+//var equipment = self.equipment;
+// Use getbackpackcontents instead of self.equipment so we can send from backpack! This may not correctly remove... but i mean...
+var equipment = getbackpackcontents(true);
 var items_to_remove = [];
 
 for (item in equipment) {

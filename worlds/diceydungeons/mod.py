@@ -137,10 +137,13 @@ class DiceyDungeonsClientModGenerator():
     """List of items from multiworld we want in our equipment.csv, with player name and flags for usefulness"""
     mod_name: str
     """Name of the mod (probably 'diceyap')"""
+    slot_data: dict
+    """Player options information"""
 
-    def __init__(self, game_path: str, equipment: list[tuple[str, str, int]]):
+    def __init__(self, game_path: str, equipment: list[tuple[str, str, int]], slot_data: dict):
         self.game_path = game_path
         self.equipment = equipment
+        self.slot_data = slot_data
         self.mod_name = 'diceyap'
     
     def get_equipment_row(self, item: tuple[str, str, int]):
@@ -168,6 +171,11 @@ class DiceyDungeonsClientModGenerator():
         
         walk_files(base_path, mod_name)
     
+    def _generate_progresssettings_file(self, path: str, save_name: str):
+        """Generate progresssettings.txt content"""
+        with open(path, 'w', newline='') as f:
+            f.write(save_name)
+    
     def _generate_equipment_csv(self, path: str):
         """Generate equipment.csv content as a string."""
         with open(path, 'w', newline='') as f:
@@ -184,7 +192,7 @@ class DiceyDungeonsClientModGenerator():
         
     
     def generate(self):
-        base_files = files(__package__).joinpath('data', 'mod_data', self.mod_name)
+        common_files = files(__package__).joinpath('data', 'common_mod_data', self.mod_name)
         dest_dir = os.path.join(self.game_path, "mods")
 
         # Clear out previous mod installation if exists
@@ -192,84 +200,27 @@ class DiceyDungeonsClientModGenerator():
             shutil.rmtree(os.path.join(dest_dir, self.mod_name))
         
         # Copy base files to Dicey Dungeons install dir in mods folder
-        self._write_package_files_to_dir(base_files, self.mod_name, dest_dir)
+        self._write_package_files_to_dir(common_files, self.mod_name, dest_dir)
+
+        # Conditionally populate other files, based on Options selected.
+        if self.slot_data['episode_progression'] == 0:
+            # Vanilla progression
+            vanilla_files = files(__package__).joinpath('data', 'vanilla_progression_data', self.mod_name)
+            self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
+        else:
+            # Open world
+            open_world_files = files(__package__).joinpath('data', 'open_world_data', self.mod_name)
+            self._write_package_files_to_dir(open_world_files, self.mod_name, dest_dir)
+
+        # Conditionally give save file info
+        # If episode_progression is vanilla (0), need save file to force progression logic
+        if self.slot_data['episode_progression'] == 0:
+            save_path = os.path.join(dest_dir, self.mod_name, 'data', 'text', 'progresssettings.txt')
+            self._generate_progresssettings_file(save_path, self.slot_data['save_name'])
+
 
         # Make new equipment file
         if self.equipment:
             equipment_path = os.path.join(dest_dir, self.mod_name, '_append', 'data', 'text', 'equipment.csv')
             self._generate_equipment_csv(equipment_path)
 
-
-class DiceyDungeonsModGenerator():
-    """Zip exporter for mod. Not used anymore, in favor of generating mod from client directly."""
-    world: "DiceyDungeonsWorld"
-    """Dicey Dungeons World"""
-    output_directory: str
-    """Exclusively the output path, aka output/AP_..."""
-    output_zip_name: str
-    """Will be the name of zip which will live in output directory"""
-    equipment: list[str]
-    """List of items from multiworld we want in our equipment.csv"""
-    mod_name: str
-    """Name of the mod (probably 'diceyap')"""
-
-    def __init__(self, world: "DiceyDungeonsWorld", output_dir: str):
-        self.world = world
-        self.output_directory = output_dir
-        self.output_zip_name = world.multiworld.get_out_file_name_base(world.player)
-        self.equipment = world.multiworld.get_items()
-        self.mod_name = 'diceyap'
-    
-    def get_equipment_row(self, location: Location):
-        location_id = str(location.address)
-        item = location.item
-        owner = self.world.multiworld.player_name[item.player] if self.world.player != item.player else "You!"
-
-        row = default_item_info.copy()
-        row['Name'] = f"{item.name} [AP][{location_id}]"
-        row['Description'] = f"Owner: {owner}| |{item_classification_text_mapping[item.classification]}"
-
-        return row
-    
-    def _write_package_files_to_zip(self, zf: zipfile.ZipFile, base_path, mod_name: str):
-        """Recursively write files from package resources to zip file."""
-        def walk_files(path, prefix=''):
-            for item in path.iterdir():
-                if item.is_file():
-                    content = item.read_bytes()
-                    arcname = f'{prefix}/{item.name}'.lstrip('/')
-                    zf.writestr(arcname, content)
-                elif item.is_dir():
-                    walk_files(item, f'{prefix}/{item.name}')
-        
-        walk_files(base_path, mod_name)
-    
-    def _generate_equipment_csv_string(self) -> str:
-        """Generate equipment.csv content as a string."""
-        output = io.StringIO()
-        writer = csv.DictWriter(output, fieldnames=equipment_field_list)
-        writer.writeheader()
-        rows = []
-        for location in self.world.get_locations():
-            rows.append(self.get_equipment_row(location))
-        # Testing spell
-        rows.append(murder_spell)
-        # Dice shard, for our filler.
-        rows.append(dice_shard)
-        writer.writerows(rows)
-        return output.getvalue()
-        
-    
-    def generate(self):
-        output_zip_full = os.path.join(self.output_directory, self.output_zip_name + '.zip')
-        
-        # Get the base mod data from package resources
-        base_files = files(__package__).joinpath('data', 'mod_data', self.mod_name)
-        
-        with zipfile.ZipFile(output_zip_full, 'w', zipfile.ZIP_DEFLATED) as zf:
-            # Copy base files first
-            self._write_package_files_to_zip(zf, base_files, self.mod_name)
-            
-            # Generate and write equipment.csv
-            equipment_csv_content = self._generate_equipment_csv_string()
-            zf.writestr(f'{self.mod_name}/_append/data/text/equipment.csv', equipment_csv_content)

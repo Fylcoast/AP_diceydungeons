@@ -124,7 +124,7 @@ class DiceyDungeonsContext(CommonContext):
                 logger.info("Locations not retrieved from server yet. Grabbing those first!")
             await self._wait_locations_and_get_items()
         ap_items: list[tuple[str, str, int]] = [(f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]", self.player_names[net_item.player], net_item.flags) for loc_id, net_item in self.locations_info.items()]
-        patcher.DiceyDungeonsClientModGenerator(self.game_path, ap_items).generate()
+        patcher.DiceyDungeonsClientModGenerator(self.game_path, ap_items, self.slot_data).generate()
         logger.info("Patched Dicey Dungeons!")
     
     def generate_items(self):

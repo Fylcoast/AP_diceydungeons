@@ -123,7 +123,7 @@ class DiceyDungeonsContext(CommonContext):
             if DEBUG:
                 logger.info("Locations not retrieved from server yet. Grabbing those first!")
             await self._wait_locations_and_get_items()
-        ap_items: list[tuple[str, str, int]] = [(f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]", self.player_names[net_item.player], net_item.flags) for loc_id, net_item in self.locations_info.items()]
+        ap_items: list[tuple[str, str, int]] = [(f"{self.item_names.lookup_in_slot(net_item.item, net_item.player).replace(",", "[comma]")} [AP][{loc_id}]", self.player_names[net_item.player], net_item.flags) for loc_id, net_item in self.locations_info.items()]
         patcher.DiceyDungeonsClientModGenerator(self.game_path, ap_items).generate()
         logger.info("Patched Dicey Dungeons!")
     
@@ -148,7 +148,7 @@ class DiceyDungeonsContext(CommonContext):
             logger.info(f"all our location info: {self.locations_info}")
             logger.info(f"all locations we've already checked: {self.checked_locations}")
             logger.info(f"all items we've received: {self.items_received}")
-        ap_item_names_list: list[tuple[int, str]] = [(loc_id, f"{self.item_names.lookup_in_slot(net_item.item, net_item.player)} [AP][{loc_id}]") for loc_id, net_item in self.locations_info.items()]
+        ap_item_names_list: list[tuple[int, str]] = [(loc_id, f"{self.item_names.lookup_in_slot(net_item.item, net_item.player).replace(",", "[comma]")} [AP][{loc_id}]") for loc_id, net_item in self.locations_info.items()]
         # Filter out Completion items
         ap_item_names_list = [item for item in ap_item_names_list if "Completed" not in item[1]]
         ap_item_names = dict(ap_item_names_list)

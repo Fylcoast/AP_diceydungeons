@@ -31,6 +31,18 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
             set_rule(entrance, lambda state, required=items_needed[floor]: state.has_group(f"Warrior {episode} Items", world.player, required))
             # if levelsanity is set, consider adding rules for progressive level up to get to X floors. doing whole thing with 2 dice... rough
     
+    # Episode progression rules for vanilla progression
+    if world.options.episode_progression.value == 0:
+        episode_completions_needed: dict[str, int] = {
+            "Episode 4": 2,
+            "Episode 5": 3,
+            "Episode 6": 4
+        }
+
+        for episode in episode_completions_needed.keys():
+            entrance = world.get_entrance(episode + " - Floor 1")
+            set_rule(entrance, lambda state, required=episode_completions_needed[episode]: state.has_group("Warrior Episode Completion", world.player, required))
+    
 
 
 def set_all_location_rules(world: DiceyDungeonsWorld) -> None:

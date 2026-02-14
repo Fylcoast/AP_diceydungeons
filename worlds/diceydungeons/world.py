@@ -5,7 +5,6 @@ from worlds.AutoWorld import World
 
 from . import items, locations, regions, rules, web_world
 from . import options as diceydungeons_options
-from .mod import DiceyDungeonsModGenerator
 
 class DiceyDungeonsWorld(World):
     """
@@ -42,13 +41,12 @@ class DiceyDungeonsWorld(World):
         return items.get_filler_item_name(self)
     
     def fill_slot_data(self) -> Mapping[str, Any]:
-        # If you need access to the player's chosen options on the client side, there is a helper for that.
-        return self.options.as_dict(
-            "levelsanity", "checks_per_chest", "checks_per_shop", "checks_per_trade"
+        ret = self.options.as_dict(
+            "levelsanity", "checks_per_chest", "checks_per_shop", "checks_per_trade", "episode_progression"
         )
-    
-    def generate_output(self, output_directory: str):
-        pass
-        # Commented out for now - mod installed via /patch from Client.
-        # gen = DiceyDungeonsModGenerator(self, output_directory)
-        # gen.generate()
+        
+        # Generate token for save file
+        save_name = "diceyap_" + str(self.random.random())
+        ret["save_name"] = save_name
+
+        return ret

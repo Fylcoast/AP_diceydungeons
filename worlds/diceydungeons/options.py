@@ -51,16 +51,41 @@ class Levelsanity(DefaultOnToggle):
     '''
     display_name = "Levelsanity"
 
+class EpisodeProgression(Choice):
+    '''
+    Determines how you gain access to Episodes. This affects logic as well.
+
+    vanilla: Episodes are unlocked as normal: 
+    Episode 4 requires any 2 prior episodes to be completed. 
+    3 for Episode 5, and 4 for Episode 6.
+
+    open_world: All episodes are available from start. 
+    Note: This uses base save, so you must have unlocked 
+    all episodes prior for this to work.
+    '''
+
+    display_name = "Episode progression"
+
+    option_vanilla = 0
+    option_open_world = 1
+
+    default = option_vanilla
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
     checks_per_chest: ChecksPerChest
     checks_per_shop: ChecksPerShop
     checks_per_trade: ChecksPerTrade
+    episode_progression: EpisodeProgression
 
 option_groups = [
     OptionGroup(
         "Location Options",
         [Levelsanity, ChecksPerShop, ChecksPerChest, ChecksPerTrade],
     ),
+    OptionGroup(
+        "Gameplay Options",
+        [EpisodeProgression]
+    )
 ]

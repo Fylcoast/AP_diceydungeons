@@ -25,7 +25,7 @@ import Utils
 from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart, ClientStatus,
                       NetworkItem, NetworkPlayer)
 from MultiServer import Endpoint
-from CommonClient import (CommonContext, gui_enabled, ClientCommandProcessor, 
+from CommonClient import (CommonContext, ClientCommandProcessor, 
                           logger, get_base_parser)
 
 # Import item metadata for categorization
@@ -449,7 +449,7 @@ def launch(*launch_args: str):
         # Start the main game loop that processes game messages and checks for victory
         ctx.game_loop_task = asyncio.create_task(main_game_loop(ctx), name="GameLoop")
 
-        if gui_enabled:
+        if Utils.gui_enabled:
             ctx.run_gui()
         ctx.run_cli()
 

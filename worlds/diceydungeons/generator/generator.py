@@ -52,6 +52,11 @@ class DiceyDungeonsAPItemGenerator:
             writer.writeheader()
 
             generator = gen_helper.GeneratedItems(self.slot_data, self.level_ups)
+            
+            if self.slot_data["floor_5_shop_selection"] == 0:
+                # Ensure floor 5 shops have upgrade and health
+                generator.prefill_floor_5_shops()
+
             # Add remaining AP items
             for loc_id, item_str in self.ap_item_mapping.items():
                 if loc_id in self.checked_locations:

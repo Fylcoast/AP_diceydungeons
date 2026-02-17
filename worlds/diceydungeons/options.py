@@ -71,6 +71,26 @@ class EpisodeProgression(Choice):
 
     default = option_vanilla
 
+class Floor5ShopSelection(Choice):
+    '''
+    Determines what is purchasable in the Floor 5 shops.
+
+    vanilla: Floor 5 shops will include 1 item, 1 upgrade, 
+    and 1 heal. The item could be a location check (if 
+    configured) or equipment.
+
+    items_only: Floor 5 shops will have all 3 slots
+    filled with items, making them just like any other
+    shop.
+    '''
+
+    display_name = "Floor 5 Shop Selection"
+
+    option_vanilla = 0
+    option_items_only = 1
+
+    default = option_vanilla
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
@@ -78,6 +98,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     checks_per_shop: ChecksPerShop
     checks_per_trade: ChecksPerTrade
     episode_progression: EpisodeProgression
+    floor_5_shop_selection: Floor5ShopSelection
 
 option_groups = [
     OptionGroup(
@@ -86,6 +107,6 @@ option_groups = [
     ),
     OptionGroup(
         "Gameplay Options",
-        [EpisodeProgression]
+        [EpisodeProgression, Floor5ShopSelection]
     )
 ]

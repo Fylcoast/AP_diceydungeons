@@ -42,7 +42,7 @@ class DiceyDungeonsWorld(World):
     
     def fill_slot_data(self) -> Mapping[str, Any]:
         ret = self.options.as_dict(
-            "levelsanity", "checks_per_chest", "checks_per_shop", "checks_per_trade", "episode_progression"
+            "levelsanity", "checks_per_chest", "checks_per_shop", "checks_per_trade", "episode_progression", "floor_5_shop_selection"
         )
         
         # Generate token for save file

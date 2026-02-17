@@ -47,7 +47,7 @@ episode1 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 1, 1, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
     {2: "Dice", 4: "Dice", 6: "Dice"},
     {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:Boomerang"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Upgrade"], 6: ["Dice"]}
 )
@@ -58,7 +58,7 @@ episode2 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 1, 1, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
     {2: "Dice", 4: "Dice", 6: "Dice"},
     {2: ["Dice"], 3: ["Equipment:Spiked Shield+", "Equipment:Boomerang+"], 4: ["Dice"], 5: ["Equipment:Shield Bash+", "Equipment:Pirate Hook+", "Equipment:Midnight Charm+"], 6: ["Dice"]}
 )
@@ -69,7 +69,7 @@ episode3 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 1, 1, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
     {2: "Dice", 4: "Dice", 6: "Dice"},
     {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:iron Shield"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Equipment:Last Stand"], 6: ["Dice"]}
 )
@@ -80,7 +80,7 @@ episode4 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 1, 1, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
     {2: "Dice", 4: "Dice", 6: "Dice"},
     {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:Boomerang"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Upgrade"], 6: ["Dice"]}
 )
@@ -91,7 +91,7 @@ episode5 = EpisodeData(
     FloorData(2, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 1, 1, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
     {2: "Dice", 4: "Dice", 6: "Dice"},
     {2: ["Dice"], 3: ["Equipment:Crescent Moon Blade", "Equipment:Polar Star"], 4: ["Dice"], 5: ["Equipment:Battering Ram", "Upgrade"], 6: ["Dice"]}
 )
@@ -102,7 +102,7 @@ episode6 = EpisodeData(
     FloorData(1, 1, 3, 1, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
-    FloorData(1, 1, 1, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
     {2: "Dice", 4: "Dice", 6: "Dice"},
     {2: ["Dice"], 3: ["Equipment:Crescent Moon Blade", "Equipment:Polar Star"], 4: ["Dice"], 5: ["Equipment:Battering Ram", "Upgrade"], 6: ["Dice"]}
 )

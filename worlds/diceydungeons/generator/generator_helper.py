@@ -247,6 +247,15 @@ class GeneratedItems:
         self.slot_data = slot_data
         self.level_ups = level_ups
     
+    def prefill_floor_5_shops(self):
+        """
+        Prefill floor 5 shops with an upgrade and a heal.
+        """
+        for episode in self.warrior:
+            floor_5 = episode.floors[4]
+            floor_5.add_to_shops("health")
+            floor_5.add_to_shops("upgrade")
+    
     def add_ap_item_if_possible(self, location_id: int, item: str) -> bool:
         """Add item to generation if there is space. Returns true if added, false if not (no space)"""
         loc_str: str = str(location_id)
@@ -295,21 +304,6 @@ class GeneratedItems:
                 floor.add_to_trades(item)
         
         return True
-    
-    def add_item_anywhere(self, item: str) -> bool:
-        """Add item to generation if there is space ANYWHERE. Returns true if added, false if not (no space).
-        Largely deprecated in favor of add_item_to_episodes"""
-        # Adds in ascending order of episode number, floor number, and location type (chest before shop)
-        for episode in self.warrior:
-            for floor in episode.floors:
-                if not floor.are_floor_chests_filled():
-                    floor.add_to_chests(item)
-                    return True
-                if not floor.are_floor_shops_filled():
-                    floor.add_to_shops(item)
-                    return True
-        
-        return False
     
     def prefill_level_locations(self):
         """Prefill level locations for any guaranteed items."""

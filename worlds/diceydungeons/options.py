@@ -91,6 +91,14 @@ class Floor5ShopSelection(Choice):
 
     default = option_vanilla
 
+class SkipCutscenes(Toggle):
+    '''
+    Select whether you want to skip cutscenes before and 
+    after episodes, as well as the tutorial at the 
+    beginning of the game.
+    '''
+    display_name = "Skip cutscenes"
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
@@ -99,6 +107,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     checks_per_trade: ChecksPerTrade
     episode_progression: EpisodeProgression
     floor_5_shop_selection: Floor5ShopSelection
+    skip_cutscenes: SkipCutscenes
 
 option_groups = [
     OptionGroup(
@@ -108,5 +117,9 @@ option_groups = [
     OptionGroup(
         "Gameplay Options",
         [EpisodeProgression, Floor5ShopSelection]
+    ),
+    OptionGroup(
+        "Quality of Life",
+        [SkipCutscenes]
     )
 ]

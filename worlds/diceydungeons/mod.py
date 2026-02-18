@@ -212,6 +212,10 @@ class DiceyDungeonsClientModGenerator():
             open_world_files = files(__package__).joinpath('data', 'open_world_data', self.mod_name)
             self._write_package_files_to_dir(open_world_files, self.mod_name, dest_dir)
 
+        if self.slot_data['skip_cutscenes']:
+            skip_cutscenes_files = files(__package__).joinpath('data', 'skip_cutscenes_data', self.mod_name)
+            self._write_package_files_to_dir(skip_cutscenes_files, self.mod_name, dest_dir)
+
         # Conditionally give save file info
         # If episode_progression is vanilla (0), need save file to force progression logic
         if self.slot_data['episode_progression'] == 0:

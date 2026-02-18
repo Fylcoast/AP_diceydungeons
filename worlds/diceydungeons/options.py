@@ -91,7 +91,7 @@ class Floor5ShopSelection(Choice):
 
     default = option_vanilla
 
-class SkipCutscenes(Toggle):
+class SkipCutscenes(DefaultOnToggle):
     '''
     Select whether you want to skip cutscenes before and 
     after episodes, as well as the tutorial at the 
@@ -123,3 +123,15 @@ option_groups = [
         [SkipCutscenes]
     )
 ]
+
+option_presets = {
+    "dev-recommended": {
+        "levelsanity": True,
+        "checks_per_chest": 1,
+        "checks_per_shop": 2,
+        "checks_per_trade": 1,
+        "episode_progression": EpisodeProgression.default,
+        "floor_5_shop_selection": Floor5ShopSelection.default,
+        "skip_cutscenes": True
+    }
+}

@@ -38,7 +38,7 @@ class DiceyDungeonsWorld(World):
         return items.create_item_with_correct_classification(self, name)
     
     def get_filler_item_name(self) -> str:
-        return items.get_filler_item_name(self)
+        return items.get_random_filler_item_name(self)
     
     def fill_slot_data(self) -> Mapping[str, Any]:
         ret = self.options.as_dict(

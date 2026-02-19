@@ -5,7 +5,9 @@ from NetUtils import NetworkItem
 
 from ..data.episode_data import *
 from . import generator_helper as gen_helper
-    
+
+
+filler_items: list[str] = ["Frog's Broadsword", "Audrey's Dumbbell", "Rotten Apple's Pet Worm", "Wizard's Spellbook", "Dice Shard"]    
 
 ap_data_column_list: list[str] = [
     'name',
@@ -75,7 +77,7 @@ class DiceyDungeonsAPItemGenerator:
                 generator.add_item_to_episodes(item)
             
             # Fill up rest with filler
-            generator.fill_with_item("Dice Shard")
+            generator.fill_with_random_items(filler_items)
 
             # Export items
             rows: list[dict] = generator.get_items_to_export()

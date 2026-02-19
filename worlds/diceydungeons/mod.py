@@ -77,36 +77,24 @@ murder_spell: dict = {
     'Script: On Dodge': ''
 }
 
-dice_shard: dict = {
-    'Name': 'Dice Shard',
-    'Description': 'Merely a fragment of a die.',
-    'Size': '1',
-    'Script: On Execute': '',
-    'Gadget': '',
-    'Slots': '',
-    'NEED TOTAL?': '',
-    'Colour': 'GRAY',
-    'Upgrade': '',
-    'Weaken': '',
-    'Alternate Status Trigger':	'',
-    'SFX': 'none',
-    'Uses?': '0',
-    'Cast Backwards?': 'NO',
-    'Single use?': 'NO',
-    'Tags': 'excludefromrandomlists|cannotsteal|skillcard',
-    'Witch Spell': '',
-    'Script: Before Combat': '',
-    'Script: After Combat': '',
-    'Script: Before Start Turn': '',
-    'Script: On Start Turn': '',
-    'Script: On any equipment use': '',
-    'Script: On any countdown reduce': '',
-    'Script: End Turn': '',
-    'Script: Before execute': '',
-    'Script: On Snap': '',
-    'Script: On Fury': '',
-    'Script: On Dodge': ''
+filler_items: dict[str, str] = {
+    "Frog's Broadsword": "Too big to wield!", 
+    "Audrey's Dumbbell": "Too slippery to use!", 
+    "Rotten Apple's Pet Worm": "Cuddly!", 
+    "Wizard's Spellbook": "Unfortunately[;] the text is|in an arcane script|you cannot read.", 
+    "Dice Shard": "Merely a fragment of a die."
 }
+"""Dict (name -> description) of filler items to populate into equipment"""
+
+def get_filler_items() -> list[dict]:
+    ret: list[dict] = []
+    for name, desc in filler_items.items():
+        item = default_item_info.copy()
+        item['Name'] = name
+        item['Description'] = desc
+        ret.append(item)
+    
+    return ret
 
 def item_flag_mapping(flags: int) -> ItemClassification:
     if flags & 0b001:  # advancement
@@ -186,8 +174,8 @@ class DiceyDungeonsClientModGenerator():
                 rows.append(self.get_equipment_row(item))
             # Testing spell
             rows.append(murder_spell)
-            # Dice shard, for our filler.
-            rows.append(dice_shard)
+            # Filler items.
+            rows.extend(get_filler_items())
             writer.writerows(rows)
         
     

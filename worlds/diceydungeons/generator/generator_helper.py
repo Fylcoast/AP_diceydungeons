@@ -1,3 +1,5 @@
+import random
+
 from ..data.episode_data import *
 from ..data.game_data import *
 
@@ -344,7 +346,8 @@ class GeneratedItems:
                         break
     
     def fill_with_item(self, item: str) -> bool:
-        """Fill all open spaces with given item. Returns true if any items added, false if no items added"""
+        """Fill all open spaces with given item. Returns true if any items added, false if no items added.
+        Deprecated, in favor of fill_with_random_items"""
         ret: bool = False
 
         for episode in self.warrior:
@@ -362,6 +365,29 @@ class GeneratedItems:
                     ret = True
                 while not floor.are_floor_trades_filled():
                     floor.add_to_trades(item)
+                    ret = True
+        
+        return ret
+    
+    def fill_with_random_items(self, items: list[str]) -> bool:
+        """Fill all open spaces randomly from given item list. Returns true if any items added, false if no items added"""
+        ret: bool = False
+
+        for episode in self.warrior:
+            for level in range(2, 7):
+                if not episode.is_level_filled(level):
+                    episode.add_to_level(level, f"Equipment:{random.choice(items)}")
+                    ret = True
+
+            for floor in episode.floors:
+                while not floor.are_floor_chests_filled():
+                    floor.add_to_chests(random.choice(items))
+                    ret = True
+                while not floor.are_floor_shops_filled():
+                    floor.add_to_shops(random.choice(items))
+                    ret = True
+                while not floor.are_floor_trades_filled():
+                    floor.add_to_trades(random.choice(items))
                     ret = True
         
         return ret

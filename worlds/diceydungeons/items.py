@@ -9,10 +9,11 @@ from .data.game_data import *
 if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
 
-# Current Warrior location ID blocks taken:
+# Current Warrior item ID blocks taken:
 # 1-70ish: warrior items
 # 991-996: Episode completion
 # 1011-1016: Progressive level ups
+# 9990-9999: Filler items
 
 # Warrior items only, to start
 ITEM_NAME_TO_ID = dict(
@@ -37,8 +38,10 @@ for episode in range(1, 7):
 
 
 # Filler
-ITEM_NAME_TO_ID["Dice Shard"] = 9999
-DEFAULT_ITEM_CLASSIFICATIONS["Dice Shard"] = ItemClassification.filler
+filler_items: list[str] = ["Frog's Broadsword", "Audrey's Dumbbell", "Rotten Apple's Pet Worm", "Wizard's Spellbook", "Dice Shard"]
+for i, item in enumerate(filler_items):
+    ITEM_NAME_TO_ID[item] = 9990 + i
+    DEFAULT_ITEM_CLASSIFICATIONS[item] = ItemClassification.filler
 
 # Groups
 item_name_groups: dict[str, set[str]] = {
@@ -54,9 +57,8 @@ item_name_groups: dict[str, set[str]] = {
 class DiceyDungeonsItem(Item):
     game = "Dicey Dungeons"
 
-def get_filler_item_name(world: DiceyDungeonsWorld) -> str:
-    # There's not a lot of filler we'd be allowed? Like, we can't really heal the character... right?
-    return "Dice Shard"
+def get_random_filler_item_name(world: DiceyDungeonsWorld) -> str:
+    return world.random.choice(filler_items)
 
 def create_item_with_correct_classification(world: DiceyDungeonsWorld, name: str) -> DiceyDungeonsItem:
     classification = DEFAULT_ITEM_CLASSIFICATIONS[name]

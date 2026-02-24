@@ -167,7 +167,8 @@ class DiceyDungeonsContext(CommonContext):
                                                self.locations_info, 
                                                self.checked_locations.union(self.locations_checked), 
                                                items_received_str,
-                                               self.get_level_ups_received()).generate()
+                                               self.get_level_ups_received(),
+                                               self.get_dice_received()).generate()
         if DEBUG:
             logger.info("Game generators updated!")
 
@@ -298,6 +299,11 @@ class DiceyDungeonsContext(CommonContext):
             level_ups[f"Episode {episode}"] = items_received_str.count(f"Episode {episode} Progressive Level Up")
         
         return level_ups
+    
+    def get_dice_received(self) -> int:
+        items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+        dice_shards_received = items_received_str.count("Dice Shard")
+        return dice_shards_received // self.slot_data["dice_shards_per_die"] if self.slot_data["dice_shards_per_die"] > 0 else 0
 
 
     async def server_auth(self, password_requested: bool = False):

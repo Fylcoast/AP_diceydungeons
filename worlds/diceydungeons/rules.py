@@ -28,8 +28,35 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
     for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
         for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
             entrance = world.get_entrance(episode + " - " + floor)
-            set_rule(entrance, lambda state, required=items_needed[floor]: state.has_group(f"Warrior {episode} Items", world.player, required))
-            # if levelsanity is set, consider adding rules for progressive level up to get to X floors. doing whole thing with 2 dice... rough
+            add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"Warrior {ep} Items", world.player, required))
+    
+    # Levelsanity rules
+    if world.options.levelsanity:
+        levels_needed: dict[str, int] = {
+            "Floor 3": 1, 
+            "Floor 4": 2, 
+            "Floor 5": 3, 
+            "Floor 6": 4
+        }
+
+        for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
+            for floor, levels in levels_needed.items():
+                entrance = world.get_entrance(episode + " - " + floor)
+                add_rule(entrance, lambda state, ep=episode, required=levels: state.has(f"{ep} Progressive Level Up", world.player, required))
+
+    # Split dice rules
+    if world.options.split_dice and world.options.dice_shards_per_die.value > 0:
+        dice_needed: dict[str, int] = {
+            "Floor 3": 1, 
+            "Floor 4": 1, 
+            "Floor 5": 2, 
+            "Floor 6": 2
+        }
+        
+        for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
+            for floor, dice in dice_needed.items():
+                entrance = world.get_entrance(episode + " - " + floor)
+                add_rule(entrance, lambda state, required=dice: state.has("Dice Shard", world.player, required * world.options.dice_shards_per_die.value))
     
     # Episode progression rules for vanilla progression
     if world.options.episode_progression.value == 0:
@@ -41,7 +68,7 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
 
         for episode in episode_completions_needed.keys():
             entrance = world.get_entrance(episode + " - Floor 1")
-            set_rule(entrance, lambda state, required=episode_completions_needed[episode]: state.has_group("Warrior Episode Completion", world.player, required))
+            add_rule(entrance, lambda state, required=episode_completions_needed[episode]: state.has_group("Warrior Episode Completion", world.player, required))
     
 
 

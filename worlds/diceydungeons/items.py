@@ -13,7 +13,8 @@ if TYPE_CHECKING:
 # 1-70ish: warrior items
 # 991-996: Episode completion
 # 1011-1016: Progressive level ups
-# 9990-9999: Filler items
+# 9990-9998: Filler items
+# 9999: Dice Shard
 
 # Warrior items only, to start
 ITEM_NAME_TO_ID = dict(
@@ -38,10 +39,14 @@ for episode in range(1, 7):
 
 
 # Filler
-filler_items: list[str] = ["Frog's Broadsword", "Audrey's Dumbbell", "Rotten Apple's Pet Worm", "Wizard's Spellbook", "Dice Shard"]
+filler_items: list[str] = ["Frog's Broadsword", "Audrey's Dumbbell", "Rotten Apple's Pet Worm", "Wizard's Spellbook"]
 for i, item in enumerate(filler_items):
     ITEM_NAME_TO_ID[item] = 9990 + i
     DEFAULT_ITEM_CLASSIFICATIONS[item] = ItemClassification.filler
+
+# Dice Shard
+ITEM_NAME_TO_ID["Dice Shard"] = 9999
+DEFAULT_ITEM_CLASSIFICATIONS["Dice Shard"] = ItemClassification.progression
 
 # Groups
 item_name_groups: dict[str, set[str]] = {
@@ -69,9 +74,16 @@ def create_all_items(world: DiceyDungeonsWorld) -> None:
         world.create_item(item) for item in warrior_items
     ]
 
+    # Levelsanity
     if world.options.levelsanity:
         for episode in range(1, 7):
             itempool += [world.create_item(f"Episode {episode} Progressive Level Up") for _ in range(1, 6)]
+    
+    # Split dice
+    if world.options.split_dice and world.options.dice_shards_per_die > 0:
+        itempool += [world.create_item("Dice Shard") for _ in range(world.options.dice_shards_per_die * 3)]
+        if world.options.spare_dice_shards > 0:
+            itempool += [DiceyDungeonsItem("Dice Shard", ItemClassification.useful, ITEM_NAME_TO_ID["Dice Shard"], world.player) for _ in range(world.options.spare_dice_shards)]
 
     # Fill filler slots
     number_of_items = len(itempool)

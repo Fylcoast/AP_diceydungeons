@@ -81,8 +81,7 @@ filler_items: dict[str, str] = {
     "Frog's Broadsword": "Too big to wield!", 
     "Audrey's Dumbbell": "Too slippery to use!", 
     "Rotten Apple's Pet Worm": "Cuddly!", 
-    "Wizard's Spellbook": "Unfortunately[;] the text is|in an arcane script|you cannot read.", 
-    "Dice Shard": "Merely a fragment of a die."
+    "Wizard's Spellbook": "Unfortunately[;] the text is|in an arcane script|you cannot read."
 }
 """Dict (name -> description) of filler items to populate into equipment"""
 

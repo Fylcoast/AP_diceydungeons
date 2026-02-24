@@ -243,11 +243,14 @@ class GeneratedItems:
     """Player options information"""
     level_ups: dict[str, int]
     """Amount of level up items received for each episode"""
+    dice_received: int
+    """Number of dice player has received, if playing with Split Dice."""
 
-    def __init__(self, slot_data: dict, level_ups: dict[str, int]):
+    def __init__(self, slot_data: dict, level_ups: dict[str, int], dice_received: int):
         self.warrior = [EpisodeItems(1), EpisodeItems(2), EpisodeItems(3), EpisodeItems(4), EpisodeItems(5), EpisodeItems(6)]
         self.slot_data = slot_data
         self.level_ups = level_ups
+        self.dice_received = dice_received
     
     def prefill_floor_5_shops(self):
         """
@@ -316,13 +319,20 @@ class GeneratedItems:
                 # 1. If there's a defined prefill item
                 # 2. We have unlocked enough level ups for this episode to cover it
                 # 3. It's not already filled, somehow
+                # 4. If dice, and Split dice is on, we need to be able to add it
                 if level in warrior_episodes[episode.episode_num - 1].level_items and level <= max_level and not episode.is_level_filled(level):
+                    # Consider using a more legible condition for Split Dice in the future
+                    if self.slot_data["split_dice"] and level % 2 == 0 and level // 2 > self.dice_received:
+                        continue
                     episode.add_to_level(level, warrior_episodes[episode.episode_num - 1].level_items[level])
     
     def assign_standard_level_ups(self):
         """For Levelsanity = off, give normal level ups"""
         for episode in self.warrior:
             for level in episode.levels:
+                # Consider using a more legible condition for Split Dice in the future
+                if self.slot_data["split_dice"] and level.level_num % 2 == 0 and level.level_num // 2 > self.dice_received:
+                    continue
                 level.add_to_level_list(warrior_episodes[episode.episode_num - 1].standard_level_items[level.level_num])
     
     def add_item_to_episodes(self, item: str):

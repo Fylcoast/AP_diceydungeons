@@ -1,3 +1,5 @@
+import random
+
 from ..data.episode_data import *
 from ..data.game_data import *
 
@@ -241,11 +243,23 @@ class GeneratedItems:
     """Player options information"""
     level_ups: dict[str, int]
     """Amount of level up items received for each episode"""
+    dice_received: int
+    """Number of dice player has received, if playing with Split Dice."""
 
-    def __init__(self, slot_data: dict, level_ups: dict[str, int]):
+    def __init__(self, slot_data: dict, level_ups: dict[str, int], dice_received: int):
         self.warrior = [EpisodeItems(1), EpisodeItems(2), EpisodeItems(3), EpisodeItems(4), EpisodeItems(5), EpisodeItems(6)]
         self.slot_data = slot_data
         self.level_ups = level_ups
+        self.dice_received = dice_received
+    
+    def prefill_floor_5_shops(self):
+        """
+        Prefill floor 5 shops with an upgrade and a heal.
+        """
+        for episode in self.warrior:
+            floor_5 = episode.floors[4]
+            floor_5.add_to_shops("health")
+            floor_5.add_to_shops("upgrade")
     
     def add_ap_item_if_possible(self, location_id: int, item: str) -> bool:
         """Add item to generation if there is space. Returns true if added, false if not (no space)"""
@@ -296,21 +310,6 @@ class GeneratedItems:
         
         return True
     
-    def add_item_anywhere(self, item: str) -> bool:
-        """Add item to generation if there is space ANYWHERE. Returns true if added, false if not (no space).
-        Largely deprecated in favor of add_item_to_episodes"""
-        # Adds in ascending order of episode number, floor number, and location type (chest before shop)
-        for episode in self.warrior:
-            for floor in episode.floors:
-                if not floor.are_floor_chests_filled():
-                    floor.add_to_chests(item)
-                    return True
-                if not floor.are_floor_shops_filled():
-                    floor.add_to_shops(item)
-                    return True
-        
-        return False
-    
     def prefill_level_locations(self):
         """Prefill level locations for any guaranteed items."""
         for episode in self.warrior:
@@ -320,13 +319,20 @@ class GeneratedItems:
                 # 1. If there's a defined prefill item
                 # 2. We have unlocked enough level ups for this episode to cover it
                 # 3. It's not already filled, somehow
+                # 4. If dice, and Split dice is on, we need to be able to add it
                 if level in warrior_episodes[episode.episode_num - 1].level_items and level <= max_level and not episode.is_level_filled(level):
+                    # Consider using a more legible condition for Split Dice in the future
+                    if self.slot_data["split_dice"] and level % 2 == 0 and level // 2 > self.dice_received:
+                        continue
                     episode.add_to_level(level, warrior_episodes[episode.episode_num - 1].level_items[level])
     
     def assign_standard_level_ups(self):
         """For Levelsanity = off, give normal level ups"""
         for episode in self.warrior:
             for level in episode.levels:
+                # Consider using a more legible condition for Split Dice in the future
+                if self.slot_data["split_dice"] and level.level_num % 2 == 0 and level.level_num // 2 > self.dice_received:
+                    continue
                 level.add_to_level_list(warrior_episodes[episode.episode_num - 1].standard_level_items[level.level_num])
     
     def add_item_to_episodes(self, item: str):
@@ -350,7 +356,8 @@ class GeneratedItems:
                         break
     
     def fill_with_item(self, item: str) -> bool:
-        """Fill all open spaces with given item. Returns true if any items added, false if no items added"""
+        """Fill all open spaces with given item. Returns true if any items added, false if no items added.
+        Deprecated, in favor of fill_with_random_items"""
         ret: bool = False
 
         for episode in self.warrior:
@@ -368,6 +375,29 @@ class GeneratedItems:
                     ret = True
                 while not floor.are_floor_trades_filled():
                     floor.add_to_trades(item)
+                    ret = True
+        
+        return ret
+    
+    def fill_with_random_items(self, items: list[str]) -> bool:
+        """Fill all open spaces randomly from given item list. Returns true if any items added, false if no items added"""
+        ret: bool = False
+
+        for episode in self.warrior:
+            for level in range(2, 7):
+                if not episode.is_level_filled(level):
+                    episode.add_to_level(level, f"Equipment:{random.choice(items)}")
+                    ret = True
+
+            for floor in episode.floors:
+                while not floor.are_floor_chests_filled():
+                    floor.add_to_chests(random.choice(items))
+                    ret = True
+                while not floor.are_floor_shops_filled():
+                    floor.add_to_shops(random.choice(items))
+                    ret = True
+                while not floor.are_floor_trades_filled():
+                    floor.add_to_trades(random.choice(items))
                     ret = True
         
         return ret

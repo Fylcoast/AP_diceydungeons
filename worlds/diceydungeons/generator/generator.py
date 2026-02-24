@@ -5,7 +5,9 @@ from NetUtils import NetworkItem
 
 from ..data.episode_data import *
 from . import generator_helper as gen_helper
-    
+
+
+filler_items: list[str] = ["Frog's Broadsword", "Audrey's Dumbbell", "Rotten Apple's Pet Worm", "Wizard's Spellbook"]    
 
 ap_data_column_list: list[str] = [
     'name',
@@ -34,15 +36,18 @@ class DiceyDungeonsAPItemGenerator:
     """Player options information"""
     level_ups: dict[str, int]
     """Level up items we've received for each episode. Key is episode, value is count."""
+    dice_received: int
+    """Number of dice player has received, if playing with Split Dice."""
 
 
-    def __init__(self, install_location: str, slot_data: dict, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem], level_ups: dict[str, int]):
+    def __init__(self, install_location: str, slot_data: dict, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem], level_ups: dict[str, int], dice_received: int):
         self.slot_data = slot_data
         self.ap_item_mapping = ap_item_names
         self.locations = locations_info
         self.checked_locations = checked_locations
         self.items_received = items_received
         self.level_ups = level_ups
+        self.dice_received = dice_received
         self.output_file = os.path.join(install_location, "mods", "diceyap", "data", "text", "scripts", "diceyap", "ap_data.csv")
     
     def generate(self):
@@ -51,7 +56,12 @@ class DiceyDungeonsAPItemGenerator:
             writer = csv.DictWriter(f, fieldnames=ap_data_column_list)
             writer.writeheader()
 
-            generator = gen_helper.GeneratedItems(self.slot_data, self.level_ups)
+            generator = gen_helper.GeneratedItems(self.slot_data, self.level_ups, self.dice_received)
+            
+            if self.slot_data["floor_5_shop_selection"] == 0:
+                # Ensure floor 5 shops have upgrade and health
+                generator.prefill_floor_5_shops()
+
             # Add remaining AP items
             for loc_id, item_str in self.ap_item_mapping.items():
                 if loc_id in self.checked_locations:
@@ -70,7 +80,7 @@ class DiceyDungeonsAPItemGenerator:
                 generator.add_item_to_episodes(item)
             
             # Fill up rest with filler
-            generator.fill_with_item("Dice Shard")
+            generator.fill_with_random_items(filler_items)
 
             # Export items
             rows: list[dict] = generator.get_items_to_export()

@@ -76,6 +76,24 @@ dice_shard: dict = {
     'Script: On Dodge': ''
 }
 
+filler_items: dict[str, str] = {
+    "Frog's Broadsword": "Too big to wield!", 
+    "Audrey's Dumbbell": "Too slippery to use!", 
+    "Rotten Apple's Pet Worm": "Cuddly!", 
+    "Wizard's Spellbook": "Unfortunately[;] the text is|in an arcane script|you cannot read."
+}
+"""Dict (name -> description) of filler items to populate into equipment"""
+
+def get_filler_items() -> list[dict]:
+    ret: list[dict] = []
+    for name, desc in filler_items.items():
+        item = default_item_info.copy()
+        item['Name'] = name
+        item['Description'] = desc
+        ret.append(item)
+    
+    return ret
+
 def item_flag_mapping(flags: int) -> ItemClassification:
     if flags & 0b001:  # advancement
         return ItemClassification.progression
@@ -105,10 +123,13 @@ class DiceyDungeonsClientModGenerator():
     """List of items from multiworld we want in our equipment.csv, with player name and flags for usefulness"""
     mod_name: str
     """Name of the mod (probably 'diceyap')"""
+    slot_data: dict
+    """Player options information"""
 
-    def __init__(self, game_path: str, equipment: list[tuple[str, str, int]]):
+    def __init__(self, game_path: str, equipment: list[tuple[str, str, int]], slot_data: dict):
         self.game_path = game_path
         self.equipment = equipment
+        self.slot_data = slot_data
         self.mod_name = 'diceyap'
     
     def get_equipment_row(self, item: tuple[str, str, int]):
@@ -136,6 +157,11 @@ class DiceyDungeonsClientModGenerator():
         
         walk_files(base_path, mod_name)
     
+    def _generate_progresssettings_file(self, path: str, save_name: str):
+        """Generate progresssettings.txt content"""
+        with open(path, 'w', newline='') as f:
+            f.write(save_name)
+    
     def _generate_equipment_csv(self, path: str):
         """Generate equipment.csv content as a string."""
         with open(path, 'w', newline='') as f:
@@ -144,13 +170,13 @@ class DiceyDungeonsClientModGenerator():
             rows = []
             for item in self.equipment:
                 rows.append(self.get_equipment_row(item))
-            # Dice shard, for our filler.
-            rows.append(dice_shard)
+            # Filler items.
+            rows.extend(get_filler_items())
             writer.writerows(rows)
         
     
     def generate(self):
-        base_files = files(__package__).joinpath('data', 'mod_data', self.mod_name)
+        common_files = files(__package__).joinpath('data', 'common_mod_data', self.mod_name)
         dest_dir = os.path.join(self.game_path, "mods")
 
         # Clear out previous mod installation if exists
@@ -158,7 +184,28 @@ class DiceyDungeonsClientModGenerator():
             shutil.rmtree(os.path.join(dest_dir, self.mod_name))
         
         # Copy base files to Dicey Dungeons install dir in mods folder
-        self._write_package_files_to_dir(base_files, self.mod_name, dest_dir)
+        self._write_package_files_to_dir(common_files, self.mod_name, dest_dir)
+
+        # Conditionally populate other files, based on Options selected.
+        if self.slot_data['episode_progression'] == 0:
+            # Vanilla progression
+            vanilla_files = files(__package__).joinpath('data', 'vanilla_progression_data', self.mod_name)
+            self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
+        else:
+            # Open world
+            open_world_files = files(__package__).joinpath('data', 'open_world_data', self.mod_name)
+            self._write_package_files_to_dir(open_world_files, self.mod_name, dest_dir)
+
+        if self.slot_data['skip_cutscenes']:
+            skip_cutscenes_files = files(__package__).joinpath('data', 'skip_cutscenes_data', self.mod_name)
+            self._write_package_files_to_dir(skip_cutscenes_files, self.mod_name, dest_dir)
+
+        # Conditionally give save file info
+        # If episode_progression is vanilla (0), need save file to force progression logic
+        if self.slot_data['episode_progression'] == 0:
+            save_path = os.path.join(dest_dir, self.mod_name, 'data', 'text', 'progresssettings.txt')
+            self._generate_progresssettings_file(save_path, self.slot_data['save_name'])
+
 
         # Make new equipment file
         if self.equipment:

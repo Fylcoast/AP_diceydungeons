@@ -38,10 +38,15 @@ class DiceyDungeonsWorld(World):
         return items.create_item_with_correct_classification(self, name)
     
     def get_filler_item_name(self) -> str:
-        return items.get_filler_item_name(self)
+        return items.get_random_filler_item_name(self)
     
     def fill_slot_data(self) -> Mapping[str, Any]:
-        # If you need access to the player's chosen options on the client side, there is a helper for that.
-        return self.options.as_dict(
-            "levelsanity", "checks_per_chest", "checks_per_shop", "checks_per_trade"
+        ret = self.options.as_dict(
+            "levelsanity", "checks_per_chest", "checks_per_shop", "checks_per_trade", "split_dice", "dice_shards_per_die", "spare_dice_shards", "episode_progression", "floor_5_shop_selection", "skip_cutscenes"
         )
+        
+        # Generate token for save file
+        save_name = "diceyap_" + str(self.random.random())
+        ret["save_name"] = save_name
+
+        return ret

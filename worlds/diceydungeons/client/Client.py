@@ -25,7 +25,7 @@ import Utils
 from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart, ClientStatus,
                       NetworkItem, NetworkPlayer)
 from MultiServer import Endpoint
-from CommonClient import (CommonContext, gui_enabled, ClientCommandProcessor, 
+from CommonClient import (CommonContext, ClientCommandProcessor, 
                           logger, get_base_parser)
 
 # Import item metadata for categorization
@@ -124,7 +124,7 @@ class DiceyDungeonsContext(CommonContext):
                 logger.info("Locations not retrieved from server yet. Grabbing those first!")
             await self._wait_locations_and_get_items()
         ap_items: list[tuple[str, str, int]] = [(f"{self.get_item_name(net_item)} [AP][{loc_id}]", self.player_names[net_item.player], net_item.flags) for loc_id, net_item in self.locations_info.items()]
-        patcher.DiceyDungeonsClientModGenerator(self.game_path, ap_items).generate()
+        patcher.DiceyDungeonsClientModGenerator(self.game_path, ap_items, self.slot_data).generate()
         logger.info("Patched Dicey Dungeons!")
     
     def generate_items(self):
@@ -167,7 +167,8 @@ class DiceyDungeonsContext(CommonContext):
                                                self.locations_info, 
                                                self.checked_locations.union(self.locations_checked), 
                                                items_received_str,
-                                               self.get_level_ups_received()).generate()
+                                               self.get_level_ups_received(),
+                                               self.get_dice_received()).generate()
         if DEBUG:
             logger.info("Game generators updated!")
 
@@ -298,6 +299,11 @@ class DiceyDungeonsContext(CommonContext):
             level_ups[f"Episode {episode}"] = items_received_str.count(f"Episode {episode} Progressive Level Up")
         
         return level_ups
+    
+    def get_dice_received(self) -> int:
+        items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+        dice_shards_received = items_received_str.count("Dice Shard")
+        return dice_shards_received // self.slot_data["dice_shards_per_die"] if self.slot_data["dice_shards_per_die"] > 0 else 0
 
 
     async def server_auth(self, password_requested: bool = False):
@@ -449,7 +455,7 @@ def launch(*launch_args: str):
         # Start the main game loop that processes game messages and checks for victory
         ctx.game_loop_task = asyncio.create_task(main_game_loop(ctx), name="GameLoop")
 
-        if gui_enabled:
+        if Utils.gui_enabled:
             ctx.run_gui()
         ctx.run_cli()
 

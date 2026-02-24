@@ -1,0 +1,4 @@
+wait(0.5);
+fadein();
+wait(1.5);
+gamecompletefromcutscene();

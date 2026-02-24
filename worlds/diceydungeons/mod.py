@@ -45,37 +45,6 @@ default_item_info: OrderedDict = {
 
 equipment_field_list: list[str] = default_item_info.keys()
 
-dice_shard: dict = {
-    'Name': 'Dice Shard',
-    'Description': 'Merely a fragment of a die.',
-    'Size': '1',
-    'Script: On Execute': '',
-    'Gadget': '',
-    'Slots': '',
-    'NEED TOTAL?': '',
-    'Colour': 'GRAY',
-    'Upgrade': '',
-    'Weaken': '',
-    'Alternate Status Trigger':	'',
-    'SFX': 'none',
-    'Uses?': '0',
-    'Cast Backwards?': 'NO',
-    'Single use?': 'NO',
-    'Tags': 'excludefromrandomlists|cannotsteal|skillcard',
-    'Witch Spell': '',
-    'Script: Before Combat': '',
-    'Script: After Combat': '',
-    'Script: Before Start Turn': '',
-    'Script: On Start Turn': '',
-    'Script: On any equipment use': '',
-    'Script: On any countdown reduce': '',
-    'Script: End Turn': '',
-    'Script: Before execute': '',
-    'Script: On Snap': '',
-    'Script: On Fury': '',
-    'Script: On Dodge': ''
-}
-
 filler_items: dict[str, str] = {
     "Frog's Broadsword": "Too big to wield!", 
     "Audrey's Dumbbell": "Too slippery to use!", 

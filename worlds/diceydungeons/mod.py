@@ -45,38 +45,6 @@ default_item_info: OrderedDict = {
 
 equipment_field_list: list[str] = default_item_info.keys()
 
-# Insta-kill for testing
-murder_spell: dict = {
-    'Name': 'Murder Spell',
-    'Description': 'DEATH',
-    'Size': '1',
-    'Script: On Execute': 'attack(999);',
-    'Gadget': 'Refrigerator',
-    'Slots': 'NORMAL',
-    'NEED TOTAL?': '',
-    'Colour': 'BRIGHTCYAN',
-    'Upgrade': '',
-    'Weaken': 'change_power',
-    'Alternate Status Trigger':	'',
-    'SFX': 'none',
-    'Uses?': '0',
-    'Cast Backwards?': 'NO',
-    'Single use?': 'NO',
-    'Tags': '',
-    'Witch Spell': '',
-    'Script: Before Combat': '',
-    'Script: After Combat': '',
-    'Script: Before Start Turn': '',
-    'Script: On Start Turn': '',
-    'Script: On any equipment use': '',
-    'Script: On any countdown reduce': '',
-    'Script: End Turn': '',
-    'Script: Before execute': '',
-    'Script: On Snap': '',
-    'Script: On Fury': '',
-    'Script: On Dodge': ''
-}
-
 filler_items: dict[str, str] = {
     "Frog's Broadsword": "Too big to wield!", 
     "Audrey's Dumbbell": "Too slippery to use!", 
@@ -171,8 +139,6 @@ class DiceyDungeonsClientModGenerator():
             rows = []
             for item in self.equipment:
                 rows.append(self.get_equipment_row(item))
-            # Testing spell
-            rows.append(murder_spell)
             # Filler items.
             rows.extend(get_filler_items())
             writer.writerows(rows)
@@ -212,6 +178,8 @@ class DiceyDungeonsClientModGenerator():
 
         # Make new equipment file
         if self.equipment:
-            equipment_path = os.path.join(dest_dir, self.mod_name, '_append', 'data', 'text', 'equipment.csv')
+            equipment_path = os.path.join(dest_dir, self.mod_name, '_append', 'data', 'text')
+            if not os.path.exists(equipment_path):
+                os.makedirs(equipment_path)
+            equipment_path = os.path.join(equipment_path, 'equipment.csv')
             self._generate_equipment_csv(equipment_path)
-

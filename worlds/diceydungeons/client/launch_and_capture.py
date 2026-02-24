@@ -2,7 +2,7 @@
 """Launcher to start the game and capture stdout/stderr in real time.
 
 Usage examples:
-  python launch_and_capture.py --log out.log "C:\Path\To\DiceyDungeons.exe" --arg1 --arg2
+  python launch_and_capture.py --log out.log "C:\\Path\\To\\DiceyDungeons.exe" --arg1 --arg2
   python launch_and_capture.py --log out.log run_game.bat
 
 Behavior:

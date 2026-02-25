@@ -265,6 +265,7 @@ class DiceyDungeonsContext(CommonContext):
                 logger.info(f"Location checked: {str(new_loc)}")
             self.locations_checked.add(new_loc)
             await self.send_msgs([{"cmd": 'LocationChecks', "locations": [new_loc]}]) 
+            self.generate_items()
         
         elif command == "reload_generator":
             self.generate_items()

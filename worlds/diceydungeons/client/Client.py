@@ -133,7 +133,7 @@ class DiceyDungeonsContext(CommonContext):
 
     def get_item_name(self, net_item: NetworkItem):
         """Convert AP item name to something that is safe for Dicey Dungeons formatting"""
-        return self.item_names.lookup_in_slot(net_item.item, net_item.player).replace(",", "[comma]").replace("-", "[sword]")
+        return self.item_names.lookup_in_slot(net_item.item, net_item.player).replace(",", "[comma]").replace("-", "[sword]").replace("_", " ")
     
     async def _generate_items_for_game(self):
         """Asynchronously update ap_data for game to read in generators."""
@@ -156,7 +156,7 @@ class DiceyDungeonsContext(CommonContext):
         # Filter out Completion items
         ap_item_names_list = [item for item in ap_item_names_list if "Completed" not in item[1]]
         ap_item_names = dict(ap_item_names_list)
-        items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+        items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
         # Get unique items and shuffle order
         items_received_str = list(set([item for item in items_received_str if item in item_metadata.keys()]))
         random.shuffle(items_received_str)
@@ -272,7 +272,7 @@ class DiceyDungeonsContext(CommonContext):
     
     async def check_for_victory(self):
         if self.finished_game == False:
-            items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+            items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
             if "Episode 1 - Episode Completed" in items_received_str and \
                 "Episode 2 - Episode Completed" in items_received_str and \
                 "Episode 3 - Episode Completed" in items_received_str and \
@@ -290,11 +290,11 @@ class DiceyDungeonsContext(CommonContext):
         for loc_id, net_item in sorted(self.locations_info.items()):
             logger.info(f"{loc_id} | {net_item}")
             loc_name = self.location_names.lookup_in_game(loc_id, self.game)
-            item_name = self.item_names.lookup_in_slot(net_item.item, net_item.player)
+            item_name = self.item_names.lookup_in_game(net_item.item, self.game)
             logger.info(f"{loc_id}: {loc_name} -> {item_name} (player {net_item.player})")
     
     def get_level_ups_received(self) -> dict[str, int]:
-        items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+        items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
         level_ups: dict[str, int] = {}
         for episode in range(1, 7):
             level_ups[f"Episode {episode}"] = items_received_str.count(f"Episode {episode} Progressive Level Up")
@@ -302,7 +302,7 @@ class DiceyDungeonsContext(CommonContext):
         return level_ups
     
     def get_dice_received(self) -> int:
-        items_received_str = [self.item_names.lookup_in_slot(net_item.item, net_item.player) for net_item in self.items_received]
+        items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
         dice_shards_received = items_received_str.count("Dice Shard")
         return dice_shards_received // self.slot_data["dice_shards_per_die"] if self.slot_data["dice_shards_per_die"] > 0 else 0
 

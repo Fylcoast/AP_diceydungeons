@@ -18,6 +18,8 @@ import json
 from typing import TextIO, Optional
 from queue import Queue
 
+import re
+
 
 def read_stream(stream: TextIO, prefix: str, logfile: Optional[TextIO] = None, message_queue: Optional[Queue] = None) -> None:
     try:
@@ -34,14 +36,22 @@ def read_stream(stream: TextIO, prefix: str, logfile: Optional[TextIO] = None, m
 
             # optional: detect messages from the game with a prefix
             if "[AP]" in line:
-                payload = line.partition("[AP]")[2].strip()
-                try:
-                    obj = json.loads(payload)
-                    print(f"[AP-JSON] {json.dumps(obj, ensure_ascii=False)}")
-                    if message_queue:
-                        message_queue.put({"type": "game_message", "data": obj})
-                except Exception:
-                    pass
+                # Detect formatting errors for sending shop hints
+                if "Error: No symbol" in line:
+                    location = re.findall(r'\d+', line.partition("[AP]")[2].strip())[0]
+                    print(f"[AP-LOC] {location}")
+                    if message_queue and location:
+                        message_queue.put({"type": "game_message", "data": {"command": "potential_hint", "payload": location}})
+                else:
+                    # Send normal messages
+                    payload = line.partition("[AP]")[2].strip()
+                    try:
+                        obj = json.loads(payload)
+                        print(f"[AP-JSON] {json.dumps(obj, ensure_ascii=False)}")
+                        if message_queue:
+                            message_queue.put({"type": "game_message", "data": obj})
+                    except Exception:
+                        pass
     finally:
         try:
             stream.close()

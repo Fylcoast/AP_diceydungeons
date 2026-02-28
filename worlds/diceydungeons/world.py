@@ -1,10 +1,11 @@
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, ClassVar
 
 from worlds.AutoWorld import World
 
 from . import items, locations, regions, rules, web_world
 from . import options as diceydungeons_options
+from . import settings as diceydungeons_settings
 
 class DiceyDungeonsWorld(World):
     """
@@ -12,6 +13,9 @@ class DiceyDungeonsWorld(World):
     """
 
     game = "Dicey Dungeons"
+
+    settings_key = "diceydungeons_options"
+    settings: ClassVar[diceydungeons_settings.DiceyDungeonsSettings]
 
     web = web_world.DiceyDungeonsWebWorld()
 

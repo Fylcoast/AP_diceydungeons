@@ -85,7 +85,8 @@ class DiceyDungeonsContext(CommonContext):
     
     command_processor = DiceyDungeonsCommandProcessor
     game = "Dicey Dungeons"
-    game_path: str = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons"
+    from settings import get_settings
+    game_path: str = get_settings()["diceydungeons_options"]["install_folder"]
     slot_data: dict
 
     def __init__(self, server_address: Optional[str], password: Optional[str]):

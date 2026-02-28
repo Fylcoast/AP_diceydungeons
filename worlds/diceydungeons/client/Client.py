@@ -61,11 +61,12 @@ class DiceyDungeonsCommandProcessor(ClientCommandProcessor):
             return True
         return False
     
-    def _cmd_install_location(self, installation_location: str) -> bool:
-        """Define installation location for Dicey Dungeons"""
+    def _cmd_install_folder(self) -> bool:
+        """Check Dicey Dungeons installation folder"""
         if isinstance(self.ctx, DiceyDungeonsContext):
-            self.ctx.game_path = installation_location
-            logger.info(f"Game path set to: {installation_location}")
+            from settings import get_settings
+            logger.info(get_settings()["diceydungeons_options"]["install_folder"])
+            logger.info("If this is not the expected directory, please check the install_folder setting in your host.yaml")
             return True
         return False
     

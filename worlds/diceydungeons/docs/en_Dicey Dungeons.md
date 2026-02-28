@@ -41,3 +41,9 @@ You may be wondering where your equipment is, if you've received some from the m
 1. You have remaining AP location checks for that spot. If you set checks_per_chest higher than 1, every chest will continue filling with AP location checks on future runs until you are out. The same goes for shops and trades.
 1. You have not received enough equipment for a location to be populated. Equipment is filled in to applicable places, roughly, from the start of the episode on. So if you receive real equipment from a Floor 1 chest, but filler in Floor 2 chest, this is why.
 1. The equipment you have received is not applicable in the locations you are checking. All equipment are locked to only be received in certain episodes, and certain types of locations (chests/shops/trades), based on their appearances in the base game. So if you receive filler from a Floor 1 chest, but your Floor 2 shop fills with a real piece of equipment, this is why. Or, if your Episode 1 is barren of equipment, but Episode 6 populates with some, this is why. The data can be viewed [here](../data/game_data.py)
+
+## I can't launch the game "Game launcher error: Executable not found"
+
+The setting for your Dicey Dungeons install folder is probably not correct. Check the path with client command `/install_folder`. 
+
+If the folder is incorrect, please correct it in the "diceydungeons_options" section of your host.yaml file (in your Archipelago install), then restart the Client.

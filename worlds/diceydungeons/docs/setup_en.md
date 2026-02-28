@@ -15,11 +15,11 @@ but you can check the [Archipelago Setup Guide](/tutorial/Archipelago/setup_en#g
 
 1. Download Dicey Dungeons (current patch).
 
-1. Launch the Dicey Dungeons Client from Archipelago. On launch, it will require you to navigate to your Dicey Dungeons installation 
+1. Launch the Dicey Dungeons Client from Archipelago. On launch, it may require you to navigate to your Dicey Dungeons installation 
 path in a file browser. Please select the root folder of the install ("Dicey Dungeons"). 
     - For Steam users, this will likely be at (Windows) `C:\Program Files (x86)\Steam\steamapps\common\Dicey Dungeons`
 
-1. Inside the Client, add the URL:Port and your slot name, and Connect.
+1. Inside the Client, add the URL:Port and Connect, then provide your Slot name.
 
 1. Patch your local installation with client command `/patch`.
 

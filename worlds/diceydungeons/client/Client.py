@@ -270,6 +270,13 @@ class DiceyDungeonsContext(CommonContext):
         
         elif command == "reload_generator":
             self.generate_items()
+        
+        elif command == "potential_hint":
+            loc = data.get("payload")
+            if self.is_hintable_location(loc):
+                if DEBUG:
+                    logger.info(f"Sending hint for location: {loc}")
+                await self.send_msgs([{"cmd": 'CreateHints', "locations": [int(loc)]}])
     
     async def check_for_victory(self):
         if self.finished_game == False:
@@ -306,6 +313,10 @@ class DiceyDungeonsContext(CommonContext):
         items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
         dice_shards_received = items_received_str.count("Dice Shard")
         return dice_shards_received // self.slot_data["dice_shards_per_die"] if self.slot_data["dice_shards_per_die"] > 0 else 0
+    
+    def is_hintable_location(self, loc: str) -> bool:
+        # Hint on Shops and Trades. Shops are '2' in 3rd last digit, trades are '5'
+        return len(loc) == 5 and (loc[-3] == '2' or loc[-3] == '5')
 
 
     async def server_auth(self, password_requested: bool = False):

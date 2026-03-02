@@ -135,7 +135,7 @@ class DiceyDungeonsContext(CommonContext):
 
     def get_item_name(self, net_item: NetworkItem):
         """Convert AP item name to something that is safe for Dicey Dungeons formatting"""
-        return self.item_names.lookup_in_slot(net_item.item, net_item.player).replace(",", "[comma]").replace("-", "[sword]").replace("_", " ")
+        return self.item_names.lookup_in_slot(net_item.item, net_item.player).replace(",", "[comma]").replace("-", "[sword]").replace("_", " ").replace("+", "[star]")
     
     async def _generate_items_for_game(self):
         """Asynchronously update ap_data for game to read in generators."""

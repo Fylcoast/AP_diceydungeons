@@ -177,9 +177,8 @@ class DiceyDungeonsContext(CommonContext):
     
     def launch_game(self):
         """Launch the game and attach to the message queue."""
-        game_exe = os.path.join(self.game_path, "diceydungeons.exe")
         logger.info(f"Launching game from: {self.game_path}")
-        self.game_message_queue = launcher.launch(game_exe)
+        self.game_message_queue = launcher.launch(self.game_path)
         if DEBUG:
             logger.info("Game launched, message queue attached.")
         asyncio.create_task(self._wait_locations_and_get_items())

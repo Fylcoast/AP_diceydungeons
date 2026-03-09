@@ -11,6 +11,8 @@ Behavior:
 """
 from __future__ import annotations
 import argparse
+import os
+import platform
 import subprocess
 import threading
 import sys
@@ -143,7 +145,10 @@ def launch(game_path: str) -> Queue:
     
     use_shell = False
     cmd_to_run = game_path
-
+    if platform.system() == 'Windows':
+        cmd_to_run = os.path.join(cmd_to_run, "diceydungeons.exe")
+    elif platform.system() == 'Linux':
+        cmd_to_run = os.path.join(cmd_to_run, "diceydungeons")
     logfile = None
     try:
         popen = subprocess.Popen(
@@ -153,6 +158,7 @@ def launch(game_path: str) -> Queue:
             shell=use_shell,
             bufsize=1,
             universal_newlines=True,
+            cwd=game_path
         )
     except FileNotFoundError:
         print("Executable not found; check the path.")

@@ -5,4 +5,4 @@ class DiceyDungeonsSettings(settings.Group):
         """Path to the Dicey Dungeons installation folder"""
         description = "The Dicey Dungeons installation folder"
         
-    install_folder: InstallFolder = InstallFolder("C:\Program Files (x86)\Steam\steamapps\common\Dicey Dungeons")
+    install_folder: InstallFolder = InstallFolder("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dicey Dungeons")

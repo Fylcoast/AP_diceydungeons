@@ -123,24 +123,37 @@ class FloorItems:
         """Are all lists full to capacity for floor?"""
         return self.are_floor_chests_filled() and self.are_floor_shops_filled() and self.are_floor_trades_filled()
     
-    def add_item_if_possible(self, item: str) -> bool:
+    def add_item_if_possible(self, item: str, allow_anywhere: bool) -> bool:
         """Try to add item to our floor. If we added it, return True, else, return False."""
         if self.is_floor_full():
             return False
         
-        item_data: dict = item_metadata[item]
-        
-        if not self.are_floor_chests_filled() and self.episode_num in item_data['episode'] and 'chest' in item_data['location_types']:
-            self.add_to_chests(item)
-            return True
-        
-        if not self.are_floor_shops_filled() and self.episode_num in item_data['episode'] and 'shop' in item_data['location_types']:
-            self.add_to_shops(item)
-            return True
-        
-        if not self.are_floor_trades_filled() and self.episode_num in item_data['episode'] and 'trade' in item_data['location_types']:
-            self.add_to_trades(item)
-            return True
+        if not allow_anywhere:
+            item_data: dict = item_metadata[item]
+            
+            if not self.are_floor_chests_filled() and self.episode_num in item_data['episode'] and 'chest' in item_data['location_types']:
+                self.add_to_chests(item)
+                return True
+            
+            if not self.are_floor_shops_filled() and self.episode_num in item_data['episode'] and 'shop' in item_data['location_types']:
+                self.add_to_shops(item)
+                return True
+            
+            if not self.are_floor_trades_filled() and self.episode_num in item_data['episode'] and 'trade' in item_data['location_types']:
+                self.add_to_trades(item)
+                return True
+        else:
+            if not self.are_floor_chests_filled():
+                self.add_to_chests(item)
+                return True
+            
+            if not self.are_floor_shops_filled():
+                self.add_to_shops(item)
+                return True
+            
+            if not self.are_floor_trades_filled():
+                self.add_to_trades(item)
+                return True
         
         return False
 
@@ -352,7 +365,7 @@ class GeneratedItems:
             if not filled:
                 for floor in episode.floors:
                     # Try to add. If added, go to next episode
-                    if floor.add_item_if_possible(item):
+                    if floor.add_item_if_possible(item, self.slot_data["equipment_availability"] == 1):
                         break
     
     def fill_with_item(self, item: str) -> bool:

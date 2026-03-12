@@ -16,7 +16,7 @@ def set_all_rules(world: DiceyDungeonsWorld) -> None:
 
 
 def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
-    # Fine tune if needed? Main goal is just to make sure they can play the game, so, looser side the better.
+    # Equipment requirements
     items_needed: dict[str, int] = {
         "Floor 2": 1, 
         "Floor 3": 2, 
@@ -25,10 +25,17 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
         "Floor 6": 6
     }
 
-    for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
-        for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
-            entrance = world.get_entrance(episode + " - " + floor)
-            add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"Warrior {ep} Items", world.player, required))
+    # Branch based on Equipment Availability option
+    if world.options.equipment_availability.value == 0:
+        for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
+            for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
+                entrance = world.get_entrance(episode + " - " + floor)
+                add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"Warrior {ep} Items", world.player, required))
+    else:
+        for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
+            for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
+                entrance = world.get_entrance(episode + " - " + floor)
+                add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"Warrior All Items", world.player, required))
     
     # Levelsanity rules
     if world.options.levelsanity:

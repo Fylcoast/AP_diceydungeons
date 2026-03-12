@@ -131,6 +131,23 @@ class SkipCutscenes(DefaultOnToggle):
     '''
     display_name = "Skip cutscenes"
 
+class EquipmentAvailability(Choice):
+    '''
+    Determines where received Equipment can be found in-game.
+
+    vanilla: Equipment will be bound to the episodes or locations
+    (chest/shop/etc) it can be found in the base game.
+
+    open: Equipment can spawn in any episode/location.
+    '''
+
+    display_name = "Equipment Availability"
+
+    option_vanilla = 0
+    option_open = 1
+
+    default = option_open
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
@@ -143,6 +160,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     episode_progression: EpisodeProgression
     floor_5_shop_selection: Floor5ShopSelection
     skip_cutscenes: SkipCutscenes
+    equipment_availability: EquipmentAvailability
 
 option_groups = [
     OptionGroup(
@@ -159,7 +177,7 @@ option_groups = [
     ),
     OptionGroup(
         "Quality of Life",
-        [SkipCutscenes]
+        [SkipCutscenes, EquipmentAvailability]
     )
 ]
 
@@ -174,7 +192,8 @@ option_presets = {
         "spare_dice_shards": 0,
         "episode_progression": EpisodeProgression.default,
         "floor_5_shop_selection": Floor5ShopSelection.default,
-        "skip_cutscenes": True
+        "skip_cutscenes": True,
+        "equipment_availability": EquipmentAvailability.default
     },
     "check-lover": {
         "levelsanity": True,
@@ -186,6 +205,7 @@ option_presets = {
         "spare_dice_shards": 6,
         "episode_progression": EpisodeProgression.option_open_world,
         "floor_5_shop_selection": Floor5ShopSelection.option_items_only,
-        "skip_cutscenes": True
+        "skip_cutscenes": True,
+        "equipment_availability": EquipmentAvailability.option_vanilla
     }
 }

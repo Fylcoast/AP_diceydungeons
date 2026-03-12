@@ -56,6 +56,7 @@ item_name_groups: dict[str, set[str]] = {
     "Warrior Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['episode']]),
     "Warrior Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['episode']]),
     "Warrior Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['episode']]),
+    "Warrior All Items": set([k for k in item_metadata.keys()]),
     "Warrior Episode Completion": set([f"Episode {i} - Episode Completed" for i in range(1, 7)])
 }
 

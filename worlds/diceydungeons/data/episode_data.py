@@ -71,7 +71,7 @@ episode3 = EpisodeData(
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
     {2: "Dice", 4: "Dice", 6: "Dice"},
-    {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:iron Shield"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Equipment:Last Stand"], 6: ["Dice"]}
+    {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:Iron Shield"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Equipment:Last Stand"], 6: ["Dice"]}
 )
 
 episode4 = EpisodeData(
@@ -108,3 +108,77 @@ episode6 = EpisodeData(
 )
 
 warrior_episodes = [episode1, episode2, episode3, episode4, episode5, episode6]
+
+# thief_normal
+thief_episode_1 = EpisodeData(
+    "Episode 1",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 1),
+    FloorData(1, 1, 3, 3, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Poison Needle", "Equipment:Crowbar"], 4: ["Dice"], 5: ["Equipment:Skeleton Key", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]}
+)
+
+# thief_finderskeepers
+thief_episode_2 = EpisodeData(
+    "Episode 2",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(0, 1, 3, 2, 0, 0),
+    FloorData(0, 0, 0, 2, 2, 0),
+    FloorData(0, 0, 0, 2, 0, 1),
+    FloorData(0, 1, 3, 3, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Poison Needle", "Equipment:Crowbar"], 4: ["Dice"], 5: ["Equipment:Skeleton Key", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]}
+)
+
+# thief_uptick
+thief_episode_3 = EpisodeData(
+    "Episode 3",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 1),
+    FloorData(1, 1, 3, 3, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Kunai", "Equipment:Hall of Mirrors"], 4: ["Dice"], 5: ["Equipment:Backstab", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]}
+)
+
+# thief_normal
+thief_episode_4 = EpisodeData(
+    "Episode 4",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 1),
+    FloorData(1, 1, 3, 3, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Poison Needle", "Equipment:Crowbar"], 4: ["Dice"], 5: ["Equipment:Skeleton Key", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]}
+)
+
+# thief_paralleluniverse
+thief_episode_5 = EpisodeData(
+    "Episode 5",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 1),
+    FloorData(1, 1, 3, 3, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Cowbell", "Equipment:Wrecking Ball"], 4: ["Dice"], 5: ["Equipment:Berlin Key", "Equipment:Bronze Cauldron", "Upgrade"], 6: ["Dice"]}
+)
+
+# thief_remixgenerator
+thief_episode_6 = EpisodeData(
+    "Episode 6",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 1),
+    FloorData(1, 1, 3, 3, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Poison Needle", "Equipment:Cowbell"], 4: ["Dice"], 5: ["Equipment:Berlin Key", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]}
+)
+
+thief_episodes = [thief_episode_1, thief_episode_2, thief_episode_3, thief_episode_4, thief_episode_5, thief_episode_6]

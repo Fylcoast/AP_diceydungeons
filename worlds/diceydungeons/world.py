@@ -56,7 +56,8 @@ class DiceyDungeonsWorld(World):
             "episode_progression", 
             "floor_5_shop_selection", 
             "skip_cutscenes", 
-            "equipment_availability"
+            "equipment_availability",
+            "character"
         )
         
         # Generate token for save file

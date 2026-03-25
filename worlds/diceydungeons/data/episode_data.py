@@ -182,3 +182,5 @@ thief_episode_6 = EpisodeData(
 )
 
 thief_episodes = [thief_episode_1, thief_episode_2, thief_episode_3, thief_episode_4, thief_episode_5, thief_episode_6]
+
+all_character_episodes = [warrior_episodes, thief_episodes]

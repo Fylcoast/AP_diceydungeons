@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
 
 # Current Warrior item ID blocks taken:
-# 1-70ish: warrior items
+# 1-270ish: all equipment
 # 991-996: Episode completion
 # 1011-1016: Progressive level ups
 # 9990-9998: Filler items
@@ -19,13 +19,13 @@ if TYPE_CHECKING:
 # Warrior items only, to start
 ITEM_NAME_TO_ID = dict(
     [
-        (item, i) for i, item in enumerate(warrior_items, 1)
+        (item, i) for i, item in enumerate(item_metadata.keys(), 1)
     ]
 )
 
 DEFAULT_ITEM_CLASSIFICATIONS = dict(
     [
-        (item, ItemClassification.progression) for item in warrior_items
+        (item, ItemClassification.progression) for item in item_metadata.keys()
     ]
 )
 
@@ -50,14 +50,23 @@ DEFAULT_ITEM_CLASSIFICATIONS["Dice Shard"] = ItemClassification.progression
 
 # Groups
 item_name_groups: dict[str, set[str]] = {
-    "Warrior Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['episode']]),
-    "Warrior Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['episode']]),
-    "Warrior Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['episode']]),
-    "Warrior Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['episode']]),
-    "Warrior Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['episode']]),
-    "Warrior Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['episode']]),
-    "Warrior All Items": set([k for k in item_metadata.keys()]),
-    "Warrior Episode Completion": set([f"Episode {i} - Episode Completed" for i in range(1, 7)])
+    "Warrior Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['warrior']['episode']]),
+    "Warrior Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['warrior']['episode']]),
+    "Warrior Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['warrior']['episode']]),
+    "Warrior Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['warrior']['episode']]),
+    "Warrior Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['warrior']['episode']]),
+    "Warrior Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['warrior']['episode']]),
+    "Warrior All Items": set([k for k in warrior_items]),
+    
+    "Thief Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['thief']['episode']]),
+    "Thief Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['thief']['episode']]),
+    "Thief Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['thief']['episode']]),
+    "Thief Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['thief']['episode']]),
+    "Thief Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['thief']['episode']]),
+    "Thief Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['thief']['episode']]),
+    "Thief All Items": set([k for k in thief_items]),
+    
+    "Episode Completion": set([f"Episode {i} - Episode Completed" for i in range(1, 7)])
 }
 
 class DiceyDungeonsItem(Item):
@@ -71,9 +80,13 @@ def create_item_with_correct_classification(world: DiceyDungeonsWorld, name: str
     return DiceyDungeonsItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
 
 def create_all_items(world: DiceyDungeonsWorld) -> None:
-    itempool: list[Item] = [
-        world.create_item(item) for item in warrior_items
-    ]
+    itempool: list[Item] = []
+    # Character choice
+    if world.options.character.value == 0:
+        itempool += [world.create_item(item) for item in warrior_items]
+
+    if world.options.character.value == 1:
+        itempool += [world.create_item(item) for item in thief_items]
 
     # Levelsanity
     if world.options.levelsanity:

@@ -129,7 +129,7 @@ class FloorItems:
             return False
         
         if not allow_anywhere:
-            item_data: dict = item_metadata[item]
+            item_data: dict = item_metadata[item]['warrior']
             
             if not self.are_floor_chests_filled() and self.episode_num in item_data['episode'] and 'chest' in item_data['location_types']:
                 self.add_to_chests(item)

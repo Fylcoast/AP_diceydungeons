@@ -25,17 +25,18 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
         "Floor 6": 6
     }
 
-    # Branch based on Equipment Availability option
+    # Branch based on Equipment Availability option and Character
+    character = ["Warrior", "Thief"][world.options.character.value]
     if world.options.equipment_availability.value == 0:
         for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
             for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
                 entrance = world.get_entrance(episode + " - " + floor)
-                add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"Warrior {ep} Items", world.player, required))
+                add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"{character} {ep} Items", world.player, required))
     else:
         for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
             for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
                 entrance = world.get_entrance(episode + " - " + floor)
-                add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"Warrior All Items", world.player, required))
+                add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"{character} All Items", world.player, required))
     
     # Levelsanity rules
     if world.options.levelsanity:
@@ -75,7 +76,7 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
 
         for episode in episode_completions_needed.keys():
             entrance = world.get_entrance(episode + " - Floor 1")
-            add_rule(entrance, lambda state, required=episode_completions_needed[episode]: state.has_group("Warrior Episode Completion", world.player, required))
+            add_rule(entrance, lambda state, required=episode_completions_needed[episode]: state.has_group("Episode Completion", world.player, required))
     
 
 

@@ -328,7 +328,7 @@ class DiceyDungeonsContext(CommonContext):
     
     def is_hintable_location(self, loc: str) -> bool:
         # Hint on Shops and Trades. Shops are '2' in 3rd last digit, trades are '5'
-        return len(loc) == 5 and (loc[-3] == '2' or loc[-3] == '5')
+        return len(loc) == 6 and (loc[-3] == '2' or loc[-3] == '5')
 
 
     async def server_auth(self, password_requested: bool = False):

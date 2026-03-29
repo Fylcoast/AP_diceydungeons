@@ -5,14 +5,15 @@ from typing import TYPE_CHECKING
 from BaseClasses import Item, ItemClassification
 
 from .data.game_data import *
+from .data.globals import *
 
 if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
 
 # Current Warrior item ID blocks taken:
 # 1-270ish: all equipment
-# 991-996: Episode completion
-# 1011-1016: Progressive level ups
+# 911-966: Episode completion
+# 1011-1066: Progressive level ups
 # 9990-9998: Filler items
 # 9999: Dice Shard
 
@@ -30,12 +31,13 @@ DEFAULT_ITEM_CLASSIFICATIONS = dict(
 )
 
 for episode in range(1, 7):
-    # Episode completions
-    ITEM_NAME_TO_ID["Episode " + str(episode) + " - Episode Completed"] = 990 + episode
+    for character_index, character in CHARACTER_CODE_TO_NAME.items():
+        # Episode completions
+        ITEM_NAME_TO_ID[character + " Episode " + str(episode) + " Completed"] = 900 + 10 * character_index + episode
 
-    # Progressive level ups
-    ITEM_NAME_TO_ID["Episode " + str(episode) + " Progressive Level Up"] = 1010 + episode
-    DEFAULT_ITEM_CLASSIFICATIONS["Episode " + str(episode) + " Progressive Level Up"] = ItemClassification.progression
+        # Progressive level ups
+        ITEM_NAME_TO_ID[character + " Ep. " + str(episode) + " Prog. Level Up"] = 1000 + 10 * character_index + episode
+        DEFAULT_ITEM_CLASSIFICATIONS[character + " Ep. " + str(episode) + " Prog. Level Up"] = ItemClassification.progression
 
 
 # Filler
@@ -66,7 +68,8 @@ item_name_groups: dict[str, set[str]] = {
     "Thief Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['thief']['episode']]),
     "Thief All Items": set([k for k in thief_items]),
     
-    "Episode Completion": set([f"Episode {i} - Episode Completed" for i in range(1, 7)])
+    "Warrior Episode Completion": set([f"Warrior Episode {i} Completed" for i in range(1, 7)]),
+    "Thief Episode Completion": set([f"Thief Episode {i} Completed" for i in range(1, 7)]),
 }
 
 class DiceyDungeonsItem(Item):

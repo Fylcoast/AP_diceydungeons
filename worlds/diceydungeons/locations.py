@@ -7,6 +7,7 @@ from BaseClasses import ItemClassification, Location
 from . import items
 from .data.game_data import * # *_items lists
 from .data.episode_data import * # episode location objects
+from .data.globals import *
 
 from .options import MAXIMUM_CHECKS_PER_CHEST, MAXIMUM_CHECKS_PER_SHOP, MAXIMUM_CHECKS_PER_TRADE
 
@@ -55,11 +56,10 @@ for episode in range(1, 7):
 # "Warrior - Ep. 1 Fl. 2 - Chest 2": 112102,
 # "Thief - Ep. 2 Fl. 3 - Shop 1": 223201,
 # etc
-character_names = ["Warrior", "Thief"]
 for character_num, character_episodes in enumerate(all_character_episodes, 1):
     for episode_num, episode in enumerate(character_episodes, 1):
         for floor_num, floor in enumerate(episode.floors, 1):
-            episode_floor_str = character_names[character_num - 1] + " - Ep. " + str(episode_num) + " Fl. " + str(floor_num)
+            episode_floor_str = CHARACTER_CODE_TO_NAME[character_num] + " - Ep. " + str(episode_num) + " Fl. " + str(floor_num)
             # Chests
             for chest in range(1, floor.num_chests * MAXIMUM_CHECKS_PER_CHEST + 1):
                 LOCATION_NAME_TO_ID[episode_floor_str + " - Chest " + str(chest)] = 100000 * character_num + 10000 * episode_num + 1000 * floor_num + 100 + chest
@@ -90,7 +90,7 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
 
     # Populate episode locations based on character choice
     episode_list = all_character_episodes[world.options.character]
-    character_name = character_names[world.options.character]
+    character_name = CHARACTER_CODE_TO_NAME[world.options.character + 1]
     for episode_num, episode in enumerate(episode_list, 1):
         for floor_num, floor in enumerate(episode.floors, 1):
             episode_floor_str = character_name + " - Ep. " + str(episode_num) + " Fl. " + str(floor_num)

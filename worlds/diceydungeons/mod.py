@@ -158,8 +158,14 @@ class DiceyDungeonsClientModGenerator():
         # Conditionally populate other files, based on Options selected.
         if self.slot_data['episode_progression'] == 0:
             # Vanilla progression
-            vanilla_files = files(__package__).joinpath('data', 'vanilla_progression_data', self.mod_name)
-            self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
+            if self.slot_data['character'] == 0:
+                # Warrior
+                vanilla_files = files(__package__).joinpath('data', 'warrior_vanilla_progression_data', self.mod_name)
+                self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
+            else:
+                # Thief
+                vanilla_files = files(__package__).joinpath('data', 'thief_vanilla_progression_data', self.mod_name)
+                self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
         else:
             # Open world
             open_world_files = files(__package__).joinpath('data', 'open_world_data', self.mod_name)

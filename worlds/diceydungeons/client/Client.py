@@ -20,6 +20,7 @@ import os
 from . import launch_and_capture as launcher
 from ..generator import generator as generator
 from .. import mod as patcher
+from ..data.globals import *
 
 import Utils
 from NetUtils import (decode, encode, JSONtoTextParser, JSONMessagePart, ClientStatus,
@@ -281,12 +282,13 @@ class DiceyDungeonsContext(CommonContext):
     async def check_for_victory(self):
         if self.finished_game == False:
             items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
-            if "Episode 1 - Episode Completed" in items_received_str and \
-                "Episode 2 - Episode Completed" in items_received_str and \
-                "Episode 3 - Episode Completed" in items_received_str and \
-                "Episode 4 - Episode Completed" in items_received_str and \
-                "Episode 5 - Episode Completed" in items_received_str and \
-                "Episode 6 - Episode Completed" in items_received_str:
+            character = CHARACTER_CODE_TO_NAME[self.slot_data["character"] + 1]
+            if character + "Episode 1 Completed" in items_received_str and \
+               character +  "Episode 2 Completed" in items_received_str and \
+               character +  "Episode 3 Completed" in items_received_str and \
+               character +  "Episode 4 Completed" in items_received_str and \
+               character +  "Episode 5 Completed" in items_received_str and \
+               character +  "Episode 6 Completed" in items_received_str:
                 await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
                 self.finished_game = True
 
@@ -301,11 +303,13 @@ class DiceyDungeonsContext(CommonContext):
             item_name = self.item_names.lookup_in_game(net_item.item, self.game)
             logger.info(f"{loc_id}: {loc_name} -> {item_name} (player {net_item.player})")
     
-    def get_level_ups_received(self) -> dict[str, int]:
+    def get_level_ups_received(self) -> dict[dict[str, int]]:
         items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
-        level_ups: dict[str, int] = {}
-        for episode in range(1, 7):
-            level_ups[f"Episode {episode}"] = items_received_str.count(f"Episode {episode} Progressive Level Up")
+        level_ups: dict[dict[str, int]] = {}
+        for character_num, character in CHARACTER_CODE_TO_NAME.items():
+            level_ups[character_num] = {}
+            for episode in range(1, 7):
+                level_ups[character_num][f"Episode {episode}"] = items_received_str.count(f"{character} - Ep. {episode} Prog. Level Up")
         
         return level_ups
     

@@ -30,14 +30,15 @@ DEFAULT_ITEM_CLASSIFICATIONS = dict(
     ]
 )
 
-for episode in range(1, 7):
-    for character_index, character in CHARACTER_CODE_TO_NAME.items():
+for character_index, character in CHARACTER_CODE_TO_NAME.items():
+    for episode in range(1, 7):
         # Episode completions
-        ITEM_NAME_TO_ID[character + " Episode " + str(episode) + " Completed"] = 900 + 10 * character_index + episode
+        ITEM_NAME_TO_ID[character + " - Episode " + str(episode) + " Completed"] = 900 + 10 * character_index + episode
+        DEFAULT_ITEM_CLASSIFICATIONS[character + " - Episode " + str(episode) + " Completed"] = ItemClassification.progression
 
         # Progressive level ups
-        ITEM_NAME_TO_ID[character + " Ep. " + str(episode) + " Prog. Level Up"] = 1000 + 10 * character_index + episode
-        DEFAULT_ITEM_CLASSIFICATIONS[character + " Ep. " + str(episode) + " Prog. Level Up"] = ItemClassification.progression
+        ITEM_NAME_TO_ID[character + " - Ep. " + str(episode) + " Prog. Level Up"] = 1000 + 10 * character_index + episode
+        DEFAULT_ITEM_CLASSIFICATIONS[character + " - Ep. " + str(episode) + " Prog. Level Up"] = ItemClassification.progression
 
 
 # Filler
@@ -68,8 +69,8 @@ item_name_groups: dict[str, set[str]] = {
     "Thief Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['thief']['episode']]),
     "Thief All Items": set([k for k in thief_items]),
     
-    "Warrior Episode Completion": set([f"Warrior Episode {i} Completed" for i in range(1, 7)]),
-    "Thief Episode Completion": set([f"Thief Episode {i} Completed" for i in range(1, 7)]),
+    "Warrior Episode Completion": set([f"Warrior - Episode {i} Completed" for i in range(1, 7)]),
+    "Thief Episode Completion": set([f"Thief - Episode {i} Completed" for i in range(1, 7)]),
 }
 
 class DiceyDungeonsItem(Item):
@@ -84,17 +85,18 @@ def create_item_with_correct_classification(world: DiceyDungeonsWorld, name: str
 
 def create_all_items(world: DiceyDungeonsWorld) -> None:
     itempool: list[Item] = []
-    # Character choice
-    if world.options.character.value == 0:
-        itempool += [world.create_item(item) for item in warrior_items]
 
-    if world.options.character.value == 1:
-        itempool += [world.create_item(item) for item in thief_items]
+    # Character choice
+    character: str = CHARACTER_CODE_TO_NAME[world.options.character.value + 1]
+    item_list: list[str] = all_character_item_lists[world.options.character.value]
+    
+    # Equipment pool
+    itempool += [world.create_item(item) for item in item_list]
 
     # Levelsanity
     if world.options.levelsanity:
         for episode in range(1, 7):
-            itempool += [world.create_item(f"Episode {episode} Progressive Level Up") for _ in range(1, 6)]
+            itempool += [world.create_item(f"{character} - Ep. {episode} Prog. Level Up") for _ in range(1, 6)]
     
     # Split dice
     if world.options.split_dice and world.options.dice_shards_per_die > 0:

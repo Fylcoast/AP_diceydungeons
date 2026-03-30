@@ -17,25 +17,26 @@ if TYPE_CHECKING:
 LOCATION_NAME_TO_ID: dict[str, int] = {}
 
 # Current Location ID blocks taken:
-# 991-996: Episode completion
-# 1012-1066: Level ups
-# 111101-665599: chests/shops for all characters
+# 911-966: Episode completion
+# 1112-1666: Level ups
+# 111101-665599: pickups for all characters
 
-for episode in range(1, 7):
-    # Level up locations convention:
-    # Location name: <Episode> - Level <level>
-    # ID: 10<Episode Number><Level Number>
-        # "Episode 1 - Level 2": 1012,
-        # "Episode 1 - Level 3": 1013,
-        # "Episode 2 - Level 2": 1022
-        # etc
-    for level in range(2, 7):
-        LOCATION_NAME_TO_ID["Episode " + str(episode) + " - Level " + str(level)] = 1000 + 10 * episode + level
-    
-    # Episode completion convention:
-    # Location name: Episode <Episode> - Episode Completed
-    # ID: 99<Episode>
-    LOCATION_NAME_TO_ID["Episode " + str(episode) + " - Episode Completed"] = 990 + episode
+for character_code, character in CHARACTER_CODE_TO_NAME.items():
+    for episode in range(1, 7):
+        # Level up locations convention:
+        # Location name: <Character> - Ep. <Episode> - Level <level>
+        # ID: 1<Character Code><Episode Number><Level Number>
+            # "Warrior - Ep. 1 - Level 2": 1112,
+            # "Warrior - Ep. 2 - Level 3": 1123,
+            # "Thief - Ep. 6 - Level 6": 1266
+            # etc
+        for level in range(2, 7):
+            LOCATION_NAME_TO_ID[character + " - Ep. " + str(episode) + " - Level " + str(level)] = 1000 + 100 * character_code + 10 * episode + level
+        
+        # Episode completion convention:
+        # Location name: <Character> - Episode <Episode> Completed
+        # ID: 9<Character Code><Episode>
+        LOCATION_NAME_TO_ID[character + " - Episode " + str(episode) + " Completed"] = 900 + 10 * character_code + episode
 
 
 # Physical locations convention:
@@ -90,11 +91,11 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
 
     # Populate episode locations based on character choice
     episode_list = all_character_episodes[world.options.character]
-    character_name = CHARACTER_CODE_TO_NAME[world.options.character + 1]
+    character = CHARACTER_CODE_TO_NAME[world.options.character + 1]
     for episode_num, episode in enumerate(episode_list, 1):
         for floor_num, floor in enumerate(episode.floors, 1):
-            episode_floor_str = character_name + " - Ep. " + str(episode_num) + " Fl. " + str(floor_num)
-            episode_floor_region = "Episode " + str(episode_num) + " - Floor " + str(floor_num)
+            episode_floor_str = character + " - Ep. " + str(episode_num) + " Fl. " + str(floor_num)
+            episode_floor_region = character + " - Episode " + str(episode_num) + " - Floor " + str(floor_num)
             region = world.get_region(episode_floor_region)
             locs = []
             # Chests
@@ -113,8 +114,8 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
 
     # Populate episode completions
     for episode in range(1, 7):
-        loc_name = "Episode " + str(episode) + " - Episode Completed"
-        region_name = "Episode " + str(episode) + " - Floor 6"
+        loc_name = character + " - Episode " + str(episode) + " Completed"
+        region_name = character + " - Episode " + str(episode) + " - Floor 6"
         region = world.get_region(region_name)
         episode_completed = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
         region.locations.append(episode_completed)
@@ -134,9 +135,8 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
 
         for episode in range(1, 7):
             for level in range(2, 7):
-                # level_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Level" in item[0] and "Episode " + str(episode) in item[0]])
-                loc_name = f"Episode {episode} - Level {level}"
-                region = world.get_region("Episode " + str(episode) + " - " + floor_required[level])
+                loc_name = f"{character} - Ep. {episode} - Level {level}"
+                region = world.get_region(character + " - Episode " + str(episode) + " - " + floor_required[level])
                 level_location = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
                 region.locations.append(level_location)
 

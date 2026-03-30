@@ -296,8 +296,8 @@ class GeneratedItems:
     """All characters, for when looking them up this way is easier."""
     slot_data: dict
     """Player options information"""
-    level_ups: dict[str, int]
-    """Amount of level up items received for each episode"""
+    level_ups: dict[dict[str, int]]
+    """Level up items we've received for each character for each episode. Outer key is character, inner key is episode, value is count."""
     dice_received: int
     """Number of dice player has received, if playing with Split Dice."""
 
@@ -337,16 +337,16 @@ class GeneratedItems:
         if location_id < 10000:
             # Level up location
             # Location name: <Episode> - Level <level>
-            # ID: 10<Episode Number><Level Number>
+            # ID: 1<Character Number><Episode Number><Level Number>
+            character_num: int = int(loc_str[1])
             episode_num: int = int(loc_str[2])
             level_num: int = int(loc_str[3])
 
-            # Add to all characters FOR NOW, this will not work if player can use more than 1 character.
-            for character in self.characters_playing:
-                episode: EpisodeItems = character.episodes[episode_num - 1]
-                if episode.is_level_filled(level_num):
-                    return False
-                episode.add_to_level(level_num, f"Equipment:{item}")
+            character = self.all_characters[character_num - 1]
+            episode: EpisodeItems = character.episodes[episode_num - 1]
+            if episode.is_level_filled(level_num):
+                return False
+            episode.add_to_level(level_num, f"Equipment:{item}")
 
         else:
             # self.all_characters[<character code>].episodes[<episode number - 1>].floors[<floor_num - 1>].chests/shops to get string lists or add to them
@@ -385,7 +385,7 @@ class GeneratedItems:
         """Prefill level locations for any guaranteed items."""
         for character in self.characters_playing:
             for episode in character.episodes:
-                max_level = self.level_ups[character_episodes[character.id][episode.episode_num - 1].name] + 1
+                max_level = self.level_ups[character.id][character_episodes[character.id][episode.episode_num - 1].name] + 1
                 for level in range(2, 7):
                     # Want to fill in an item if:
                     # 1. If there's a defined prefill item
@@ -414,7 +414,7 @@ class GeneratedItems:
             for episode in character.episodes:
                 # Add item to the episode in earliest level/floor/location it can.
                 # It doesn't matter if episodes are samey, because will regenerate before player could play another one.
-                max_level = self.level_ups[character_episodes[character.id][episode.episode_num - 1].name] + 1
+                max_level = self.level_ups[character.id][character_episodes[character.id][episode.episode_num - 1].name] + 1
                 filled: bool = False
 
                 for level in range(2, 7):

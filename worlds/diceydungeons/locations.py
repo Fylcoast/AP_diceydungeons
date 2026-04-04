@@ -106,7 +106,7 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
                 locs.append(episode_floor_str + " - Shop " + str(shop))
             # Trades
             for trade in range(1, floor.num_trades * world.options.checks_per_trade + 1):
-                locs.append(episode_floor_str + " - Trade " + str(trade + 1))
+                locs.append(episode_floor_str + " - Trade " + str(trade))
             # Heals AND Upgrades to go here, someday
         
             region.add_locations(get_location_names_with_ids(locs), DiceyDungeonsLocation)

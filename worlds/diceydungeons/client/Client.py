@@ -89,7 +89,7 @@ class DiceyDungeonsContext(CommonContext):
     game = "Dicey Dungeons"
     from settings import get_settings
     game_path: str = get_settings()["diceydungeons_options"]["install_folder"]
-    slot_data: dict
+    slot_data: dict = {}
 
     def __init__(self, server_address: Optional[str], password: Optional[str]):
         super().__init__(server_address, password)
@@ -164,7 +164,7 @@ class DiceyDungeonsContext(CommonContext):
         # locations we've sent already (don't want to spawn those in): self.checked_locations
         # items we've received in multiworld: self.items_received
         if DEBUG:
-            logger.info(f"all our location info: {self.locations_info}")
+            # logger.info(f"all our location info: {self.locations_info}")
             logger.info(f"all locations we've already checked: {self.checked_locations}")
             logger.info(f"all items we've received: {self.items_received}")
         ap_item_names_list: list[tuple[int, str]] = [(loc_id, f"{self.get_item_name(net_item)} [AP][{loc_id}]") for loc_id, net_item in self.locations_info.items()]
@@ -207,7 +207,7 @@ class DiceyDungeonsContext(CommonContext):
             if self.locations_info:
                 if DEBUG:
                     logger.info(f"Received location item mappings for {len(self.locations_info)} locations")
-                    self.get_items_by_location()
+                    # self.get_items_by_location()
                 self.generate_items()
                 return
             remaining = deadline - time.time()
@@ -250,10 +250,10 @@ class DiceyDungeonsContext(CommonContext):
         """
         msg_type = message.get("type", "unknown")
         data = message.get("data")
+        if DEBUG:
+            logger.info(f"Game message received: {data}")
         
         if msg_type == "game_message":
-            if DEBUG:
-                logger.info(f"Game message received: {data}")
             # Schedule the async command handler so we don't create an un-awaited coroutine
             asyncio.create_task(self.handle_game_command(data))
             
@@ -292,15 +292,15 @@ class DiceyDungeonsContext(CommonContext):
                 await self.send_msgs([{"cmd": 'CreateHints', "locations": [int(loc)]}])
     
     async def check_for_victory(self):
-        if self.finished_game == False:
+        if self.finished_game == False and "character" in self.slot_data:
             items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
             character = CHARACTER_CODE_TO_NAME[self.slot_data["character"] + 1]
-            if character + "Episode 1 Completed" in items_received_str and \
-               character +  "Episode 2 Completed" in items_received_str and \
-               character +  "Episode 3 Completed" in items_received_str and \
-               character +  "Episode 4 Completed" in items_received_str and \
-               character +  "Episode 5 Completed" in items_received_str and \
-               character +  "Episode 6 Completed" in items_received_str:
+            if character + " Episode 1 Completed" in items_received_str and \
+               character +  " Episode 2 Completed" in items_received_str and \
+               character +  " Episode 3 Completed" in items_received_str and \
+               character +  " Episode 4 Completed" in items_received_str and \
+               character +  " Episode 5 Completed" in items_received_str and \
+               character +  " Episode 6 Completed" in items_received_str:
                 await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
                 self.finished_game = True
 

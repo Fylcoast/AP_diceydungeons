@@ -295,12 +295,12 @@ class DiceyDungeonsContext(CommonContext):
         if self.finished_game == False and "character" in self.slot_data:
             items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
             character = CHARACTER_CODE_TO_NAME[self.slot_data["character"] + 1]
-            if character + " Episode 1 Completed" in items_received_str and \
-               character +  " Episode 2 Completed" in items_received_str and \
-               character +  " Episode 3 Completed" in items_received_str and \
-               character +  " Episode 4 Completed" in items_received_str and \
-               character +  " Episode 5 Completed" in items_received_str and \
-               character +  " Episode 6 Completed" in items_received_str:
+            if character + " - Episode 1 Completed" in items_received_str and \
+               character +  " - Episode 2 Completed" in items_received_str and \
+               character +  " - Episode 3 Completed" in items_received_str and \
+               character +  " - Episode 4 Completed" in items_received_str and \
+               character +  " - Episode 5 Completed" in items_received_str and \
+               character +  " - Episode 6 Completed" in items_received_str:
                 await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
                 self.finished_game = True
 

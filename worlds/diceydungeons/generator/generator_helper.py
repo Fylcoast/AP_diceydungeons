@@ -3,17 +3,34 @@ import random
 from ..data.episode_data import *
 from ..data.game_data import *
 
-generator_names: list[str] = ['warrior_one', 'warrior_two', 'warrior_three', 'warrior_four', 'warrior_five', 'warrior_six']
-"""Names for generators, accessed with generator_names[<episode_num - 1>]"""
+generator_names: dict[list[str]] = {
+    1: ['warrior_one', 'warrior_two', 'warrior_three', 'warrior_four', 'warrior_five', 'warrior_six'],
+    2: ['thief_one', 'thief_two', 'thief_three', 'thief_four', 'thief_five', 'thief_six']
+}
+"""Dict of generator names lists, indexed by character code"""
+
+character_episodes: dict[int, list[EpisodeData]] = {
+    1: warrior_episodes,
+    2: thief_episodes
+}
+"""Mapping of character code to data for their episodes"""
+
+item_metadata_mapping: dict[int, str] = {
+    1: 'warrior',
+    2: 'thief'
+}
+"""Mapping of character code to item_metadata field we need to examine for availability"""
 
 class LevelItems:
+    character_num: int
     episode_num: int
     level_num: int
     items: list[str]
 
-    def __init__(self, num: int, episode: int):
+    def __init__(self, num: int, episode: int, character: int):
         self.level_num = num
         self.episode_num = episode
+        self.character_num = character
         self.items = []
     
     def is_level_full(self) -> bool:
@@ -29,12 +46,14 @@ class TradeItems:
     trade_num: int
     floor_num: int
     episode_num: int
+    character_num: int
     items: list[str]
 
-    def __init__(self, num: int, episode: int, floor: int):
+    def __init__(self, num: int, episode: int, floor: int, character: int):
         self.trade_num = num
         self.episode_num = episode
         self.floor_num = floor
+        self.character_num = character
         self.items = []
     
     def add_to_trade(self, item: str):
@@ -48,19 +67,21 @@ class ShopItems:
     shop_num: int
     floor_num: int
     episode_num: int
+    character_num: int
     items: list[str]
 
-    def __init__(self, num: int, episode: int, floor: int):
+    def __init__(self, num: int, episode: int, floor: int, character: int):
         self.shop_num = num
         self.episode_num = episode
         self.floor_num = floor
+        self.character_num = character
         self.items = []
     
     def add_to_shop(self, item: str):
         self.items.append(item)
     
     def is_shop_filled(self) -> bool:
-        shop_limit = warrior_episodes[self.episode_num - 1].floors[self.floor_num - 1].num_shop_slots
+        shop_limit = character_episodes[self.character_num][self.episode_num - 1].floors[self.floor_num - 1].num_shop_slots
         return len(self.items) >= shop_limit
 
     def ap_items_allowed(self, shop_limit: int) -> bool:
@@ -68,18 +89,20 @@ class ShopItems:
         return sum("[AP]" in item for item in self.items) < shop_limit
 
 class FloorItems:
+    character_num: int
     floor_num: int
     episode_num: int
     chests: list[str]
     shops: list[ShopItems]
     trades: list[TradeItems]
 
-    def __init__(self, num: int, episode: int):
+    def __init__(self, num: int, episode: int, character: int):
         self.floor_num = num
         self.episode_num = episode
+        self.character_num = character
         self.chests = []
-        self.shops = [ShopItems(i + 1, self.episode_num, self.floor_num) for i in range(warrior_episodes[self.episode_num - 1].floors[self.floor_num - 1].num_shops)]
-        self.trades = [TradeItems(i + 1, self.episode_num, self.floor_num) for i in range(warrior_episodes[self.episode_num - 1].floors[self.floor_num - 1].num_trades)]
+        self.shops = [ShopItems(i + 1, self.episode_num, self.floor_num, self.character_num) for i in range(character_episodes[character][self.episode_num - 1].floors[self.floor_num - 1].num_shops)]
+        self.trades = [TradeItems(i + 1, self.episode_num, self.floor_num, self.character_num) for i in range(character_episodes[character][self.episode_num - 1].floors[self.floor_num - 1].num_trades)]
     
     def add_to_chests(self, item: str):
         self.chests.append(item)
@@ -104,7 +127,7 @@ class FloorItems:
     
     def are_floor_chests_filled(self) -> bool:
         """Are all chests full on floor, for particular episode limits?"""
-        floor_limit = warrior_episodes[self.episode_num - 1].floors[self.floor_num - 1].num_chests
+        floor_limit = character_episodes[self.character_num][self.episode_num - 1].floors[self.floor_num - 1].num_chests
         return len(self.chests) >= floor_limit
     
     def are_floor_shops_filled(self) -> bool:
@@ -129,7 +152,7 @@ class FloorItems:
             return False
         
         if not allow_anywhere:
-            item_data: dict = item_metadata[item]
+            item_data: dict = item_metadata[item][item_metadata_mapping[self.character_num]]
             
             if not self.are_floor_chests_filled() and self.episode_num in item_data['episode'] and 'chest' in item_data['location_types']:
                 self.add_to_chests(item)
@@ -166,7 +189,7 @@ class FloorItems:
         for chest_item in self.chests:
             row: dict = {}
             row['name'] = chest_item
-            row['generator'] = generator_names[self.episode_num - 1]
+            row['generator'] = generator_names[self.character_num][self.episode_num - 1]
             row['list'] = 'chests'
             row['episode'] = self.episode_num
             row['floor'] = self.floor_num
@@ -177,7 +200,7 @@ class FloorItems:
             for item in shop.items:
                 row: dict = {}
                 row['name'] = item
-                row['generator'] = generator_names[self.episode_num - 1]
+                row['generator'] = generator_names[self.character_num][self.episode_num - 1]
                 row['list'] = 'shops'
                 row['episode'] = self.episode_num
                 row['floor'] = self.floor_num
@@ -189,7 +212,7 @@ class FloorItems:
             for item in trade.items:
                 row: dict = {}
                 row['name'] = item
-                row['generator'] = generator_names[self.episode_num - 1]
+                row['generator'] = generator_names[self.character_num][self.episode_num - 1]
                 row['list'] = 'trades'
                 row['episode'] = self.episode_num
                 row['floor'] = self.floor_num
@@ -199,6 +222,7 @@ class FloorItems:
         return rows
 
 class EpisodeItems:
+    character_num: int
     episode_num: int
     floor1: FloorItems
     floor2: FloorItems
@@ -209,21 +233,22 @@ class EpisodeItems:
 
     levels: list[LevelItems]
 
-    def __init__(self, num: int):
+    def __init__(self, num: int, character_num: int):
         self.episode_num = num
-        self.floor1 = FloorItems(1, self.episode_num)
-        self.floor2 = FloorItems(2, self.episode_num)
-        self.floor3 = FloorItems(3, self.episode_num)
-        self.floor4 = FloorItems(4, self.episode_num)
-        self.floor5 = FloorItems(5, self.episode_num)
+        self.character_num = character_num
+        self.floor1 = FloorItems(1, self.episode_num, self.character_num)
+        self.floor2 = FloorItems(2, self.episode_num, self.character_num)
+        self.floor3 = FloorItems(3, self.episode_num, self.character_num)
+        self.floor4 = FloorItems(4, self.episode_num, self.character_num)
+        self.floor5 = FloorItems(5, self.episode_num, self.character_num)
         self.floors = [self.floor1, self.floor2, self.floor3, self.floor4, self.floor5]
 
         self.levels =   [
-                            LevelItems(2, self.episode_num),
-                            LevelItems(3, self.episode_num),
-                            LevelItems(4, self.episode_num),
-                            LevelItems(5, self.episode_num),
-                            LevelItems(6, self.episode_num)
+                            LevelItems(2, self.episode_num, self.character_num),
+                            LevelItems(3, self.episode_num, self.character_num),
+                            LevelItems(4, self.episode_num, self.character_num),
+                            LevelItems(5, self.episode_num, self.character_num),
+                            LevelItems(6, self.episode_num, self.character_num)
                         ]
     
     def is_level_filled(self, level: int) -> bool:
@@ -241,7 +266,7 @@ class EpisodeItems:
             for item in level.items:
                 row: dict = {}
                 row['name'] = item
-                row['generator'] = generator_names[self.episode_num - 1]
+                row['generator'] = generator_names[self.character_num][self.episode_num - 1]
                 row['list'] = 'levels'
                 row['episode'] = self.episode_num
                 row['iter'] = level.level_num
@@ -249,30 +274,59 @@ class EpisodeItems:
         
         return rows
 
+class CharacterItems:
+    id: int
+    """id of Character. 1 == Warrior, 2 = Thief"""
+    episodes: list[EpisodeItems]
+    """list of episodes, each of which has deeper structure"""
+
+    def __init__(self, id: int):
+        self.id = id
+        self.episodes = [EpisodeItems(1, id), EpisodeItems(2, id), EpisodeItems(3, id), EpisodeItems(4, id), EpisodeItems(5, id), EpisodeItems(6, id)]
+
+
 class GeneratedItems:
-    warrior: list[EpisodeItems]
-    """list of warrior episodes, each of which has deeper structure"""
+    warrior: CharacterItems
+    """Warrior episodes container"""
+    thief: CharacterItems
+    """Thief episodes container"""
+    characters_playing: list[CharacterItems]
+    """List of characters we are playing, based on options."""
+    all_characters: list[CharacterItems]
+    """All characters, for when looking them up this way is easier."""
     slot_data: dict
     """Player options information"""
-    level_ups: dict[str, int]
-    """Amount of level up items received for each episode"""
+    level_ups: dict[dict[str, int]]
+    """Level up items we've received for each character for each episode. Outer key is character, inner key is episode, value is count."""
     dice_received: int
     """Number of dice player has received, if playing with Split Dice."""
 
     def __init__(self, slot_data: dict, level_ups: dict[str, int], dice_received: int):
-        self.warrior = [EpisodeItems(1), EpisodeItems(2), EpisodeItems(3), EpisodeItems(4), EpisodeItems(5), EpisodeItems(6)]
+        self.warrior = CharacterItems(1)
+        self.thief = CharacterItems(2)
+        self.all_characters = [self.warrior, self.thief]
         self.slot_data = slot_data
         self.level_ups = level_ups
         self.dice_received = dice_received
+
+        self.characters_playing = []
+
+        if slot_data['character'] + 1 == 1:
+            self.characters_playing.append(self.warrior)
+        else:
+            self.characters_playing.append(self.thief)
     
     def prefill_floor_5_shops(self):
         """
         Prefill floor 5 shops with an upgrade and a heal.
         """
-        for episode in self.warrior:
-            floor_5 = episode.floors[4]
-            floor_5.add_to_shops("health")
-            floor_5.add_to_shops("upgrade")
+        for character in self.characters_playing:
+            for episode in character.episodes:
+                floor_5 = episode.floors[4]
+                floor_5.add_to_shops("health")
+                if character.id == 1:
+                    # Only add upgrade for Warrior
+                    floor_5.add_to_shops("upgrade")
     
     def add_ap_item_if_possible(self, location_id: int, item: str) -> bool:
         """Add item to generation if there is space. Returns true if added, false if not (no space)"""
@@ -283,26 +337,30 @@ class GeneratedItems:
         if location_id < 10000:
             # Level up location
             # Location name: <Episode> - Level <level>
-            # ID: 10<Episode Number><Level Number>
+            # ID: 1<Character Number><Episode Number><Level Number>
+            character_num: int = int(loc_str[1])
             episode_num: int = int(loc_str[2])
             level_num: int = int(loc_str[3])
 
-            episode: EpisodeItems = self.warrior[episode_num - 1]
+            character = self.all_characters[character_num - 1]
+            episode: EpisodeItems = character.episodes[episode_num - 1]
             if episode.is_level_filled(level_num):
                 return False
             episode.add_to_level(level_num, f"Equipment:{item}")
 
         else:
-            # self.warrior[<episode number - 1>].floors[<floor_num - 1>].chests/shops to get string lists or add to them
-            # Location ID: <Episode Number><Floor Number><Location Code><Location Count, 2 digits>
+            # self.all_characters[<character code>].episodes[<episode number - 1>].floors[<floor_num - 1>].chests/shops to get string lists or add to them
+            # Location ID: <Character Code><Episode Number><Floor Number><Location Code><Location Count, 2 digits>
+            # Character code is 1 = Warrior, 2 = Thief
             # Episode code is 1-6
             # Floor code is 1-6
             # Location code is 1 = chests, 2 = shops, 5 = trades
-            episode_num: int = int(loc_str[0])
-            floor_num: int = int(loc_str[1])
-            location_code: int = int(loc_str[2])
+            character_code: int = int(loc_str[0])
+            episode_num: int = int(loc_str[1])
+            floor_num: int = int(loc_str[2])
+            location_code: int = int(loc_str[3])
 
-            floor: FloorItems = self.warrior[episode_num - 1].floors[floor_num - 1]
+            floor: FloorItems = self.all_characters[character_code - 1].episodes[episode_num - 1].floors[floor_num - 1]
 
             if location_code == 1:
                 # chests
@@ -325,102 +383,83 @@ class GeneratedItems:
     
     def prefill_level_locations(self):
         """Prefill level locations for any guaranteed items."""
-        for episode in self.warrior:
-            max_level = self.level_ups[warrior_episodes[episode.episode_num - 1].name] + 1
-            for level in range(2, 7):
-                # Want to fill in an item if:
-                # 1. If there's a defined prefill item
-                # 2. We have unlocked enough level ups for this episode to cover it
-                # 3. It's not already filled, somehow
-                # 4. If dice, and Split dice is on, we need to be able to add it
-                if level in warrior_episodes[episode.episode_num - 1].level_items and level <= max_level and not episode.is_level_filled(level):
-                    # Consider using a more legible condition for Split Dice in the future
-                    if self.slot_data["split_dice"] and level % 2 == 0 and level // 2 > self.dice_received:
-                        continue
-                    episode.add_to_level(level, warrior_episodes[episode.episode_num - 1].level_items[level])
+        for character in self.characters_playing:
+            for episode in character.episodes:
+                max_level = self.level_ups[character.id][character_episodes[character.id][episode.episode_num - 1].name] + 1
+                for level in range(2, 7):
+                    # Want to fill in an item if:
+                    # 1. If there's a defined prefill item
+                    # 2. We have unlocked enough level ups for this episode to cover it
+                    # 3. It's not already filled, somehow
+                    # 4. If dice, and Split dice is on, we need to be able to add it
+                    if level in character_episodes[character.id][episode.episode_num - 1].level_items and level <= max_level and not episode.is_level_filled(level):
+                        # Consider using a more legible condition for Split Dice in the future
+                        if self.slot_data["split_dice"] and level % 2 == 0 and level // 2 > self.dice_received:
+                            continue
+                        episode.add_to_level(level, character_episodes[character.id][episode.episode_num - 1].level_items[level])
     
     def assign_standard_level_ups(self):
         """For Levelsanity = off, give normal level ups"""
-        for episode in self.warrior:
-            for level in episode.levels:
-                # Consider using a more legible condition for Split Dice in the future
-                if self.slot_data["split_dice"] and level.level_num % 2 == 0 and level.level_num // 2 > self.dice_received:
-                    continue
-                level.add_to_level_list(warrior_episodes[episode.episode_num - 1].standard_level_items[level.level_num])
+        for character in self.characters_playing:
+            for episode in character.episodes:
+                for level in episode.levels:
+                    # Consider using a more legible condition for Split Dice in the future
+                    if self.slot_data["split_dice"] and level.level_num % 2 == 0 and level.level_num // 2 > self.dice_received:
+                        continue
+                    level.add_to_level_list(character_episodes[character.id][episode.episode_num - 1].standard_level_items[level.level_num])
     
     def add_item_to_episodes(self, item: str):
         """Add item to generation up to once for each episode it can be added to."""
-        for episode in self.warrior:
-            # Add item to the episode in earliest level/floor/location it can.
-            # It doesn't matter if episodes are samey, because will regenerate before player could play another one.
-            max_level = self.level_ups[warrior_episodes[episode.episode_num - 1].name] + 1
-            filled: bool = False
+        for character in self.characters_playing:
+            for episode in character.episodes:
+                # Add item to the episode in earliest level/floor/location it can.
+                # It doesn't matter if episodes are samey, because will regenerate before player could play another one.
+                max_level = self.level_ups[character.id][character_episodes[character.id][episode.episode_num - 1].name] + 1
+                filled: bool = False
 
-            for level in range(2, 7):
-                if level <= max_level and not episode.is_level_filled(level):
-                    episode.add_to_level(level, f"Equipment:{item}")
-                    filled = True
-                    break
-                
-            if not filled:
-                for floor in episode.floors:
-                    # Try to add. If added, go to next episode
-                    if floor.add_item_if_possible(item, self.slot_data["equipment_availability"] == 1):
+                for level in range(2, 7):
+                    if level <= max_level and not episode.is_level_filled(level):
+                        episode.add_to_level(level, f"Equipment:{item}")
+                        filled = True
                         break
-    
-    def fill_with_item(self, item: str) -> bool:
-        """Fill all open spaces with given item. Returns true if any items added, false if no items added.
-        Deprecated, in favor of fill_with_random_items"""
-        ret: bool = False
-
-        for episode in self.warrior:
-            for level in range(2, 7):
-                if not episode.is_level_filled(level):
-                    episode.add_to_level(level, f"Equipment:{item}")
-                    ret = True
-
-            for floor in episode.floors:
-                while not floor.are_floor_chests_filled():
-                    floor.add_to_chests(item)
-                    ret = True
-                while not floor.are_floor_shops_filled():
-                    floor.add_to_shops(item)
-                    ret = True
-                while not floor.are_floor_trades_filled():
-                    floor.add_to_trades(item)
-                    ret = True
-        
-        return ret
+                    
+                if not filled:
+                    for floor in episode.floors:
+                        # Try to add. If added, go to next episode
+                        if floor.add_item_if_possible(item, self.slot_data["equipment_availability"] == 1):
+                            break
     
     def fill_with_random_items(self, items: list[str]) -> bool:
         """Fill all open spaces randomly from given item list. Returns true if any items added, false if no items added"""
         ret: bool = False
 
-        for episode in self.warrior:
-            for level in range(2, 7):
-                if not episode.is_level_filled(level):
-                    episode.add_to_level(level, f"Equipment:{random.choice(items)}")
-                    ret = True
+        for character in self.characters_playing:
+            for episode in character.episodes:
+                for level in range(2, 7):
+                    if not episode.is_level_filled(level):
+                        episode.add_to_level(level, f"Equipment:{random.choice(items)}")
+                        ret = True
 
-            for floor in episode.floors:
-                while not floor.are_floor_chests_filled():
-                    floor.add_to_chests(random.choice(items))
-                    ret = True
-                while not floor.are_floor_shops_filled():
-                    floor.add_to_shops(random.choice(items))
-                    ret = True
-                while not floor.are_floor_trades_filled():
-                    floor.add_to_trades(random.choice(items))
-                    ret = True
+                for floor in episode.floors:
+                    while not floor.are_floor_chests_filled():
+                        floor.add_to_chests(random.choice(items))
+                        ret = True
+                    while not floor.are_floor_shops_filled():
+                        floor.add_to_shops(random.choice(items))
+                        ret = True
+                    while not floor.are_floor_trades_filled():
+                        floor.add_to_trades(random.choice(items))
+                        ret = True
         
         return ret
 
     def get_items_to_export(self) -> list[dict]:
         """Export a list of dicts, for writing to ap_data.csv"""
         rows: list[dict] = []
-        for episode in self.warrior:
-            rows.extend(episode.get_level_items())
-            for floor in episode.floors:
-                rows.extend(floor.get_floor_items())
+        for character in self.characters_playing:
+            for episode in character.episodes:
+                rows.extend(episode.get_level_items())
+                for floor in episode.floors:
+                    rows.extend(floor.get_floor_items())
         
         return rows

@@ -1,0 +1,3 @@
+fadein();
+wait(0.5);
+startgamefromcutscene();

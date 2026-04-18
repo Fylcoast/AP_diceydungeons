@@ -7,6 +7,7 @@ from BaseClasses import ItemClassification, Location
 from . import items
 from .data.game_data import * # *_items lists
 from .data.episode_data import * # episode location objects
+from .data.globals import *
 
 from .options import MAXIMUM_CHECKS_PER_CHEST, MAXIMUM_CHECKS_PER_SHOP, MAXIMUM_CHECKS_PER_TRADE
 
@@ -15,31 +16,35 @@ if TYPE_CHECKING:
 
 LOCATION_NAME_TO_ID: dict[str, int] = {}
 
-# Current Warrior location ID blocks taken:
-# 991-996: Episode completion
-# 1012-1066: Level ups
-# 11101-65599: chests/shops
+# Current Location ID blocks taken:
+# 911-966: Episode completion
+# 1112-1666: Level ups
+# 111101-665599: pickups for all characters
 
-for episode in range(1, 7):
-    # Level up locations convention:
-    # Location name: <Episode> - Level <level>
-    # ID: 10<Episode Number><Level Number>
-        # "Episode 1 - Level 2": 1012,
-        # "Episode 1 - Level 3": 1013,
-        # "Episode 2 - Level 2": 1022
-        # etc
-    for level in range(2, 7):
-        LOCATION_NAME_TO_ID["Episode " + str(episode) + " - Level " + str(level)] = 1000 + 10 * episode + level
-    
-    # Episode completion convention:
-    # Location name: Episode <Episode> - Episode Completed
-    # ID: 99<Episode>
-    LOCATION_NAME_TO_ID["Episode " + str(episode) + " - Episode Completed"] = 990 + episode
+for character_code, character in CHARACTER_CODE_TO_NAME.items():
+    for episode in range(1, 7):
+        # Level up locations convention:
+        # Location name: <Character> - Ep. <Episode> - Level <level>
+        # ID: 1<Character Code><Episode Number><Level Number>
+            # "Warrior - Ep. 1 - Level 2": 1112,
+            # "Warrior - Ep. 2 - Level 3": 1123,
+            # "Thief - Ep. 6 - Level 6": 1266
+            # etc
+        for level in range(2, 7):
+            LOCATION_NAME_TO_ID[character + " - Ep. " + str(episode) + " - Level " + str(level)] = 1000 + 100 * character_code + 10 * episode + level
+        
+        # Episode completion convention:
+        # Location name: <Character> - Episode <Episode> Completed
+        # ID: 9<Character Code><Episode>
+        LOCATION_NAME_TO_ID[character + " - Episode " + str(episode) + " Completed"] = 900 + 10 * character_code + episode
 
 
 # Physical locations convention:
-# Location name: <Episode> - <Floor> - <Location Type> <Number>
-# ID: <Episode Number><Floor Number><Location Code><Location Count, 2 digits>
+# Location name: <Character> - Ep. # Fl. # - <Location Type> <Number>
+# ID: <Character Code><Episode Number><Floor Number><Location Code><Location Count, 2 digits>
+# Character code:
+#   1: Warrior
+#   2: Thief
 # Episode code is 1-6
 # Floor code is 1-6
 # Location code:
@@ -48,29 +53,29 @@ for episode in range(1, 7):
 #   3: Heals
 #   4: Upgrades
 #   5: Trades
-# "Episode 1 - Floor 1 - Chest 1": 11101,
-# "Episode 1 - Floor 1 - Chest 2": 11102,
-# "Episode 1 - Floor 2 - Chest 1": 12101,
-# "Episode 1 - Floor 2 - Shop 1": 12201,
+# "Warrior - Ep. 1 Fl. 1 - Chest 1": 111101,
+# "Warrior - Ep. 1 Fl. 2 - Chest 2": 112102,
+# "Thief - Ep. 2 Fl. 3 - Shop 1": 223201,
 # etc
-for episode_num, episode in enumerate(warrior_episodes):
-    for floor_num, floor in enumerate(episode.floors):
-        episode_floor_str = "Episode " + str(episode_num + 1) + " - Floor " + str(floor_num + 1)
-        # Chests
-        for chest in range(floor.num_chests * MAXIMUM_CHECKS_PER_CHEST):
-            LOCATION_NAME_TO_ID[episode_floor_str + " - Chest " + str(chest + 1)] = 10000 * (episode_num + 1) + 1000 * (floor_num + 1) + 100 + (chest + 1)
-        # Shops
-        for shop in range(floor.num_shops * MAXIMUM_CHECKS_PER_SHOP):
-            LOCATION_NAME_TO_ID[episode_floor_str + " - Shop " + str(shop + 1)] = 10000 * (episode_num + 1) + 1000 * (floor_num + 1) + 200 + (shop + 1)
-        # Heals
-        for heal in range(floor.num_heals):
-            LOCATION_NAME_TO_ID[episode_floor_str + " - Heal " + str(heal + 1)] = 10000 * (episode_num + 1) + 1000 * (floor_num + 1) + 300 + (heal + 1)
-        # Upgrades
-        for upgrade in range(floor.num_upgrades):
-            LOCATION_NAME_TO_ID[episode_floor_str + " - Upgrade " + str(upgrade + 1)] = 10000 * (episode_num + 1) + 1000 * (floor_num + 1) + 400 + (upgrade + 1)
-        # Trades
-        for trade in range(floor.num_trades * MAXIMUM_CHECKS_PER_TRADE):
-            LOCATION_NAME_TO_ID[episode_floor_str + " - Trade " + str(trade + 1)] = 10000 * (episode_num + 1) + 1000 * (floor_num + 1) + 500 + (trade + 1)
+for character_num, character_episodes in enumerate(all_character_episodes, 1):
+    for episode_num, episode in enumerate(character_episodes, 1):
+        for floor_num, floor in enumerate(episode.floors, 1):
+            episode_floor_str = CHARACTER_CODE_TO_NAME[character_num] + " - Ep. " + str(episode_num) + " Fl. " + str(floor_num)
+            # Chests
+            for chest in range(1, floor.num_chests * MAXIMUM_CHECKS_PER_CHEST + 1):
+                LOCATION_NAME_TO_ID[episode_floor_str + " - Chest " + str(chest)] = 100000 * character_num + 10000 * episode_num + 1000 * floor_num + 100 + chest
+            # Shops
+            for shop in range(1, floor.num_shops * MAXIMUM_CHECKS_PER_SHOP + 1):
+                LOCATION_NAME_TO_ID[episode_floor_str + " - Shop " + str(shop)] = 100000 * character_num + 10000 * episode_num + 1000 * floor_num + 200 + shop
+            # Heals
+            for heal in range(1, floor.num_heals + 1):
+                LOCATION_NAME_TO_ID[episode_floor_str + " - Heal " + str(heal)] = 100000 * character_num + 10000 * episode_num + 1000 * floor_num + 300 + heal
+            # Upgrades
+            for upgrade in range(1, floor.num_upgrades + 1):
+                LOCATION_NAME_TO_ID[episode_floor_str + " - Upgrade " + str(upgrade)] = 100000 * character_num + 10000 * episode_num + 1000 * floor_num + 400 + upgrade
+            # Trades
+            for trade in range(1, floor.num_trades * MAXIMUM_CHECKS_PER_TRADE + 1):
+                LOCATION_NAME_TO_ID[episode_floor_str + " - Trade " + str(trade)] = 100000 * character_num + 10000 * episode_num + 1000 * floor_num + 500 + trade
 
 class DiceyDungeonsLocation(Location):
     game: str = "Dicey Dungeons"
@@ -83,42 +88,34 @@ def create_all_locations(world: DiceyDungeonsWorld) -> None:
     create_events(world)
 
 def create_regular_locations(world: DiceyDungeonsWorld) -> None:
-    # episode_one = world.get_region("Episode 1")
-    # episode_two = world.get_region("Episode 2")
-    # episode_three = world.get_region("Episode 3")
-    # episode_four = world.get_region("Episode 4")
-    # episode_five = world.get_region("Episode 5")
-    # episode_six = world.get_region("Episode 6")
-    # episode_regions = [episode_one, episode_two, episode_three, episode_four, episode_five, episode_six]
 
-    # Populate episode locations
-    for episode_num, episode in enumerate(warrior_episodes):
-        # episode_locations = []
-        for floor_num, floor in enumerate(episode.floors):
-            episode_floor_str = "Episode " + str(episode_num + 1) + " - Floor " + str(floor_num + 1)
-            region = world.get_region(episode_floor_str)
+    # Populate episode locations based on character choice
+    episode_list = all_character_episodes[world.options.character]
+    character = CHARACTER_CODE_TO_NAME[world.options.character + 1]
+    for episode_num, episode in enumerate(episode_list, 1):
+        for floor_num, floor in enumerate(episode.floors, 1):
+            episode_floor_str = character + " - Ep. " + str(episode_num) + " Fl. " + str(floor_num)
+            episode_floor_region = character + " - Episode " + str(episode_num) + " - Floor " + str(floor_num)
+            region = world.get_region(episode_floor_region)
             locs = []
             # Chests
-            for chest in range(floor.num_chests * world.options.checks_per_chest):
-                locs.append(episode_floor_str + " - Chest " + str(chest + 1))
+            for chest in range(1, floor.num_chests * world.options.checks_per_chest + 1):
+                locs.append(episode_floor_str + " - Chest " + str(chest))
             # Shops
-            for shop in range(floor.num_shops * world.options.checks_per_shop):
-                locs.append(episode_floor_str + " - Shop " + str(shop + 1))
+            for shop in range(1, floor.num_shops * world.options.checks_per_shop + 1):
+                locs.append(episode_floor_str + " - Shop " + str(shop))
             # Trades
-            for trade in range(floor.num_trades * world.options.checks_per_trade):
-                locs.append(episode_floor_str + " - Trade " + str(trade + 1))
+            for trade in range(1, floor.num_trades * world.options.checks_per_trade + 1):
+                locs.append(episode_floor_str + " - Trade " + str(trade))
             # Heals AND Upgrades to go here, someday
         
             region.add_locations(get_location_names_with_ids(locs), DiceyDungeonsLocation)
 
 
     # Populate episode completions
-    # menu = world.get_region("Menu")
-    # completion_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Episode Completed" in item[0]])
-    # menu.add_locations(completion_locations, DiceyDungeonsLocation)
     for episode in range(1, 7):
-        loc_name = "Episode " + str(episode) + " - Episode Completed"
-        region_name = "Episode " + str(episode) + " - Floor 6"
+        loc_name = character + " - Episode " + str(episode) + " Completed"
+        region_name = character + " - Episode " + str(episode) + " - Floor 6"
         region = world.get_region(region_name)
         episode_completed = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
         region.locations.append(episode_completed)
@@ -138,9 +135,8 @@ def create_regular_locations(world: DiceyDungeonsWorld) -> None:
 
         for episode in range(1, 7):
             for level in range(2, 7):
-                # level_locations = dict([item for item in LOCATION_NAME_TO_ID.items() if "Level" in item[0] and "Episode " + str(episode) in item[0]])
-                loc_name = f"Episode {episode} - Level {level}"
-                region = world.get_region("Episode " + str(episode) + " - " + floor_required[level])
+                loc_name = f"{character} - Ep. {episode} - Level {level}"
+                region = world.get_region(character + " - Episode " + str(episode) + " - " + floor_required[level])
                 level_location = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
                 region.locations.append(level_location)
 

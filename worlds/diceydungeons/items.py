@@ -5,37 +5,40 @@ from typing import TYPE_CHECKING
 from BaseClasses import Item, ItemClassification
 
 from .data.game_data import *
+from .data.globals import *
 
 if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
 
 # Current Warrior item ID blocks taken:
-# 1-70ish: warrior items
-# 991-996: Episode completion
-# 1011-1016: Progressive level ups
+# 1-270ish: all equipment
+# 911-966: Episode completion
+# 1011-1066: Progressive level ups
 # 9990-9998: Filler items
 # 9999: Dice Shard
 
 # Warrior items only, to start
 ITEM_NAME_TO_ID = dict(
     [
-        (item, i) for i, item in enumerate(warrior_items, 1)
+        (item, i) for i, item in enumerate(item_metadata.keys(), 1)
     ]
 )
 
 DEFAULT_ITEM_CLASSIFICATIONS = dict(
     [
-        (item, ItemClassification.progression) for item in warrior_items
+        (item, ItemClassification.progression) for item in item_metadata.keys()
     ]
 )
 
-for episode in range(1, 7):
-    # Episode completions
-    ITEM_NAME_TO_ID["Episode " + str(episode) + " - Episode Completed"] = 990 + episode
+for character_index, character in CHARACTER_CODE_TO_NAME.items():
+    for episode in range(1, 7):
+        # Episode completions
+        ITEM_NAME_TO_ID[character + " - Episode " + str(episode) + " Completed"] = 900 + 10 * character_index + episode
+        DEFAULT_ITEM_CLASSIFICATIONS[character + " - Episode " + str(episode) + " Completed"] = ItemClassification.progression
 
-    # Progressive level ups
-    ITEM_NAME_TO_ID["Episode " + str(episode) + " Progressive Level Up"] = 1010 + episode
-    DEFAULT_ITEM_CLASSIFICATIONS["Episode " + str(episode) + " Progressive Level Up"] = ItemClassification.progression
+        # Progressive level ups
+        ITEM_NAME_TO_ID[character + " - Ep. " + str(episode) + " Prog. Level Up"] = 1000 + 10 * character_index + episode
+        DEFAULT_ITEM_CLASSIFICATIONS[character + " - Ep. " + str(episode) + " Prog. Level Up"] = ItemClassification.progression
 
 
 # Filler
@@ -50,14 +53,24 @@ DEFAULT_ITEM_CLASSIFICATIONS["Dice Shard"] = ItemClassification.progression
 
 # Groups
 item_name_groups: dict[str, set[str]] = {
-    "Warrior Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['episode']]),
-    "Warrior Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['episode']]),
-    "Warrior Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['episode']]),
-    "Warrior Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['episode']]),
-    "Warrior Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['episode']]),
-    "Warrior Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['episode']]),
-    "Warrior All Items": set([k for k in item_metadata.keys()]),
-    "Warrior Episode Completion": set([f"Episode {i} - Episode Completed" for i in range(1, 7)])
+    "Warrior Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['warrior']['episode']]),
+    "Warrior Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['warrior']['episode']]),
+    "Warrior Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['warrior']['episode']]),
+    "Warrior Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['warrior']['episode']]),
+    "Warrior Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['warrior']['episode']]),
+    "Warrior Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['warrior']['episode']]),
+    "Warrior All Items": set([k for k in warrior_items]),
+    
+    "Thief Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['thief']['episode']]),
+    "Thief Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['thief']['episode']]),
+    "Thief Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['thief']['episode']]),
+    "Thief Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['thief']['episode']]),
+    "Thief Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['thief']['episode']]),
+    "Thief Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['thief']['episode']]),
+    "Thief All Items": set([k for k in thief_items]),
+    
+    "Warrior Episode Completion": set([f"Warrior - Episode {i} Completed" for i in range(1, 7)]),
+    "Thief Episode Completion": set([f"Thief - Episode {i} Completed" for i in range(1, 7)]),
 }
 
 class DiceyDungeonsItem(Item):
@@ -71,14 +84,19 @@ def create_item_with_correct_classification(world: DiceyDungeonsWorld, name: str
     return DiceyDungeonsItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
 
 def create_all_items(world: DiceyDungeonsWorld) -> None:
-    itempool: list[Item] = [
-        world.create_item(item) for item in warrior_items
-    ]
+    itempool: list[Item] = []
+
+    # Character choice
+    character: str = CHARACTER_CODE_TO_NAME[world.options.character.value + 1]
+    item_list: list[str] = all_character_item_lists[world.options.character.value]
+    
+    # Equipment pool
+    itempool += [world.create_item(item) for item in item_list]
 
     # Levelsanity
     if world.options.levelsanity:
         for episode in range(1, 7):
-            itempool += [world.create_item(f"Episode {episode} Progressive Level Up") for _ in range(1, 6)]
+            itempool += [world.create_item(f"{character} - Ep. {episode} Prog. Level Up") for _ in range(1, 6)]
     
     # Split dice
     if world.options.split_dice and world.options.dice_shards_per_die > 0:

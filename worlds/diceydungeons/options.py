@@ -148,6 +148,18 @@ class EquipmentAvailability(Choice):
 
     default = option_open
 
+class Character(Choice):
+    '''
+    Determines which character you would like to play as.
+    '''
+
+    display_name = "Character"
+
+    option_warrior = 0
+    option_thief = 1
+
+    default = option_warrior
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
@@ -161,6 +173,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     floor_5_shop_selection: Floor5ShopSelection
     skip_cutscenes: SkipCutscenes
     equipment_availability: EquipmentAvailability
+    character: Character
 
 option_groups = [
     OptionGroup(
@@ -173,7 +186,7 @@ option_groups = [
     ),
     OptionGroup(
         "Gameplay Options",
-        [EpisodeProgression, Floor5ShopSelection]
+        [EpisodeProgression, Floor5ShopSelection, Character]
     ),
     OptionGroup(
         "Quality of Life",
@@ -193,7 +206,8 @@ option_presets = {
         "episode_progression": EpisodeProgression.default,
         "floor_5_shop_selection": Floor5ShopSelection.default,
         "skip_cutscenes": True,
-        "equipment_availability": EquipmentAvailability.default
+        "equipment_availability": EquipmentAvailability.default,
+        "character": Character.option_warrior
     },
     "check-lover": {
         "levelsanity": True,
@@ -206,6 +220,7 @@ option_presets = {
         "episode_progression": EpisodeProgression.option_open_world,
         "floor_5_shop_selection": Floor5ShopSelection.option_items_only,
         "skip_cutscenes": True,
-        "equipment_availability": EquipmentAvailability.option_vanilla
+        "equipment_availability": EquipmentAvailability.option_vanilla,
+        "character": Character.option_warrior
     }
 }

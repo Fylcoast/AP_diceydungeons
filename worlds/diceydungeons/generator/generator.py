@@ -34,13 +34,13 @@ class DiceyDungeonsAPItemGenerator:
     """ap item names mapping with loc_id --> string to be put into csv"""
     slot_data: dict
     """Player options information"""
-    level_ups: dict[str, int]
-    """Level up items we've received for each episode. Key is episode, value is count."""
+    level_ups: dict[dict[str, int]]
+    """Level up items we've received for each character for each episode. Outer key is character, inner key is episode, value is count."""
     dice_received: int
     """Number of dice player has received, if playing with Split Dice."""
 
 
-    def __init__(self, install_location: str, slot_data: dict, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem], level_ups: dict[str, int], dice_received: int):
+    def __init__(self, install_location: str, slot_data: dict, ap_item_names: dict[int, str], locations_info: dict[int, NetworkItem], checked_locations: set[int], items_received: list[NetworkItem], level_ups: dict[dict[str, int]], dice_received: int):
         self.slot_data = slot_data
         self.ap_item_mapping = ap_item_names
         self.locations = locations_info

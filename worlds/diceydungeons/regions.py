@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Region
 
+from .data.globals import *
+
 if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
 
@@ -16,53 +18,31 @@ def create_and_connect_regions(world: DiceyDungeonsWorld) -> None:
 def create_all_regions(world: DiceyDungeonsWorld) -> None:
     menu = Region("Menu", world.player, world.multiworld)
     regions = [menu]
-    # episode_one = Region("Episode 1", world.player, world.multiworld)
-    # episode_two = Region("Episode 2", world.player, world.multiworld)
-    # episode_three = Region("Episode 3", world.player, world.multiworld)
-    # episode_four = Region("Episode 4", world.player, world.multiworld)
-    # episode_five = Region("Episode 5", world.player, world.multiworld)
-    # episode_six = Region("Episode 6", world.player, world.multiworld)
-    for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
-        for floor in ["Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
-            region = Region(episode + " - " + floor, world.player, world.multiworld)
-            regions.append(region)
-
-    # regions = [
-    #     menu,
-    #     episode_one,
-    #     episode_two,
-    #     episode_three,
-    #     episode_four,
-    #     episode_five,
-    #     episode_six
-    # ]
+    # Region name: <Character> - Episode <Episode number> - Floor <Floor number>
+    for _, character in CHARACTER_CODE_TO_NAME.items():
+        for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
+            for floor in ["Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
+                region = Region(character + " - " + episode + " - " + floor, world.player, world.multiworld)
+                regions.append(region)
 
     world.multiworld.regions += regions
 
 def connect_regions(world: DiceyDungeonsWorld) -> None:
     menu = world.get_region("Menu")
-    # episode_one = world.get_region("Episode 1")
-    # episode_two = world.get_region("Episode 2")
-    # episode_three = world.get_region("Episode 3")
-    # episode_four = world.get_region("Episode 4")
-    # episode_five = world.get_region("Episode 5")
-    # episode_six = world.get_region("Episode 6")
-
-    # Menu leads to all episodes, episodes cannot lead to each other.
-    # for region in [episode_one, episode_two, episode_three, episode_four, episode_five, episode_six]:
-    #     menu.connect(region, region.name)
-
+    
     floors = ["Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]
 
     # Menu leads to all floor 1's
-    for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
-        region = world.get_region(episode + " - Floor 1")
-        menu.connect(region, region.name)
+    for _, character in CHARACTER_CODE_TO_NAME.items():
+        for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
+            region = world.get_region(character + " - " + episode + " - Floor 1")
+            menu.connect(region, region.name)
 
     # All floors lead to the next floor.
-    for i in range(1, len(floors)):
-        for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
-            pre = world.get_region(episode + " - " + floors[i - 1])
-            post = world.get_region(episode + " - " + floors[i])
-            # Safe to give connection same name as exit location, because everything only has one connection?
-            pre.connect(post, post.name)
+    for _, character in CHARACTER_CODE_TO_NAME.items():
+        for i in range(1, len(floors)):
+            for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
+                pre = world.get_region(character + " - " + episode + " - " + floors[i - 1])
+                post = world.get_region(character + " - " + episode + " - " + floors[i])
+                # Safe to give connection same name as exit location, because everything only has one connection?
+                pre.connect(post, post.name)

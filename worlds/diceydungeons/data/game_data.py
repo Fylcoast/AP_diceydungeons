@@ -2552,10 +2552,10 @@ robot_items = [
 all_character_item_lists = [
     warrior_items,
     thief_items,
+    robot_items,
+    inventor_items,
     witch_items,
     jester_items,
-    inventor_items,
-    robot_items,
 ]
 
 __all__ = [

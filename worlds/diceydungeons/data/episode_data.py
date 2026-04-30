@@ -183,4 +183,78 @@ thief_episode_6 = EpisodeData(
 
 thief_episodes = [thief_episode_1, thief_episode_2, thief_episode_3, thief_episode_4, thief_episode_5, thief_episode_6]
 
-all_character_episodes = [warrior_episodes, thief_episodes]
+# robot_normal
+robot_episode_1 = EpisodeData(
+    "Episode 1",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 0, 0, 2, 0, 1),
+    FloorData(1, 1, 3, 2, 1, 0),
+    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 3: ["Equipment:Buster Sword", "Equipment:Ultima Weapon"], 4: ["CPU:2"], 5: ["Equipment:Heat Sink", "Equipment:Increment"], 6: ["CPU:2"]}
+)
+
+# robot_normal
+robot_episode_2 = EpisodeData(
+    "Episode 2",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 0, 0, 2, 0, 1),
+    FloorData(1, 1, 3, 2, 1, 0),
+    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 3: ["Equipment:Buster Sword", "Equipment:Ultima Weapon"], 4: ["CPU:2"], 5: ["Equipment:Heat Sink", "Equipment:Increment"], 6: ["CPU:2"]}
+)
+
+# robot_youchooseyoulose
+robot_episode_3 = EpisodeData(
+    "Episode 3",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 1),
+    FloorData(1, 1, 3, 3, 1, 0),
+    {},
+    {2: ["Equipment:Spatula", "Equipment:Doppeldice"], 3: ["Equipment:Buster Sword", "Equipment:Ruby Weapon"], 4: ["Equipment:System Shock", "Equipment:Flame War"], 5: ["Equipment:Chocolate Cookie", "Equipment:Mechanical Arm"], 6: ["Equipment:Dexterity Charm", "Upgrade"]}
+)
+
+# robot_normal
+robot_episode_4 = EpisodeData(
+    "Episode 4",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 0, 0, 2, 0, 1),
+    FloorData(1, 1, 3, 2, 1, 0),
+    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 3: ["Equipment:Buster Sword", "Equipment:Ultima Weapon"], 4: ["CPU:2"], 5: ["Equipment:Heat Sink", "Equipment:Increment"], 6: ["CPU:2"]}
+)
+
+# robot_paralleluniverse
+robot_episode_5 = EpisodeData(
+    "Episode 5",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 1),
+    FloorData(1, 1, 3, 3, 1, 0),
+    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 3: ["Equipment:Stack Overflow", "Equipment:Precious Egg@6"], 4: ["CPU:2"], 5: ["Equipment:Cooling Fan", "Equipment:Concatenate"], 6: ["CPU:2"]}
+)
+
+# robot_remixgenerator
+robot_episode_6 = EpisodeData(
+    "Episode 6",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 1),
+    FloorData(1, 1, 3, 3, 1, 0),
+    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 3: ["Equipment:Chainsaw", "Equipment:Doppeltwice"], 4: ["CPU:2"], 5: ["Equipment:Scrap Book", "Equipment:Scrap Spear"], 6: ["CPU:2"]}
+)
+
+robot_episodes = [robot_episode_1, robot_episode_2, robot_episode_3, robot_episode_4, robot_episode_5, robot_episode_6]
+
+all_character_episodes = [warrior_episodes, thief_episodes, robot_episodes]

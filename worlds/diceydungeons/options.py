@@ -157,6 +157,7 @@ class Character(Choice):
 
     option_warrior = 0
     option_thief = 1
+    option_robot = 2
 
     default = option_warrior
 

@@ -57,6 +57,7 @@ class SplitDice(Toggle):
     '''
     Determines whether Dice Shards are required to receive
     dice when leveling up. Shared across episodes.
+    Note: Also affects Robot's CPU.
     '''
     display_name = "Split Dice"
 

@@ -211,10 +211,10 @@ robot_episode_2 = EpisodeData(
 robot_episode_3 = EpisodeData(
     "Episode 3",
     FloorData(1, 0, 0, 0, 0, 0),
-    FloorData(1, 1, 3, 2, 0, 0),
-    FloorData(1, 1, 3, 2, 1, 0),
-    FloorData(1, 1, 3, 2, 0, 1),
-    FloorData(1, 1, 3, 3, 1, 0),
+    FloorData(0, 1, 3, 2, 0, 0),
+    FloorData(0, 1, 3, 2, 1, 0),
+    FloorData(1, 0, 0, 2, 0, 1),
+    FloorData(0, 1, 3, 2, 1, 0),
     {},
     {2: ["Equipment:Spatula", "Equipment:Doppeldice"], 3: ["Equipment:Buster Sword", "Equipment:Ruby Weapon"], 4: ["Equipment:System Shock", "Equipment:Flame War"], 5: ["Equipment:Chocolate Cookie", "Equipment:Mechanical Arm"], 6: ["Equipment:Dexterity Charm", "Upgrade"]}
 )
@@ -237,8 +237,8 @@ robot_episode_5 = EpisodeData(
     FloorData(1, 0, 0, 0, 0, 0),
     FloorData(1, 1, 3, 2, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
-    FloorData(1, 1, 3, 2, 0, 1),
-    FloorData(1, 1, 3, 3, 1, 0),
+    FloorData(1, 0, 0, 2, 0, 1),
+    FloorData(1, 1, 3, 2, 1, 0),
     {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
     {2: ["CPU:2"], 3: ["Equipment:Stack Overflow", "Equipment:Precious Egg@6"], 4: ["CPU:2"], 5: ["Equipment:Cooling Fan", "Equipment:Concatenate"], 6: ["CPU:2"]}
 )
@@ -249,10 +249,10 @@ robot_episode_6 = EpisodeData(
     FloorData(1, 0, 0, 0, 0, 0),
     FloorData(1, 1, 3, 2, 0, 0),
     FloorData(1, 1, 3, 2, 1, 0),
-    FloorData(1, 1, 3, 2, 0, 1),
-    FloorData(1, 1, 3, 3, 1, 0),
+    FloorData(1, 0, 0, 2, 0, 1),
+    FloorData(1, 1, 3, 2, 1, 0),
     {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
-    {2: ["CPU:2"], 3: ["Equipment:Chainsaw", "Equipment:Doppeltwice"], 4: ["CPU:2"], 5: ["Equipment:Scrap Book", "Equipment:Scrap Spear"], 6: ["CPU:2"]}
+    {2: ["CPU:2"], 3: ["Equipment:Missing Score", "Equipment:Spud Cannon"], 4: ["CPU:2"], 5: ["Equipment:Cooling Fan", "Equipment:Increment"], 6: ["CPU:2"]}
 )
 
 robot_episodes = [robot_episode_1, robot_episode_2, robot_episode_3, robot_episode_4, robot_episode_5, robot_episode_6]

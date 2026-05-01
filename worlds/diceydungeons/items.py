@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .world import DiceyDungeonsWorld
 
 # Current Warrior item ID blocks taken:
-# 1-270ish: all equipment
+# 1-300ish: all equipment
 # 911-966: Episode completion
 # 1011-1066: Progressive level ups
 # 9990-9998: Filler items
@@ -69,8 +69,17 @@ item_name_groups: dict[str, set[str]] = {
     "Thief Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['thief']['episode']]),
     "Thief All Items": set([k for k in thief_items]),
     
+    "Robot Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['robot']['episode']]),
+    "Robot Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['robot']['episode']]),
+    "Robot Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['robot']['episode']]),
+    "Robot Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['robot']['episode']]),
+    "Robot Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['robot']['episode']]),
+    "Robot Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['robot']['episode']]),
+    "Robot All Items": set([k for k in robot_items]),
+    
     "Warrior Episode Completion": set([f"Warrior - Episode {i} Completed" for i in range(1, 7)]),
     "Thief Episode Completion": set([f"Thief - Episode {i} Completed" for i in range(1, 7)]),
+    "Robot Episode Completion": set([f"Robot - Episode {i} Completed" for i in range(1, 7)]),
 }
 
 class DiceyDungeonsItem(Item):

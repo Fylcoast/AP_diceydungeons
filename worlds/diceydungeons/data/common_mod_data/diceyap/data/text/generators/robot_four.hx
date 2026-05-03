@@ -90,7 +90,7 @@ goodotherstuff = [];
 var lastfloor = addfloor("boss");
 
 if (getfinalboss() == "Drake"){
-  items.push(vampireitem.pop());
+  items.push("Wooden Stake");
 }
 
 lastfloor

@@ -145,7 +145,8 @@ class DiceyDungeonsContext(CommonContext):
             '|': '[sword]',
             '[': '[sword]',
             ']': '[sword]',
-            '@': '[recycle]'
+            '@': '[recycle]',
+            '#': '[star]'
         }
         translator = str.maketrans(char_replacements)
         return self.item_names.lookup_in_slot(net_item.item, net_item.player).translate(translator)

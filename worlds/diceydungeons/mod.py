@@ -6,8 +6,11 @@ import zipfile
 import io
 from importlib.resources import files
 import shutil
+import fileinput
 
 from BaseClasses import Location, Item, ItemClassification
+
+from .data.episode_data import *
 
 if TYPE_CHECKING:
     from . import DiceyDungeonsWorld
@@ -142,6 +145,42 @@ class DiceyDungeonsClientModGenerator():
             # Filler items.
             rows.extend(get_filler_items())
             writer.writerows(rows)
+    
+    def modify_episode_start_script(self, path: str, character: str, level: int, filter: str, add: bool = False):
+        """Modify start script to either add given string or remove given string."""
+        with fileinput.input(files=(path), inplace=True, mode='r') as f:
+            reader = csv.DictReader(f)
+            print(",".join(reader.fieldnames))
+            for row in reader:
+                if row["Character"] == character and int(row["Level"]) == level:
+                    if add:
+                        if filter not in row["Script: Start Game"]:
+                            row["Script: Start Game"] = row["Script: Start Game"] + filter
+                    else:
+                        row["Script: Start Game"] = row["Script: Start Game"].replace(filter, "")
+                print(",".join(row.values())) 
+    
+    def add_to_all_start_scripts(self, path: str, text_to_add: str):
+        """Modify start script to either add given string or remove given string."""
+        with fileinput.input(files=(path), inplace=True, mode='r') as f:
+            reader = csv.DictReader(f)
+            print(",".join(reader.fieldnames))
+            for row in reader:
+                if text_to_add not in row["Script: Start Game"]:
+                    row["Script: Start Game"] = row["Script: Start Game"] + text_to_add
+                print(",".join(row.values())) 
+    
+    def upgrade_starting_equipment(self, path: str):
+        """Upgrade all starting equipment for all episodes"""
+        with fileinput.input(files=(path), inplace=True, mode='r') as f:
+            reader = csv.DictReader(f)
+            print(",".join(reader.fieldnames))
+            for row in reader:
+                if row["Equipment"]:
+                    starting_equipment = row["Equipment"].split("|")
+                    upgraded_starting_equipment = list(map(lambda equip : f"{equip}+" if "+" not in equip else equip, starting_equipment))
+                    row["Equipment"] = "|".join(upgraded_starting_equipment)
+                print(",".join(row.values())) 
         
     
     def generate(self):
@@ -189,3 +228,31 @@ class DiceyDungeonsClientModGenerator():
                 os.makedirs(equipment_path)
             equipment_path = os.path.join(equipment_path, 'equipment.csv')
             self._generate_equipment_csv(equipment_path)
+        
+        # Modify episodes.csv based on options (QoL options)
+        episodes_path = os.path.join(dest_dir, self.mod_name, 'data', 'text', 'episodes.csv')
+
+        # Warrior Episode 2 - Disable Curse
+        if 'warrior_2_disable_curse' in self.slot_data and self.slot_data['warrior_2_disable_curse']:
+            for removal in warrior_2_start_game_curse_removals:
+                self.modify_episode_start_script(episodes_path, 'Warrior', 2, removal)
+
+        # Warrior Episode 3 - Prevent HP Loss
+        if 'warrior_3_remove_hp_decrease_on_level' in self.slot_data and self.slot_data['warrior_3_remove_hp_decrease_on_level']:
+            for removal in warrior_3_start_game_hp_loss_removals:
+                self.modify_episode_start_script(episodes_path, 'Warrior', 3, removal)
+        
+        # Upgrade Equipment
+
+        # Upgrade starting equipment
+        if 'upgrade_equipment' in self.slot_data and self.slot_data['upgrade_equipment'] >= 1:
+            self.upgrade_starting_equipment(episodes_path)
+            # Make sure to include episode 6
+            upgraded_initial_equipment_files = files(__package__).joinpath('data', 'upgrade_starting_equipment', self.mod_name)
+            self._write_package_files_to_dir(upgraded_initial_equipment_files, self.mod_name, dest_dir)
+
+        # Upgrade all equipment
+        if 'upgrade_equipment' in self.slot_data and self.slot_data['upgrade_equipment'] == 2:
+            for addition in start_game_upgrade_all_equipment_additions:
+                self.add_to_all_start_scripts(episodes_path, addition)
+

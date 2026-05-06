@@ -146,6 +146,17 @@ class DiceyDungeonsClientModGenerator():
             rows.extend(get_filler_items())
             writer.writerows(rows)
     
+    def replace_text_in_column(self, path: str, col: str, old: str, new: str):
+        """Replace an old string with a new string in chosen column of csv at path. 
+        Does nothing if new string already present."""
+        with fileinput.input(files=(path), inplace=True, mode='r') as f:
+            reader = csv.DictReader(f)
+            print(",".join(reader.fieldnames))
+            for row in reader:
+                if new not in row[col]:
+                    row[col] = row[col].replace(old, new)
+                print(",".join(row.values())) 
+    
     def modify_episode_start_script(self, path: str, character: str, level: int, filter: str, add: bool = False):
         """Modify start script to either add given string or remove given string."""
         with fileinput.input(files=(path), inplace=True, mode='r') as f:
@@ -255,4 +266,6 @@ class DiceyDungeonsClientModGenerator():
         if 'upgrade_equipment' in self.slot_data and self.slot_data['upgrade_equipment'] == 2:
             for addition in start_game_upgrade_all_equipment_additions:
                 self.add_to_all_start_scripts(episodes_path, addition)
+            # Also handle level ups.
+            self.replace_text_in_column(episodes_path, 'Script: Define Level Up Rewards', 'leveluprewards', 'upgraded_leveluprewards')
 

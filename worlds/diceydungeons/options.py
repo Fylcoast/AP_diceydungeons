@@ -149,6 +149,37 @@ class EquipmentAvailability(Choice):
 
     default = option_open
 
+class Warrior2DisableCurse(Toggle):
+    '''
+    If playing as Warrior, disable the Curse status for Episode 2.
+    '''
+    display_name = "Warrior Episode 2 - Disable Curse"
+
+class Warrior3RemoveHPDecreaseOnLevel(Toggle):
+    '''
+    If playing as Warrior, prevent HP loss on level up.
+    '''
+    display_name = "Warrior Episode 3 - Prevent HP Loss"
+
+class UpgradeEquipment(Choice):
+    '''
+    Choose whether you'd like any equipment upgraded that wouldn't otherwise be.
+    
+    vanilla: No equipment is upgraded that wouldn't be upgraded in base game.
+
+    starting equipment: Your starting equipment is upgraded, all other equipment stays the same.
+
+    all equipment: All equipment is upgraded, like Warrior Episode 2. Upgrades in episodes are converted to Copy blueprints.
+    '''
+
+    display_name = "Upgrade Equipment"
+
+    option_vanilla = 0
+    option_starting_equipment = 1
+    option_all_equipment = 2
+
+    default = option_vanilla
+
 class Character(Choice):
     '''
     Determines which character you would like to play as.
@@ -175,6 +206,9 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     floor_5_shop_selection: Floor5ShopSelection
     skip_cutscenes: SkipCutscenes
     equipment_availability: EquipmentAvailability
+    warrior_2_disable_curse: Warrior2DisableCurse
+    warrior_3_remove_hp_decrease_on_level : Warrior3RemoveHPDecreaseOnLevel
+    upgrade_equipment : UpgradeEquipment
     character: Character
 
 option_groups = [
@@ -192,7 +226,7 @@ option_groups = [
     ),
     OptionGroup(
         "Quality of Life",
-        [SkipCutscenes, EquipmentAvailability]
+        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, UpgradeEquipment]
     )
 ]
 
@@ -209,6 +243,9 @@ option_presets = {
         "floor_5_shop_selection": Floor5ShopSelection.default,
         "skip_cutscenes": True,
         "equipment_availability": EquipmentAvailability.default,
+        "warrior_2_disable_curse": False,
+        "warrior_3_remove_hp_decrease_on_level": False,
+        "upgrade_equipment": UpgradeEquipment.default,
         "character": Character.option_warrior
     },
     "check-lover": {
@@ -223,6 +260,9 @@ option_presets = {
         "floor_5_shop_selection": Floor5ShopSelection.option_items_only,
         "skip_cutscenes": True,
         "equipment_availability": EquipmentAvailability.option_vanilla,
+        "warrior_2_disable_curse": False,
+        "warrior_3_remove_hp_decrease_on_level": True,
+        "upgrade_equipment": UpgradeEquipment.default,
         "character": Character.option_warrior
     }
 }

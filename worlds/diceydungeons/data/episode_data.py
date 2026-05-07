@@ -109,6 +109,9 @@ episode6 = EpisodeData(
 
 warrior_episodes = [episode1, episode2, episode3, episode4, episode5, episode6]
 
+warrior_2_start_game_curse_removals = ["Rules.addplayerinnatestatus(CURSE);"]
+warrior_3_start_game_hp_loss_removals = ["Rules.hpchangeonlevelup = -2;", "Rules.lowhpmusic = false;"]
+
 # thief_normal
 thief_episode_1 = EpisodeData(
     "Episode 1",
@@ -258,3 +261,5 @@ robot_episode_6 = EpisodeData(
 robot_episodes = [robot_episode_1, robot_episode_2, robot_episode_3, robot_episode_4, robot_episode_5, robot_episode_6]
 
 all_character_episodes = [warrior_episodes, thief_episodes, robot_episodes]
+
+start_game_upgrade_all_equipment_additions = ["Rules.upgradeplayerequipment = true;", "Rules.substitute(~upgrade~[;] ~copyshop~);"]

@@ -1,6 +1,6 @@
 {
     "game": "Dicey Dungeons",
 	"authors": [ "Fylcoast" ],
-    "minimum_ap_version": "0.6.6",
-    "world_version": "0.3.1"
+    "minimum_ap_version": "0.6.7",
+    "world_version": "0.3.2"
 }

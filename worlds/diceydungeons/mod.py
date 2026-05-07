@@ -6,7 +6,6 @@ import zipfile
 import io
 from importlib.resources import files
 import shutil
-import fileinput
 
 from BaseClasses import Location, Item, ItemClassification
 
@@ -149,49 +148,73 @@ class DiceyDungeonsClientModGenerator():
     def replace_text_in_column(self, path: str, col: str, old: str, new: str):
         """Replace an old string with a new string in chosen column of csv at path. 
         Does nothing if new string already present."""
-        with fileinput.input(files=(path), inplace=True, mode='r') as f:
+        with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
-            print(",".join(reader.fieldnames))
-            for row in reader:
-                if new not in row[col]:
-                    row[col] = row[col].replace(old, new)
-                print(",".join(row.values())) 
+            fieldnames = reader.fieldnames
+            rows = list(reader)
+        
+        for row in rows:
+            if new not in row[col]:
+                row[col] = row[col].replace(old, new)
+        
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows) 
     
     def modify_episode_start_script(self, path: str, character: str, level: int, filter: str, add: bool = False):
         """Modify start script to either add given string or remove given string."""
-        with fileinput.input(files=(path), inplace=True, mode='r') as f:
+        with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
-            print(",".join(reader.fieldnames))
-            for row in reader:
-                if row["Character"] == character and int(row["Level"]) == level:
-                    if add:
-                        if filter not in row["Script: Start Game"]:
-                            row["Script: Start Game"] = row["Script: Start Game"] + filter
-                    else:
-                        row["Script: Start Game"] = row["Script: Start Game"].replace(filter, "")
-                print(",".join(row.values())) 
+            fieldnames = reader.fieldnames
+            rows = list(reader)
+        
+        for row in rows:
+            if row["Character"] == character and int(row["Level"]) == level:
+                if add:
+                    if filter not in row["Script: Start Game"]:
+                        row["Script: Start Game"] = row["Script: Start Game"] + filter
+                else:
+                    row["Script: Start Game"] = row["Script: Start Game"].replace(filter, "")
+        
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows) 
     
     def add_to_all_start_scripts(self, path: str, text_to_add: str):
         """Modify start script to either add given string or remove given string."""
-        with fileinput.input(files=(path), inplace=True, mode='r') as f:
+        with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
-            print(",".join(reader.fieldnames))
-            for row in reader:
-                if text_to_add not in row["Script: Start Game"]:
-                    row["Script: Start Game"] = row["Script: Start Game"] + text_to_add
-                print(",".join(row.values())) 
+            fieldnames = reader.fieldnames
+            rows = list(reader)
+        
+        for row in rows:
+            if text_to_add not in row["Script: Start Game"]:
+                row["Script: Start Game"] = row["Script: Start Game"] + text_to_add
+        
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows) 
     
     def upgrade_starting_equipment(self, path: str):
         """Upgrade all starting equipment for all episodes"""
-        with fileinput.input(files=(path), inplace=True, mode='r') as f:
+        with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
-            print(",".join(reader.fieldnames))
-            for row in reader:
-                if row["Equipment"]:
-                    starting_equipment = row["Equipment"].split("|")
-                    upgraded_starting_equipment = list(map(lambda equip : f"{equip}+" if "+" not in equip else equip, starting_equipment))
-                    row["Equipment"] = "|".join(upgraded_starting_equipment)
-                print(",".join(row.values())) 
+            fieldnames = reader.fieldnames
+            rows = list(reader)
+        
+        for row in rows:
+            if row["Equipment"]:
+                starting_equipment = row["Equipment"].split("|")
+                upgraded_starting_equipment = list(map(lambda equip : f"{equip}+" if "+" not in equip else equip, starting_equipment))
+                row["Equipment"] = "|".join(upgraded_starting_equipment)
+        
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows) 
         
     
     def generate(self):

@@ -235,9 +235,13 @@ class DiceyDungeonsClientModGenerator():
                 # Warrior
                 vanilla_files = files(__package__).joinpath('data', 'warrior_vanilla_progression_data', self.mod_name)
                 self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
-            else:
+            elif self.slot_data['character'] == 1:
                 # Thief
                 vanilla_files = files(__package__).joinpath('data', 'thief_vanilla_progression_data', self.mod_name)
+                self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
+            else:
+                # Robot
+                vanilla_files = files(__package__).joinpath('data', 'robot_vanilla_progression_data', self.mod_name)
                 self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
         else:
             # Open world

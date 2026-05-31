@@ -254,6 +254,11 @@ class EpisodeItems:
                             LevelItems(6, self.episode_num, self.character_num)
                         ]
     
+    def item_allowed_for_levels(self, item: str, allow_anywhere: bool) -> bool:
+        """Check if item is allowed in levels for this episode."""
+        item_data: dict = item_metadata[item][item_metadata_mapping[self.character_num]]
+        return allow_anywhere or (self.episode_num in item_data['episode'] and 'chest' in item_data['location_types'])
+
     def is_level_filled(self, level: int) -> bool:
         """Check if level in this episode is filled. T/F"""
         return self.levels[level - 2].is_level_full()
@@ -424,9 +429,10 @@ class GeneratedItems:
                 # It doesn't matter if episodes are samey, because will regenerate before player could play another one.
                 max_level = self.level_ups[character.id][character_episodes[character.id][episode.episode_num - 1].name] + 1
                 filled: bool = False
+                allow_anywhere: bool = self.slot_data["equipment_availability"] == 1
 
                 for level in range(2, 7):
-                    if level <= max_level and not episode.is_level_filled(level):
+                    if level <= max_level and not episode.is_level_filled(level) and episode.item_allowed_for_levels(item, allow_anywhere):
                         episode.add_to_level(level, f"Equipment:{item}")
                         filled = True
                         break
@@ -434,7 +440,7 @@ class GeneratedItems:
                 if not filled:
                     for floor in episode.floors:
                         # Try to add. If added, go to next episode
-                        if floor.add_item_if_possible(item, self.slot_data["equipment_availability"] == 1):
+                        if floor.add_item_if_possible(item, allow_anywhere):
                             break
     
     def fill_with_random_items(self, items: list[str]) -> bool:

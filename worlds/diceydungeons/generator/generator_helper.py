@@ -42,8 +42,9 @@ class LevelItems:
     def add_to_level(self, item: str):
         self.items.append(item)
     
-    def add_to_level_list(self, items: list[str]):
-        self.items.extend(items)
+    def add_to_level_list(self, items: list[str], replace_upgrade: bool):
+        items_to_add = ["Copy" if item == "Upgrade" and replace_upgrade else item for item in items]
+        self.items.extend(items_to_add)
 
 class TradeItems:
     trade_num: int
@@ -413,13 +414,14 @@ class GeneratedItems:
     
     def assign_standard_level_ups(self):
         """For Levelsanity = off, give normal level ups"""
+        upgrade_all_equipment = self.slot_data["upgrade_equipment"] == 2
         for character in self.characters_playing:
             for episode in character.episodes:
                 for level in episode.levels:
                     # Consider using a more legible condition for Split Dice in the future
                     if self.slot_data["split_dice"] and level.level_num % 2 == 0 and level.level_num // 2 > self.dice_received:
                         continue
-                    level.add_to_level_list(character_episodes[character.id][episode.episode_num - 1].standard_level_items[level.level_num])
+                    level.add_to_level_list(character_episodes[character.id][episode.episode_num - 1].standard_level_items[level.level_num], upgrade_all_equipment)
     
     def add_item_to_episodes(self, item: str):
         """Add item to generation up to once for each episode it can be added to."""

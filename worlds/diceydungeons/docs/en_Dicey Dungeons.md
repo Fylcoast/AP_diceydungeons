@@ -11,7 +11,7 @@ Your pool of items (equipment) which you can acquire throughout your runs has be
 
 ## What characters are supported?
 
-The Warrior and the Thief are the only characters supported by this mod. Other characters may be present based on your settings, but playing their Episodes will not benefit you.
+The Warrior, Thief, and Robot are the only characters supported by this mod. Other characters may be present based on your settings, but playing their Episodes will not benefit you.
 
 ## What is the goal of Dicey Dungeons when randomized?
 
@@ -28,6 +28,7 @@ Any of the items which can be shuffled may also be placed into another player's 
 ## What does another world's item look like in Dicey Dungeons?
 
 An item belonging to another world will show up as a Gray equipment box, featuring the item's name, its owner in the multiworld, and some flavor text about how important it (probably) is.
+NOTE: Due to technical limitations, items do not get sent to the multiworld immediately. They are sent once any combat is started with the item equipped or in your backpack.
 
 ## When the player receives an item, what happens?
 

@@ -48,3 +48,8 @@ You may be wondering where your equipment is, if you've received some from the m
 The setting for your Dicey Dungeons install folder is probably not correct. Check the path with client command `/install_folder`. 
 
 If the folder is incorrect, please correct it in the "diceydungeons_options" section of your host.yaml file (in your Archipelago install), then restart the Client.
+
+## I'm playing with "Upgrade equipment" set to "all equipment", why is some not upgraded?
+1. If you're seeing a "LOCKED" item (requiring dice rolls to unlock) in a Shop and it is showing you the normal equipment instead of upgraded, this is a known issue, and likely due to base game code (will not be fixed).
+1. In "Finders Keepers" episode for the Thief, stolen equipment is not upgraded. This is a known limitation, fix is not currently planned but may be completed someday.
+1. If none of the above, it is probably a bug, feel free to report it to the discord!

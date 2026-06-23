@@ -182,6 +182,14 @@ class UpgradeEquipment(Choice):
 
     default = option_vanilla
 
+class ReleaseEpisodesWhenCompleted(Toggle):
+    '''
+    Release any checks in an Episode when that episode is beaten.
+    Prevents need to replay episodes once they are beaten.
+    '''
+
+    display_name = "Release Episodes When Completed"
+
 class Character(Choice):
     '''
     Determines which character you would like to play as.
@@ -221,6 +229,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     warrior_2_disable_curse: Warrior2DisableCurse
     warrior_3_remove_hp_decrease_on_level : Warrior3RemoveHPDecreaseOnLevel
     upgrade_equipment : UpgradeEquipment
+    release_episodes_when_completed : ReleaseEpisodesWhenCompleted
     character: Character
     excluded_equipment: ExcludedEquipment
 
@@ -239,7 +248,7 @@ option_groups = [
     ),
     OptionGroup(
         "Quality of Life",
-        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, UpgradeEquipment]
+        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, UpgradeEquipment, ReleaseEpisodesWhenCompleted]
     )
 ]
 
@@ -259,6 +268,7 @@ option_presets = {
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": False,
         "upgrade_equipment": UpgradeEquipment.default,
+        "release_episodes_when_completed": False,
         "character": Character.option_warrior,
         "excluded_equipment": ExcludedEquipment.default
     },
@@ -277,6 +287,7 @@ option_presets = {
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": True,
         "upgrade_equipment": UpgradeEquipment.default,
+        "release_episodes_when_completed": False,
         "character": Character.option_warrior,
         "excluded_equipment": ExcludedEquipment.default
     }

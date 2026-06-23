@@ -60,6 +60,7 @@ class DiceyDungeonsWorld(World):
             "warrior_2_disable_curse",
             "warrior_3_remove_hp_decrease_on_level",
             "upgrade_equipment",
+            "release_episodes_when_completed",
             "character",
             "excluded_equipment"
         )

@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 
-from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, DefaultOnToggle
+from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, DefaultOnToggle, OptionSet
+
+from .data.game_data import item_metadata
 
 # Defined for location creation
 MAXIMUM_CHECKS_PER_CHEST: int = 5
@@ -193,6 +195,16 @@ class Character(Choice):
 
     default = option_warrior
 
+class ExcludedEquipment(OptionSet):
+    '''
+    Excludes certain equipment from item generation. 
+    Missing equipment is replaced with filler, so consider adjusting location options 
+    to include fewer overall checks if removing a lot of equipment this way.
+    '''
+
+    display_name = "Excluded Equipment"
+    valid_keys = set(item_metadata.keys())
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
@@ -210,6 +222,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     warrior_3_remove_hp_decrease_on_level : Warrior3RemoveHPDecreaseOnLevel
     upgrade_equipment : UpgradeEquipment
     character: Character
+    excluded_equipment: ExcludedEquipment
 
 option_groups = [
     OptionGroup(
@@ -222,7 +235,7 @@ option_groups = [
     ),
     OptionGroup(
         "Gameplay Options",
-        [EpisodeProgression, Floor5ShopSelection, Character]
+        [EpisodeProgression, Floor5ShopSelection, Character, ExcludedEquipment]
     ),
     OptionGroup(
         "Quality of Life",
@@ -246,7 +259,8 @@ option_presets = {
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": False,
         "upgrade_equipment": UpgradeEquipment.default,
-        "character": Character.option_warrior
+        "character": Character.option_warrior,
+        "excluded_equipment": ExcludedEquipment.default
     },
     "check-lover": {
         "levelsanity": True,
@@ -263,6 +277,7 @@ option_presets = {
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": True,
         "upgrade_equipment": UpgradeEquipment.default,
-        "character": Character.option_warrior
+        "character": Character.option_warrior,
+        "excluded_equipment": ExcludedEquipment.default
     }
 }

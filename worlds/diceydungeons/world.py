@@ -60,7 +60,8 @@ class DiceyDungeonsWorld(World):
             "warrior_2_disable_curse",
             "warrior_3_remove_hp_decrease_on_level",
             "upgrade_equipment",
-            "character"
+            "character",
+            "excluded_equipment"
         )
         
         # Generate token for save file

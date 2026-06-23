@@ -98,6 +98,9 @@ def create_all_items(world: DiceyDungeonsWorld) -> None:
     # Character choice
     character: str = CHARACTER_CODE_TO_NAME[world.options.character.value + 1]
     item_list: list[str] = all_character_item_lists[world.options.character.value]
+
+    # Excluded Equipment
+    item_list = list(set(item_list) - world.options.excluded_equipment.value)
     
     # Equipment pool
     itempool += [world.create_item(item) for item in item_list]

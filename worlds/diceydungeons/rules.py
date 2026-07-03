@@ -35,11 +35,16 @@ def set_all_entrance_rules(world: DiceyDungeonsWorld) -> None:
             for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
                 entrance = world.get_entrance(character + " - " + episode + " - " + floor)
                 add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"{character} {ep} Items", world.player, required))
-    else:
+    elif world.options.use_equipment_from_any_character.value == 0:
         for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
             for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
                 entrance = world.get_entrance(character + " - " + episode + " - " + floor)
                 add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group(f"{character} All Items", world.player, required))
+    else:
+        for episode in ["Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5", "Episode 6"]:
+            for floor in ["Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6"]:
+                entrance = world.get_entrance(character + " - " + episode + " - " + floor)
+                add_rule(entrance, lambda state, ep=episode, required=items_needed[floor]: state.has_group("All Equipment", world.player, required))
     
     # Levelsanity rules
     if world.options.levelsanity:

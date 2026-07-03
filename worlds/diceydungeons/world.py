@@ -62,7 +62,8 @@ class DiceyDungeonsWorld(World):
             "upgrade_equipment",
             "release_episodes_when_completed",
             "character",
-            "excluded_equipment"
+            "excluded_equipment",
+            "use_equipment_from_any_character"
         )
         
         # Generate token for save file

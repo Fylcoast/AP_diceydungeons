@@ -80,6 +80,8 @@ item_name_groups: dict[str, set[str]] = {
     "Warrior Episode Completion": set([f"Warrior - Episode {i} Completed" for i in range(1, 7)]),
     "Thief Episode Completion": set([f"Thief - Episode {i} Completed" for i in range(1, 7)]),
     "Robot Episode Completion": set([f"Robot - Episode {i} Completed" for i in range(1, 7)]),
+
+    "All Equipment": set([k for k in item_metadata.keys()])
 }
 
 class DiceyDungeonsItem(Item):
@@ -97,13 +99,6 @@ def create_all_items(world: DiceyDungeonsWorld) -> None:
 
     # Character choice
     character: str = CHARACTER_CODE_TO_NAME[world.options.character.value + 1]
-    item_list: list[str] = all_character_item_lists[world.options.character.value]
-
-    # Excluded Equipment
-    item_list = list(set(item_list) - world.options.excluded_equipment.value)
-    
-    # Equipment pool
-    itempool += [world.create_item(item) for item in item_list]
 
     # Levelsanity
     if world.options.levelsanity:
@@ -115,6 +110,26 @@ def create_all_items(world: DiceyDungeonsWorld) -> None:
         itempool += [world.create_item("Dice Shard") for _ in range(world.options.dice_shards_per_die * 3)]
         if world.options.spare_dice_shards > 0:
             itempool += [DiceyDungeonsItem("Dice Shard", ItemClassification.useful, ITEM_NAME_TO_ID["Dice Shard"], world.player) for _ in range(world.options.spare_dice_shards)]
+
+    # Require "use equipment from any character" has "open" equipment availability set
+    assert (not world.options.use_equipment_from_any_character.value) or world.options.equipment_availability.value == 1, "Open equipment availability must be set if playing with Use equipment from any character"
+
+    # Equipment
+    item_list: list[str] = []
+
+    if not world.options.use_equipment_from_any_character:
+        item_list = list(set(all_character_item_lists[world.options.character.value]) - world.options.excluded_equipment.value)
+    else:
+        item_list = list(set(warrior_items + thief_items + robot_items + inventor_items) - world.options.excluded_equipment.value)
+        world.random.shuffle(item_list)
+
+    unfilled_locations: int = len(world.multiworld.get_unfilled_locations(world.player))
+    max_number_of_equipment: int = unfilled_locations - len(itempool)
+    if max_number_of_equipment < len(item_list):
+        item_list = item_list[:max_number_of_equipment]
+    
+    itempool += [world.create_item(item) for item in item_list]
+
 
     # Fill filler slots
     number_of_items = len(itempool)

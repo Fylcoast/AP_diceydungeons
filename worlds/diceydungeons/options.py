@@ -213,6 +213,16 @@ class ExcludedEquipment(OptionSet):
     display_name = "Excluded Equipment"
     valid_keys = set(item_metadata.keys())
 
+class UseEquipmentFromAnyCharacter(Toggle):
+    '''
+    Allows ANY equipment in the game to be found, rather than just that accessible by your character.
+    DEFINITELY can break logic, as some equipment will be unusable! Be very wary of this setting.
+    If not playing as Robot, check out preset any-equipment-non-robot for recommended Excluded Equipment.
+    Open equipment availability MUST be on to use this option!
+    '''
+
+    display_name = "Use equipment from any character"
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
@@ -232,6 +242,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     release_episodes_when_completed : ReleaseEpisodesWhenCompleted
     character: Character
     excluded_equipment: ExcludedEquipment
+    use_equipment_from_any_character: UseEquipmentFromAnyCharacter
 
 option_groups = [
     OptionGroup(
@@ -244,7 +255,7 @@ option_groups = [
     ),
     OptionGroup(
         "Gameplay Options",
-        [EpisodeProgression, Floor5ShopSelection, Character, ExcludedEquipment]
+        [EpisodeProgression, Floor5ShopSelection, Character, ExcludedEquipment, UseEquipmentFromAnyCharacter]
     ),
     OptionGroup(
         "Quality of Life",
@@ -270,7 +281,8 @@ option_presets = {
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
-        "excluded_equipment": ExcludedEquipment.default
+        "excluded_equipment": ExcludedEquipment.default,
+        "use_equipment_from_any_character": False
     },
     "check-lover": {
         "levelsanity": True,
@@ -289,6 +301,45 @@ option_presets = {
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
-        "excluded_equipment": ExcludedEquipment.default
+        "excluded_equipment": ExcludedEquipment.default,
+        "use_equipment_from_any_character": False
+    },
+    "any-equipment-non-robot": {
+        "levelsanity": True,
+        "checks_per_chest": 1,
+        "checks_per_shop": 2,
+        "checks_per_trade": 1,
+        "split_dice": False,
+        "dice_shards_per_die": 0,
+        "spare_dice_shards": 0,
+        "episode_progression": EpisodeProgression.option_open_world,
+        "floor_5_shop_selection": Floor5ShopSelection.default,
+        "skip_cutscenes": True,
+        "equipment_availability": EquipmentAvailability.option_open,
+        "warrior_2_disable_curse": True,
+        "warrior_3_remove_hp_decrease_on_level": True,
+        "upgrade_equipment": UpgradeEquipment.default,
+        "release_episodes_when_completed": False,
+        "character": Character.option_warrior,
+        "excluded_equipment": {
+            "Ruby Weapon", 
+            "Missile Launcher",
+            "Short Circuit",
+            "Dragon's Tooth",
+            "Heat Sink",
+            "Increment",
+            "Overclock",
+            "Cooling Fan",
+            "Virus",
+            "Concatenate",
+            "Safe Bet",
+            "Spare Cycles",
+            "Cheat Code",
+            "Fixed Payout",
+            "Free Spin",
+            "Spud Cannon",
+
+            },
+        "use_equipment_from_any_character": True
     }
 }

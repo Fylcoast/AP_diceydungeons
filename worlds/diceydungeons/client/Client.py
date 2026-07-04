@@ -146,7 +146,8 @@ class DiceyDungeonsContext(CommonContext):
             '[': '[sword]',
             ']': '[sword]',
             '@': '[recycle]',
-            '#': '[star]'
+            '#': '[star]',
+            '"': '[silence]'
         }
         translator = str.maketrans(char_replacements)
         return self.item_names.lookup_in_slot(net_item.item, net_item.player).translate(translator)
@@ -441,7 +442,7 @@ class DiceyDungeonsContext(CommonContext):
                 net_item = NetworkItem(*item)
                 self.full_inventory.append(net_item)
                 # If configured, and received an Episode completion, release items from episode.
-                if self.slot_data["release_episodes_when_completed"]:
+                if "release_episodes_when_completed" in self.slot_data and self.slot_data["release_episodes_when_completed"]:
                     episode_num = self.episode_completion_number(net_item.item)
                     if episode_num > 0:
                         if DEBUG:

@@ -375,9 +375,10 @@ class DiceyDungeonsContext(CommonContext):
         return self.server and self.server.socket.open
 
 
-    async def disconnect(self, allow_autoreconnect: bool = False):
-        """Disconnect from server and game"""
-        await super().disconnect(allow_autoreconnect)
+    async def disconnect(self, *args: Any, **kwargs: Any) -> None:
+        self.finished_game = False
+        self.locations_checked = set()
+        await super().disconnect(*args, **kwargs)
 
 
     def on_print_json(self, args: dict):

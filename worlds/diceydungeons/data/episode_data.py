@@ -260,6 +260,80 @@ robot_episode_6 = EpisodeData(
 
 robot_episodes = [robot_episode_1, robot_episode_2, robot_episode_3, robot_episode_4, robot_episode_5, robot_episode_6]
 
-all_character_episodes = [warrior_episodes, thief_episodes, robot_episodes]
+# inventor_normal
+inventor_episode_1 = EpisodeData(
+    "Episode 1",
+    FloorData(3, 0, 0, 0, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(3, 2, 3, 1, 0, 0),
+    FloorData(2, 0, 0, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Flamethrower", "Equipment:Doppeldice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Metal", "Copy"], 6: ["Dice"]}
+)
+
+# inventor_normal
+inventor_episode_2 = EpisodeData(
+    "Episode 2",
+    FloorData(3, 0, 0, 0, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(3, 2, 3, 1, 0, 0),
+    FloorData(2, 0, 0, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Flamethrower", "Equipment:Doppeldice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Metal", "Copy"], 6: ["Dice"]}
+)
+
+# inventor_rust
+inventor_episode_3 = EpisodeData(
+    "Episode 3",
+    FloorData(3, 0, 0, 0, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(3, 2, 3, 1, 0, 0),
+    FloorData(3, 0, 0, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Grindstone", "Equipment:Doppeldice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Hammer", "Copy"], 6: ["Dice"]}
+)
+
+# inventor_normal
+inventor_episode_4 = EpisodeData(
+    "Episode 4",
+    FloorData(3, 0, 0, 0, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(3, 2, 3, 1, 0, 0),
+    FloorData(2, 0, 0, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Flamethrower", "Equipment:Doppeldice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Metal", "Copy"], 6: ["Dice"]}
+)
+
+# inventor_paralleluniverse
+inventor_episode_5 = EpisodeData(
+    "Episode 5",
+    FloorData(3, 0, 0, 0, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(2, 1, 3, 1, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Molotov Cocktail", "Equipment:Doppeltwice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Bump", "Copy"], 6: ["Dice"]}
+)
+
+# inventor_remixgenerator
+inventor_episode_6 = EpisodeData(
+    "Episode 6",
+    FloorData(3, 0, 0, 0, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(3, 2, 3, 1, 0, 0),
+    FloorData(2, 0, 0, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 1, 0),
+    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 3: ["Equipment:Screwdriver", "Equipment:Chainsaw"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Spear", "Copy"], 6: ["Dice"]}
+)
+
+inventor_episodes = [inventor_episode_1, inventor_episode_2, inventor_episode_3, inventor_episode_4, inventor_episode_5, inventor_episode_6]
+
+all_character_episodes = [warrior_episodes, thief_episodes, robot_episodes, inventor_episodes]
 
 start_game_upgrade_all_equipment_additions = ["Rules.upgradeplayerequipment = true;", "Rules.substitute(~upgrade~[;] ~copyshop~);"]

@@ -7,6 +7,7 @@ generator_names: dict[list[str]] = {
     1: ['warrior_one', 'warrior_two', 'warrior_three', 'warrior_four', 'warrior_five', 'warrior_six'],
     2: ['thief_one', 'thief_two', 'thief_three', 'thief_four', 'thief_five', 'thief_six'],
     3: ['robot_one', 'robot_two', 'robot_three', 'robot_four', 'robot_five', 'robot_six'],
+    4: ['inventor_one', 'inventor_two', 'inventor_three', 'inventor_four', 'inventor_five', 'inventor_six'],
 }
 """Dict of generator names lists, indexed by character code"""
 
@@ -14,6 +15,7 @@ character_episodes: dict[int, list[EpisodeData]] = {
     1: warrior_episodes,
     2: thief_episodes,
     3: robot_episodes,
+    4: inventor_episodes,
 }
 """Mapping of character code to data for their episodes"""
 
@@ -21,6 +23,7 @@ item_metadata_mapping: dict[int, str] = {
     1: 'warrior',
     2: 'thief',
     3: 'robot',
+    4: 'inventor',
 }
 """Mapping of character code to item_metadata field we need to examine for availability"""
 
@@ -285,7 +288,7 @@ class EpisodeItems:
 
 class CharacterItems:
     id: int
-    """id of Character. 1 == Warrior, 2 = Thief, 3 = Robot"""
+    """id of Character. 1 == Warrior, 2 = Thief, 3 = Robot, 4 = Inventor"""
     episodes: list[EpisodeItems]
     """list of episodes, each of which has deeper structure"""
 
@@ -301,6 +304,8 @@ class GeneratedItems:
     """Thief episodes container"""
     robot: CharacterItems
     """Robot episodes container"""
+    inventor: CharacterItems
+    """Inventor episodes container"""
     characters_playing: list[CharacterItems]
     """List of characters we are playing, based on options."""
     all_characters: list[CharacterItems]
@@ -316,7 +321,8 @@ class GeneratedItems:
         self.warrior = CharacterItems(1)
         self.thief = CharacterItems(2)
         self.robot = CharacterItems(3)
-        self.all_characters = [self.warrior, self.thief, self.robot]
+        self.inventor = CharacterItems(4)
+        self.all_characters = [self.warrior, self.thief, self.robot, self.inventor]
         self.slot_data = slot_data
         self.level_ups = level_ups
         self.dice_received = dice_received
@@ -327,8 +333,13 @@ class GeneratedItems:
             self.characters_playing.append(self.warrior)
         elif slot_data['character'] + 1 == 2:
             self.characters_playing.append(self.thief)
-        else:
+        elif slot_data['character'] + 1 == 3:
             self.characters_playing.append(self.robot)
+        elif slot_data['character'] + 1 == 4:
+            self.characters_playing.append(self.inventor)
+        else:
+            # Fallback
+            self.characters_playing.append(self.warrior)
     
     def prefill_floor_5_shops(self):
         """
@@ -365,7 +376,7 @@ class GeneratedItems:
         else:
             # self.all_characters[<character code>].episodes[<episode number - 1>].floors[<floor_num - 1>].chests/shops to get string lists or add to them
             # Location ID: <Character Code><Episode Number><Floor Number><Location Code><Location Count, 2 digits>
-            # Character code is 1 = Warrior, 2 = Thief, 3 = Robot
+            # Character code is 1 = Warrior, 2 = Thief, 3 = Robot, 4 = Inventor
             # Episode code is 1-6
             # Floor code is 1-6
             # Location code is 1 = chests, 2 = shops, 5 = trades

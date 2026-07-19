@@ -76,10 +76,19 @@ item_name_groups: dict[str, set[str]] = {
     "Robot Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['robot']['episode']]),
     "Robot Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['robot']['episode']]),
     "Robot All Items": set([k for k in robot_items]),
+
+    "Inventor Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['inventor']['episode']]),
+    "Inventor Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['inventor']['episode']]),
+    "Inventor Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['inventor']['episode']]),
+    "Inventor Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['inventor']['episode']]),
+    "Inventor Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['inventor']['episode']]),
+    "Inventor Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['inventor']['episode']]),
+    "Inventor All Items": set([k for k in inventor_items]),
     
     "Warrior Episode Completion": set([f"Warrior - Episode {i} Completed" for i in range(1, 7)]),
     "Thief Episode Completion": set([f"Thief - Episode {i} Completed" for i in range(1, 7)]),
     "Robot Episode Completion": set([f"Robot - Episode {i} Completed" for i in range(1, 7)]),
+    "Inventor Episode Completion": set([f"Inventor - Episode {i} Completed" for i in range(1, 7)]),
 
     "All Equipment": set([k for k in item_metadata.keys()])
 }

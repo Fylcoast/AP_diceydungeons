@@ -27,7 +27,7 @@ otherstuff = [
   health()
 ];
 goodotherstuff = [
-  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "2", "1"]))
+  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "2", "1"]), shuffle([2, 3, 1]))
 ];
 
 addfloor("small")
@@ -41,7 +41,7 @@ gooditems = runscript("diceyap/load_ap_items_by_category", [generator, episode, 
 
 otherstuff = [health()];
 goodotherstuff = [
-  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "3", "1"]))
+  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "3", "1"]), shuffle([2, 3, 1]))
 ];
 	
 addfloor("big")

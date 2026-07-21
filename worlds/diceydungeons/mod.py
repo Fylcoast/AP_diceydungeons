@@ -30,7 +30,7 @@ default_item_info: OrderedDict = {
     'Uses?': '0',
     'Cast Backwards?': 'NO',
     'Single use?': 'NO',
-    'Tags': 'excludefromrandomlists|cannotsteal|skillcard',
+    'Tags': 'excludefromrandomlists|cannotsteal|skillcard|appearsforparts',
     'Witch Spell': '',
     'Script: Before Combat': '',
     'Script: After Combat': '',

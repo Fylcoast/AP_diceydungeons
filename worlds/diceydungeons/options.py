@@ -106,20 +106,19 @@ class EpisodeProgression(Choice):
 
     default = option_vanilla
 
-class Floor5ShopSelection(Choice):
+class ShopSelection(Choice):
     '''
-    Determines what is purchasable in the Floor 5 shops.
+    Determines what is purchasable in shops.
 
-    vanilla: Floor 5 shops will include 1 item, 1 upgrade, 
-    and 1 heal. The item could be a location check (if 
-    configured) or equipment.
+    vanilla: All shops which would normally have non-equipment choices
+    (like Warrior Floor 5 shops) have that available, along with
+    AP items / checks / filler.
 
-    items_only: Floor 5 shops will have all 3 slots
-    filled with items, making them just like any other
-    shop.
+    items_only: All shops will only include AP items / checks / filler
+    and will not include health or upgrades.
     '''
 
-    display_name = "Floor 5 Shop Selection"
+    display_name = "Shop Selection"
 
     option_vanilla = 0
     option_items_only = 1
@@ -234,7 +233,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     dice_shards_per_die: DiceShardsPerDie
     spare_dice_shards: SpareDiceShards
     episode_progression: EpisodeProgression
-    floor_5_shop_selection: Floor5ShopSelection
+    shop_selection: ShopSelection
     skip_cutscenes: SkipCutscenes
     equipment_availability: EquipmentAvailability
     warrior_2_disable_curse: Warrior2DisableCurse
@@ -256,7 +255,7 @@ option_groups = [
     ),
     OptionGroup(
         "Gameplay Options",
-        [EpisodeProgression, Floor5ShopSelection, Character, ExcludedEquipment, UseEquipmentFromAnyCharacter]
+        [EpisodeProgression, ShopSelection, Character, ExcludedEquipment, UseEquipmentFromAnyCharacter]
     ),
     OptionGroup(
         "Quality of Life",
@@ -274,7 +273,7 @@ option_presets = {
         "dice_shards_per_die": 0,
         "spare_dice_shards": 0,
         "episode_progression": EpisodeProgression.default,
-        "floor_5_shop_selection": Floor5ShopSelection.default,
+        "shop_selection": ShopSelection.default,
         "skip_cutscenes": True,
         "equipment_availability": EquipmentAvailability.default,
         "warrior_2_disable_curse": False,
@@ -294,7 +293,7 @@ option_presets = {
         "dice_shards_per_die": 3,
         "spare_dice_shards": 6,
         "episode_progression": EpisodeProgression.option_open_world,
-        "floor_5_shop_selection": Floor5ShopSelection.option_items_only,
+        "shop_selection": ShopSelection.option_items_only,
         "skip_cutscenes": True,
         "equipment_availability": EquipmentAvailability.option_vanilla,
         "warrior_2_disable_curse": False,
@@ -314,7 +313,7 @@ option_presets = {
         "dice_shards_per_die": 0,
         "spare_dice_shards": 0,
         "episode_progression": EpisodeProgression.option_open_world,
-        "floor_5_shop_selection": Floor5ShopSelection.default,
+        "shop_selection": ShopSelection.default,
         "skip_cutscenes": True,
         "equipment_availability": EquipmentAvailability.option_open,
         "warrior_2_disable_curse": True,

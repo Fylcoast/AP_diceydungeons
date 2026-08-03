@@ -54,7 +54,7 @@ class DiceyDungeonsWorld(World):
             "dice_shards_per_die", 
             "spare_dice_shards", 
             "episode_progression", 
-            "floor_5_shop_selection", 
+            "shop_selection", 
             "skip_cutscenes", 
             "equipment_availability",
             "warrior_2_disable_curse",

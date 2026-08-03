@@ -341,17 +341,18 @@ class GeneratedItems:
             # Fallback
             self.characters_playing.append(self.warrior)
     
-    def prefill_floor_5_shops(self):
+    def prefill_shops(self):
         """
-        Prefill floor 5 shops with an upgrade and a heal.
+        Prefill shops with upgrades/heals.
         """
         for character in self.characters_playing:
             for episode in character.episodes:
-                floor_5 = episode.floors[4]
-                floor_5.add_to_shops("health")
-                if character.id == 1:
-                    # Only add upgrade for Warrior
-                    floor_5.add_to_shops("upgrade")
+                for floor in episode.floors:
+                    standard_shop_items = character_episodes[character.id][episode.episode_num - 1].standard_shop_items
+                    if floor.floor_num in standard_shop_items:
+                        for item in standard_shop_items[floor.floor_num]:
+                            floor.add_to_shops(item)
+
     
     def add_ap_item_if_possible(self, location_id: int, item: str) -> bool:
         """Add item to generation if there is space. Returns true if added, false if not (no space)"""

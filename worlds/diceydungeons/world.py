@@ -59,6 +59,7 @@ class DiceyDungeonsWorld(World):
             "equipment_availability",
             "warrior_2_disable_curse",
             "warrior_3_remove_hp_decrease_on_level",
+            "inventor_3_remove_rust",
             "upgrade_equipment",
             "release_episodes_when_completed",
             "character",

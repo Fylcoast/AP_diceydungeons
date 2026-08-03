@@ -283,6 +283,11 @@ class DiceyDungeonsClientModGenerator():
         if 'warrior_3_remove_hp_decrease_on_level' in self.slot_data and self.slot_data['warrior_3_remove_hp_decrease_on_level']:
             for removal in warrior_3_start_game_hp_loss_removals:
                 self.modify_episode_start_script(episodes_path, 'Warrior', 3, removal)
+
+        # Inventor Episode 3 - Remove Rust
+        if 'inventor_3_remove_rust' in self.slot_data and self.slot_data['inventor_3_remove_rust']:
+            for removal in inventor_3_start_game_rust_removals:
+                self.modify_episode_start_script(episodes_path, 'Inventor', 3, removal)
         
         # Upgrade Equipment
 

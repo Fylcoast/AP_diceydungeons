@@ -162,6 +162,13 @@ class Warrior3RemoveHPDecreaseOnLevel(Toggle):
     '''
     display_name = "Warrior Episode 3 - Prevent HP Loss"
 
+class Inventor3RemoveRust(Toggle):
+    '''
+    If playing as Inventor, prevent Rust from degrading your equipment.
+    Equipment will function just like other Inventor episodes.
+    '''
+    display_name = "Inventor Episode 3 - Prevent Rust"
+
 class UpgradeEquipment(Choice):
     '''
     Choose whether you'd like any equipment upgraded that wouldn't otherwise be.
@@ -237,9 +244,10 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     skip_cutscenes: SkipCutscenes
     equipment_availability: EquipmentAvailability
     warrior_2_disable_curse: Warrior2DisableCurse
-    warrior_3_remove_hp_decrease_on_level : Warrior3RemoveHPDecreaseOnLevel
-    upgrade_equipment : UpgradeEquipment
-    release_episodes_when_completed : ReleaseEpisodesWhenCompleted
+    warrior_3_remove_hp_decrease_on_level: Warrior3RemoveHPDecreaseOnLevel
+    inventor_3_remove_rust: Inventor3RemoveRust
+    upgrade_equipment: UpgradeEquipment
+    release_episodes_when_completed: ReleaseEpisodesWhenCompleted
     character: Character
     excluded_equipment: ExcludedEquipment
     use_equipment_from_any_character: UseEquipmentFromAnyCharacter
@@ -259,7 +267,7 @@ option_groups = [
     ),
     OptionGroup(
         "Quality of Life",
-        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, UpgradeEquipment, ReleaseEpisodesWhenCompleted]
+        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, Inventor3RemoveRust, UpgradeEquipment, ReleaseEpisodesWhenCompleted]
     )
 ]
 
@@ -278,6 +286,7 @@ option_presets = {
         "equipment_availability": EquipmentAvailability.default,
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": False,
+        "inventor_3_remove_rust": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
@@ -298,6 +307,7 @@ option_presets = {
         "equipment_availability": EquipmentAvailability.option_vanilla,
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": True,
+        "inventor_3_remove_rust": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
@@ -318,6 +328,7 @@ option_presets = {
         "equipment_availability": EquipmentAvailability.option_open,
         "warrior_2_disable_curse": True,
         "warrior_3_remove_hp_decrease_on_level": True,
+        "inventor_3_remove_rust": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,

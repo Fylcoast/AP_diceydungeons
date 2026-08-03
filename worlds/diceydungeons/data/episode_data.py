@@ -368,6 +368,8 @@ inventor_episode_6 = EpisodeData(
 
 inventor_episodes = [inventor_episode_1, inventor_episode_2, inventor_episode_3, inventor_episode_4, inventor_episode_5, inventor_episode_6]
 
+inventor_3_start_game_rust_removals = ["Rules.inventor_inspiration = false;", "Rules.inventor_equipmentrust = 4;"]
+
 all_character_episodes = [warrior_episodes, thief_episodes, robot_episodes, inventor_episodes]
 
 start_game_upgrade_all_equipment_additions = ["Rules.upgradeplayerequipment = true;", "Rules.substitute(~upgrade~[;] ~copyshop~);"]

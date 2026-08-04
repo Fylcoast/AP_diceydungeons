@@ -64,6 +64,7 @@ class DiceyDungeonsWorld(World):
             "release_episodes_when_completed",
             "character",
             "excluded_equipment",
+            "randomize_gadgets",
             "use_equipment_from_any_character"
         )
         

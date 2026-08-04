@@ -53,3 +53,13 @@ If the folder is incorrect, please correct it in the "diceydungeons_options" sec
 1. If you're seeing a "LOCKED" item (requiring dice rolls to unlock) in a Shop and it is showing you the normal equipment instead of upgraded, this is a known issue, and likely due to base game code (will not be fixed).
 1. In "Finders Keepers" episode for the Thief, stolen equipment is not upgraded. This is a known limitation, fix is not currently planned but may be completed someday.
 1. If none of the above, it is probably a bug, feel free to report it to the discord!
+
+## Special Thanks
+- krunk - For creation of the Archipelago logo featuring the characters from Dicey Dungeons, featured on the mod's title screen
+- The creators of the Tennis Dungeons Mod Special - For their creativity and inspiration
+  - not mario
+  - Wibi
+  - Dummy
+  - Sefcear
+  - Neypah_Tit
+- The users of the dicecord Discord, especially those in the dicey-modding channel - for technical assistance (and inspiration)

@@ -230,6 +230,26 @@ class UseEquipmentFromAnyCharacter(Toggle):
 
     display_name = "Use equipment from any character"
 
+class RandomizeGadgets(Choice):
+    '''
+    Change the gadget of some equipment into "Random Gadget", which will produce a random
+    gadget's effect each time it is used.
+
+    vanilla: No equipment is changed.
+
+    filler only: Only filler items will be affected (filler otherwise acts like scrap).
+
+    all equipment: All equipment will have their gadgets replaced.
+    '''
+
+    display_name = "Randomize Gadgets"
+
+    option_vanilla = 0
+    option_filler_only = 1
+    option_all_equipment = 2
+
+    default = option_vanilla
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
@@ -250,6 +270,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     release_episodes_when_completed: ReleaseEpisodesWhenCompleted
     character: Character
     excluded_equipment: ExcludedEquipment
+    randomize_gadgets: RandomizeGadgets
     use_equipment_from_any_character: UseEquipmentFromAnyCharacter
 
 option_groups = [
@@ -263,7 +284,7 @@ option_groups = [
     ),
     OptionGroup(
         "Gameplay Options",
-        [EpisodeProgression, ShopSelection, Character, ExcludedEquipment, UseEquipmentFromAnyCharacter]
+        [EpisodeProgression, ShopSelection, Character, ExcludedEquipment, UseEquipmentFromAnyCharacter, RandomizeGadgets]
     ),
     OptionGroup(
         "Quality of Life",
@@ -291,6 +312,7 @@ option_presets = {
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
         "excluded_equipment": ExcludedEquipment.default,
+        "randomize_gadgets": RandomizeGadgets.default,
         "use_equipment_from_any_character": False
     },
     "check-lover": {
@@ -312,6 +334,7 @@ option_presets = {
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
         "excluded_equipment": ExcludedEquipment.default,
+        "randomize_gadgets": RandomizeGadgets.default,
         "use_equipment_from_any_character": False
     },
     "any-equipment-non-robot": {
@@ -332,6 +355,7 @@ option_presets = {
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
+        "randomize_gadgets": RandomizeGadgets.default,
         "excluded_equipment": {
             "Ruby Weapon", 
             "Missile Launcher",

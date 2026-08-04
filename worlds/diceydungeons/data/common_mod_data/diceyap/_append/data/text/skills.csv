@@ -1,0 +1,2 @@
+Name,Description,Script
+Random Gadget,Mimic a random gadget,var gadgpool = loadtext(~diceyap/randomgadget~); gadgpool = shuffle(gadgpool); var emulategadget = new elements.Skill(gadgpool[0]); emulategadget.execute(self[;]target); if(!self.isplayer) var self = target; self.getskillcard().animation = []; self.getskillcard().animate(~particleblah~); self.getskillcard().animation[0].addcommand(~textparticle~[;] emulategadget.name + ~!~[;] 16777215);

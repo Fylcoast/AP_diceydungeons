@@ -2,11 +2,9 @@ Weaken Spell
 Recycle
 Fury
 Firebomb
-Infinite Dice
 Magic Dice
 Focus
 Reroll
-Dexterity
 Emetic
 Flashbang
 Hook

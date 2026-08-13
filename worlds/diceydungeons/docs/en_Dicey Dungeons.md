@@ -54,6 +54,36 @@ If the folder is incorrect, please correct it in the "diceydungeons_options" sec
 1. In "Finders Keepers" episode for the Thief, stolen equipment is not upgraded. This is a known limitation, fix is not currently planned but may be completed someday.
 1. If none of the above, it is probably a bug, feel free to report it to the discord!
 
+## If I'm playing with "Use equipment from any character" enabled, what equipment should I exclude?
+There is some equipment that is character-specific, that is best to avoid if not relevant, since they will not do anything in your run.
+These items are listed below, grouped by the character that they are for (if not applicable to your run, I recommend excluding them):
+
+### Robot
+- Buster Sword
+- Cheat Code
+- Concatenate
+- Cooling Fan
+- Dragon's Tooth
+- Fixed Payout
+- Free Spin
+- Heat Sink
+- Increment
+- Memory Leak
+- Overclock
+- Ruby Weapon
+- Safe Bet
+- Short Circuit
+- Spud Cannon
+- Stack Overflow
+- Ultima Weapon
+- Virus
+
+### Inventor
+- Encyclopedia
+- Grindstone
+- Screwdriver
+
+
 ## Special Thanks
 - krunk - For creation of the Archipelago logo featuring the characters from Dicey Dungeons, featured on the mod's title screen
 - The creators of the Tennis Dungeons Mod Special - For their creativity and inspiration

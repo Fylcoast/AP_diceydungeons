@@ -250,6 +250,14 @@ class RandomizeGadgets(Choice):
 
     default = option_vanilla
 
+class RemoveChecksWhenSent(DefaultOnToggle):
+    '''
+    Remove AP checks from your equipped items when the check is sent to the client.
+    Useful to have off if you want to use them as gadgets for Inventor.
+    '''
+
+    display_name = "Remove Checks When Sent"
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
@@ -271,6 +279,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     character: Character
     excluded_equipment: ExcludedEquipment
     randomize_gadgets: RandomizeGadgets
+    remove_checks_when_sent: RemoveChecksWhenSent
     use_equipment_from_any_character: UseEquipmentFromAnyCharacter
 
 option_groups = [
@@ -288,7 +297,7 @@ option_groups = [
     ),
     OptionGroup(
         "Quality of Life",
-        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, Inventor3RemoveRust, UpgradeEquipment, ReleaseEpisodesWhenCompleted]
+        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, Inventor3RemoveRust, UpgradeEquipment, ReleaseEpisodesWhenCompleted, RemoveChecksWhenSent]
     )
 ]
 
@@ -313,6 +322,7 @@ option_presets = {
         "character": Character.option_warrior,
         "excluded_equipment": ExcludedEquipment.default,
         "randomize_gadgets": RandomizeGadgets.default,
+        "remove_checks_when_sent": RemoveChecksWhenSent.default,
         "use_equipment_from_any_character": False
     },
     "check-lover": {
@@ -335,6 +345,7 @@ option_presets = {
         "character": Character.option_warrior,
         "excluded_equipment": ExcludedEquipment.default,
         "randomize_gadgets": RandomizeGadgets.default,
+        "remove_checks_when_sent": RemoveChecksWhenSent.default,
         "use_equipment_from_any_character": False
     },
     "inventor-recommended": {
@@ -357,6 +368,7 @@ option_presets = {
         "character": Character.option_inventor,
         "randomize_gadgets": RandomizeGadgets.option_filler_only,
         "excluded_equipment": ExcludedEquipment.default,
+        "remove_checks_when_sent": False,
         "use_equipment_from_any_character": False
     }
 }

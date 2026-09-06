@@ -65,6 +65,7 @@ class DiceyDungeonsWorld(World):
             "character",
             "excluded_equipment",
             "randomize_gadgets",
+            "remove_checks_when_sent",
             "use_equipment_from_any_character"
         )
         

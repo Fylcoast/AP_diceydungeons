@@ -105,12 +105,14 @@ class DiceyDungeonsClientModGenerator():
         self.slot_data = slot_data
         self.mod_name = 'diceyap'
     
-    def get_equipment_row(self, item: tuple[str, str, int]):
+    def get_equipment_row(self, item: tuple[str, str, int], randomize_gadgets: bool):
         owner = item[1]
 
         row = default_item_info.copy()
         row['Name'] = item[0]
         row['Description'] = f"Owner: {owner}| |{item_classification_text_mapping[item_flag_mapping(item[2])]}"
+        if randomize_gadgets >= 1:
+            row['Gadget'] = 'Random Gadget'
 
         return row
     
@@ -142,7 +144,7 @@ class DiceyDungeonsClientModGenerator():
             writer.writeheader()
             rows = []
             for item in self.equipment:
-                rows.append(self.get_equipment_row(item))
+                rows.append(self.get_equipment_row(item, randomize_gadgets))
             # Filler items.
             rows.extend(get_filler_items(randomize_gadgets))
             writer.writerows(rows)
@@ -277,6 +279,13 @@ class DiceyDungeonsClientModGenerator():
         if self.slot_data['skip_cutscenes']:
             skip_cutscenes_files = files(__package__).joinpath('data', 'skip_cutscenes_data', self.mod_name)
             self._write_package_files_to_dir(skip_cutscenes_files, self.mod_name, dest_dir)
+
+        if self.slot_data['remove_checks_when_sent']:
+            remove_equip_on_check_send = files(__package__).joinpath('data', 'remove_equip_on_check_send', self.mod_name)
+            self._write_package_files_to_dir(remove_equip_on_check_send, self.mod_name, dest_dir)
+        else:
+            keep_equip_on_check_send = files(__package__).joinpath('data', 'keep_equip_on_check_send', self.mod_name)
+            self._write_package_files_to_dir(keep_equip_on_check_send, self.mod_name, dest_dir)
 
         # Conditionally give save file info
         # If episode_progression is vanilla (0), need save file to force progression logic

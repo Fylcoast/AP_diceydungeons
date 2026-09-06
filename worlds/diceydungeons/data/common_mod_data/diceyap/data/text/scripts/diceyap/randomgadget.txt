@@ -41,9 +41,7 @@ Very Unlucky Roll
 Tantrum
 Unfocused
 Marble
-Fury?
 Unlucky Roll?
-Slot Machine
 Stardust
 Power Up
 Poison Arrow
@@ -75,6 +73,5 @@ Flash Freeze
 Oh No!
 Hellfire
 Against all odds
-Trips
 Two more rolls
 Dramatic Pause

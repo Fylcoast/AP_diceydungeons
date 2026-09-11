@@ -60,6 +60,7 @@ class DiceyDungeonsWorld(World):
             "warrior_2_disable_curse",
             "warrior_3_remove_hp_decrease_on_level",
             "inventor_3_remove_rust",
+            "inventor_3_start_with_grindstone",
             "upgrade_equipment",
             "release_episodes_when_completed",
             "character",

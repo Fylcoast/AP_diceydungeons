@@ -220,6 +220,24 @@ class DiceyDungeonsClientModGenerator():
             writer.writeheader()
             writer.writerows(rows) 
     
+    def add_starting_equipment(self, path: str, character: str, level: int, equipment: str):
+        """Add a piece of starting equipment to a certain episode"""
+        with open(path, 'r', newline='') as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames
+            rows = list(reader)
+        
+        for row in rows:
+            if row["Character"] == character and int(row["Level"]) == level and row["Equipment"]:
+                starting_equipment = row["Equipment"].split("|")
+                starting_equipment.append(equipment)
+                row["Equipment"] = "|".join(starting_equipment)
+        
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows) 
+    
     def set_random_starting_gadgets(self, path: str):
         """Set all Inventor episodes to start with the Random Gadget gadget(s)"""
         with open(path, 'r', newline='') as f:
@@ -319,6 +337,10 @@ class DiceyDungeonsClientModGenerator():
         if 'inventor_3_remove_rust' in self.slot_data and self.slot_data['inventor_3_remove_rust']:
             for removal in inventor_3_start_game_rust_removals:
                 self.modify_episode_start_script(episodes_path, 'Inventor', 3, removal)
+
+        # Inventor Episode 3 - Start with Grindstone
+        if 'inventor_3_start_with_grindstone' in self.slot_data and self.slot_data['inventor_3_start_with_grindstone']:
+            self.add_starting_equipment(episodes_path, 'Inventor', 3, 'Grindstone')
         
         # Inventor - Randomize all equipments' gadgets
         if self.slot_data['randomize_gadgets'] == 2:

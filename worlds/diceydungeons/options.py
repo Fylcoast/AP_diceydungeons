@@ -169,6 +169,13 @@ class Inventor3RemoveRust(Toggle):
     '''
     display_name = "Inventor Episode 3 - Prevent Rust"
 
+class Inventor3StartWithGrindstone(Toggle):
+    '''
+    If playing as Inventor, start Episode 3 (Rust) with a Grindstone.
+    Helps alleviate some pain from Levelsanity taking away guaranteed Grindstone.
+    '''
+    display_name = "Inventor Episode 3 - Start with Grindstone"
+
 class UpgradeEquipment(Choice):
     '''
     Choose whether you'd like any equipment upgraded that wouldn't otherwise be.
@@ -274,6 +281,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     warrior_2_disable_curse: Warrior2DisableCurse
     warrior_3_remove_hp_decrease_on_level: Warrior3RemoveHPDecreaseOnLevel
     inventor_3_remove_rust: Inventor3RemoveRust
+    inventor_3_start_with_grindstone: Inventor3StartWithGrindstone
     upgrade_equipment: UpgradeEquipment
     release_episodes_when_completed: ReleaseEpisodesWhenCompleted
     character: Character
@@ -297,7 +305,7 @@ option_groups = [
     ),
     OptionGroup(
         "Quality of Life",
-        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, Inventor3RemoveRust, UpgradeEquipment, ReleaseEpisodesWhenCompleted, RemoveChecksWhenSent]
+        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, Inventor3RemoveRust, Inventor3StartWithGrindstone, UpgradeEquipment, ReleaseEpisodesWhenCompleted, RemoveChecksWhenSent]
     )
 ]
 
@@ -317,6 +325,7 @@ option_presets = {
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": False,
         "inventor_3_remove_rust": False,
+        "inventor_3_start_with_grindstone": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
@@ -340,6 +349,7 @@ option_presets = {
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": True,
         "inventor_3_remove_rust": False,
+        "inventor_3_start_with_grindstone": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
@@ -363,6 +373,31 @@ option_presets = {
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": False,
         "inventor_3_remove_rust": True,
+        "inventor_3_start_with_grindstone": False,
+        "upgrade_equipment": UpgradeEquipment.default,
+        "release_episodes_when_completed": True,
+        "character": Character.option_inventor,
+        "randomize_gadgets": RandomizeGadgets.option_filler_only,
+        "excluded_equipment": ExcludedEquipment.default,
+        "remove_checks_when_sent": False,
+        "use_equipment_from_any_character": False
+    },
+    "inventor-rust-recommended": {
+        "levelsanity": True,
+        "checks_per_chest": 1,
+        "checks_per_shop": 1,
+        "checks_per_trade": 0,
+        "split_dice": False,
+        "dice_shards_per_die": 0,
+        "spare_dice_shards": 0,
+        "episode_progression": EpisodeProgression.default,
+        "shop_selection": ShopSelection.default,
+        "skip_cutscenes": True,
+        "equipment_availability": EquipmentAvailability.default,
+        "warrior_2_disable_curse": False,
+        "warrior_3_remove_hp_decrease_on_level": False,
+        "inventor_3_remove_rust": False,
+        "inventor_3_start_with_grindstone": True,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": True,
         "character": Character.option_inventor,

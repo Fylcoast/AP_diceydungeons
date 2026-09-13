@@ -54,15 +54,19 @@ class DiceyDungeonsWorld(World):
             "dice_shards_per_die", 
             "spare_dice_shards", 
             "episode_progression", 
-            "floor_5_shop_selection", 
+            "shop_selection", 
             "skip_cutscenes", 
             "equipment_availability",
             "warrior_2_disable_curse",
             "warrior_3_remove_hp_decrease_on_level",
+            "inventor_3_remove_rust",
+            "inventor_3_start_with_grindstone",
             "upgrade_equipment",
             "release_episodes_when_completed",
             "character",
             "excluded_equipment",
+            "randomize_gadgets",
+            "remove_checks_when_sent",
             "use_equipment_from_any_character"
         )
         

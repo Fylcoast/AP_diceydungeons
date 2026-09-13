@@ -106,20 +106,19 @@ class EpisodeProgression(Choice):
 
     default = option_vanilla
 
-class Floor5ShopSelection(Choice):
+class ShopSelection(Choice):
     '''
-    Determines what is purchasable in the Floor 5 shops.
+    Determines what is purchasable in shops.
 
-    vanilla: Floor 5 shops will include 1 item, 1 upgrade, 
-    and 1 heal. The item could be a location check (if 
-    configured) or equipment.
+    vanilla: All shops which would normally have non-equipment choices
+    (like Warrior Floor 5 shops) have that available, along with
+    AP items / checks / filler.
 
-    items_only: Floor 5 shops will have all 3 slots
-    filled with items, making them just like any other
-    shop.
+    items_only: All shops will only include AP items / checks / filler
+    and will not include health or upgrades.
     '''
 
-    display_name = "Floor 5 Shop Selection"
+    display_name = "Shop Selection"
 
     option_vanilla = 0
     option_items_only = 1
@@ -163,6 +162,20 @@ class Warrior3RemoveHPDecreaseOnLevel(Toggle):
     '''
     display_name = "Warrior Episode 3 - Prevent HP Loss"
 
+class Inventor3RemoveRust(Toggle):
+    '''
+    If playing as Inventor, prevent Rust from degrading your equipment.
+    Equipment will function just like other Inventor episodes.
+    '''
+    display_name = "Inventor Episode 3 - Prevent Rust"
+
+class Inventor3StartWithGrindstone(Toggle):
+    '''
+    If playing as Inventor, start Episode 3 (Rust) with a Grindstone.
+    Helps alleviate some pain from Levelsanity taking away guaranteed Grindstone.
+    '''
+    display_name = "Inventor Episode 3 - Start with Grindstone"
+
 class UpgradeEquipment(Choice):
     '''
     Choose whether you'd like any equipment upgraded that wouldn't otherwise be.
@@ -200,6 +213,7 @@ class Character(Choice):
     option_warrior = 0
     option_thief = 1
     option_robot = 2
+    option_inventor = 3
 
     default = option_warrior
 
@@ -223,6 +237,34 @@ class UseEquipmentFromAnyCharacter(Toggle):
 
     display_name = "Use equipment from any character"
 
+class RandomizeGadgets(Choice):
+    '''
+    Change the gadget of some equipment into "Random Gadget", which will produce a random
+    gadget's effect each time it is used.
+
+    vanilla: No equipment is changed.
+
+    filler only: Only filler items will be affected (filler otherwise acts like scrap).
+
+    all equipment: All equipment will have their gadgets replaced.
+    '''
+
+    display_name = "Randomize Gadgets"
+
+    option_vanilla = 0
+    option_filler_only = 1
+    option_all_equipment = 2
+
+    default = option_vanilla
+
+class RemoveChecksWhenSent(DefaultOnToggle):
+    '''
+    Remove AP checks from your equipped items when the check is sent to the client.
+    Useful to have off if you want to use them as gadgets for Inventor.
+    '''
+
+    display_name = "Remove Checks When Sent"
+
 @dataclass
 class DiceyDungeonsOptions(PerGameCommonOptions):
     levelsanity: Levelsanity
@@ -233,15 +275,19 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     dice_shards_per_die: DiceShardsPerDie
     spare_dice_shards: SpareDiceShards
     episode_progression: EpisodeProgression
-    floor_5_shop_selection: Floor5ShopSelection
+    shop_selection: ShopSelection
     skip_cutscenes: SkipCutscenes
     equipment_availability: EquipmentAvailability
     warrior_2_disable_curse: Warrior2DisableCurse
-    warrior_3_remove_hp_decrease_on_level : Warrior3RemoveHPDecreaseOnLevel
-    upgrade_equipment : UpgradeEquipment
-    release_episodes_when_completed : ReleaseEpisodesWhenCompleted
+    warrior_3_remove_hp_decrease_on_level: Warrior3RemoveHPDecreaseOnLevel
+    inventor_3_remove_rust: Inventor3RemoveRust
+    inventor_3_start_with_grindstone: Inventor3StartWithGrindstone
+    upgrade_equipment: UpgradeEquipment
+    release_episodes_when_completed: ReleaseEpisodesWhenCompleted
     character: Character
     excluded_equipment: ExcludedEquipment
+    randomize_gadgets: RandomizeGadgets
+    remove_checks_when_sent: RemoveChecksWhenSent
     use_equipment_from_any_character: UseEquipmentFromAnyCharacter
 
 option_groups = [
@@ -255,11 +301,11 @@ option_groups = [
     ),
     OptionGroup(
         "Gameplay Options",
-        [EpisodeProgression, Floor5ShopSelection, Character, ExcludedEquipment, UseEquipmentFromAnyCharacter]
+        [EpisodeProgression, ShopSelection, Character, ExcludedEquipment, UseEquipmentFromAnyCharacter, RandomizeGadgets]
     ),
     OptionGroup(
         "Quality of Life",
-        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, UpgradeEquipment, ReleaseEpisodesWhenCompleted]
+        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, Inventor3RemoveRust, Inventor3StartWithGrindstone, UpgradeEquipment, ReleaseEpisodesWhenCompleted, RemoveChecksWhenSent]
     )
 ]
 
@@ -273,15 +319,19 @@ option_presets = {
         "dice_shards_per_die": 0,
         "spare_dice_shards": 0,
         "episode_progression": EpisodeProgression.default,
-        "floor_5_shop_selection": Floor5ShopSelection.default,
+        "shop_selection": ShopSelection.default,
         "skip_cutscenes": True,
         "equipment_availability": EquipmentAvailability.default,
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": False,
+        "inventor_3_remove_rust": False,
+        "inventor_3_start_with_grindstone": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
         "excluded_equipment": ExcludedEquipment.default,
+        "randomize_gadgets": RandomizeGadgets.default,
+        "remove_checks_when_sent": RemoveChecksWhenSent.default,
         "use_equipment_from_any_character": False
     },
     "check-lover": {
@@ -293,53 +343,67 @@ option_presets = {
         "dice_shards_per_die": 3,
         "spare_dice_shards": 6,
         "episode_progression": EpisodeProgression.option_open_world,
-        "floor_5_shop_selection": Floor5ShopSelection.option_items_only,
+        "shop_selection": ShopSelection.option_items_only,
         "skip_cutscenes": True,
         "equipment_availability": EquipmentAvailability.option_vanilla,
         "warrior_2_disable_curse": False,
         "warrior_3_remove_hp_decrease_on_level": True,
+        "inventor_3_remove_rust": False,
+        "inventor_3_start_with_grindstone": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.option_warrior,
         "excluded_equipment": ExcludedEquipment.default,
+        "randomize_gadgets": RandomizeGadgets.default,
+        "remove_checks_when_sent": RemoveChecksWhenSent.default,
         "use_equipment_from_any_character": False
     },
-    "any-equipment-non-robot": {
+    "inventor-recommended": {
         "levelsanity": True,
         "checks_per_chest": 1,
-        "checks_per_shop": 2,
-        "checks_per_trade": 1,
+        "checks_per_shop": 1,
+        "checks_per_trade": 0,
         "split_dice": False,
         "dice_shards_per_die": 0,
         "spare_dice_shards": 0,
-        "episode_progression": EpisodeProgression.option_open_world,
-        "floor_5_shop_selection": Floor5ShopSelection.default,
+        "episode_progression": EpisodeProgression.default,
+        "shop_selection": ShopSelection.default,
         "skip_cutscenes": True,
-        "equipment_availability": EquipmentAvailability.option_open,
-        "warrior_2_disable_curse": True,
-        "warrior_3_remove_hp_decrease_on_level": True,
+        "equipment_availability": EquipmentAvailability.default,
+        "warrior_2_disable_curse": False,
+        "warrior_3_remove_hp_decrease_on_level": False,
+        "inventor_3_remove_rust": True,
+        "inventor_3_start_with_grindstone": False,
         "upgrade_equipment": UpgradeEquipment.default,
-        "release_episodes_when_completed": False,
-        "character": Character.option_warrior,
-        "excluded_equipment": {
-            "Ruby Weapon", 
-            "Missile Launcher",
-            "Short Circuit",
-            "Dragon's Tooth",
-            "Heat Sink",
-            "Increment",
-            "Overclock",
-            "Cooling Fan",
-            "Virus",
-            "Concatenate",
-            "Safe Bet",
-            "Spare Cycles",
-            "Cheat Code",
-            "Fixed Payout",
-            "Free Spin",
-            "Spud Cannon",
-
-            },
-        "use_equipment_from_any_character": True
+        "release_episodes_when_completed": True,
+        "character": Character.option_inventor,
+        "randomize_gadgets": RandomizeGadgets.option_filler_only,
+        "excluded_equipment": ExcludedEquipment.default,
+        "remove_checks_when_sent": False,
+        "use_equipment_from_any_character": False
+    },
+    "inventor-rust-recommended": {
+        "levelsanity": True,
+        "checks_per_chest": 1,
+        "checks_per_shop": 1,
+        "checks_per_trade": 0,
+        "split_dice": False,
+        "dice_shards_per_die": 0,
+        "spare_dice_shards": 0,
+        "episode_progression": EpisodeProgression.default,
+        "shop_selection": ShopSelection.default,
+        "skip_cutscenes": True,
+        "equipment_availability": EquipmentAvailability.default,
+        "warrior_2_disable_curse": False,
+        "warrior_3_remove_hp_decrease_on_level": False,
+        "inventor_3_remove_rust": False,
+        "inventor_3_start_with_grindstone": True,
+        "upgrade_equipment": UpgradeEquipment.default,
+        "release_episodes_when_completed": True,
+        "character": Character.option_inventor,
+        "randomize_gadgets": RandomizeGadgets.option_filler_only,
+        "excluded_equipment": ExcludedEquipment.default,
+        "remove_checks_when_sent": False,
+        "use_equipment_from_any_character": False
     }
 }

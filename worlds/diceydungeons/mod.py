@@ -30,7 +30,7 @@ default_item_info: OrderedDict = {
     'Uses?': '0',
     'Cast Backwards?': 'NO',
     'Single use?': 'NO',
-    'Tags': 'excludefromrandomlists|cannotsteal|skillcard',
+    'Tags': 'excludefromrandomlists|cannotsteal|skillcard|appearsforparts',
     'Witch Spell': '',
     'Script: Before Combat': '',
     'Script: After Combat': '',
@@ -55,12 +55,14 @@ filler_items: dict[str, str] = {
 }
 """Dict (name -> description) of filler items to populate into equipment"""
 
-def get_filler_items() -> list[dict]:
+def get_filler_items(randomize_gadgets: int) -> list[dict]:
     ret: list[dict] = []
     for name, desc in filler_items.items():
         item = default_item_info.copy()
         item['Name'] = name
         item['Description'] = desc
+        if randomize_gadgets >= 1:
+            item['Gadget'] = 'Random Gadget'
         ret.append(item)
     
     return ret
@@ -103,12 +105,14 @@ class DiceyDungeonsClientModGenerator():
         self.slot_data = slot_data
         self.mod_name = 'diceyap'
     
-    def get_equipment_row(self, item: tuple[str, str, int]):
+    def get_equipment_row(self, item: tuple[str, str, int], randomize_gadgets: bool):
         owner = item[1]
 
         row = default_item_info.copy()
         row['Name'] = item[0]
         row['Description'] = f"Owner: {owner}| |{item_classification_text_mapping[item_flag_mapping(item[2])]}"
+        if randomize_gadgets >= 1:
+            row['Gadget'] = 'Random Gadget'
 
         return row
     
@@ -133,16 +137,16 @@ class DiceyDungeonsClientModGenerator():
         with open(path, 'w', newline='') as f:
             f.write(save_name)
     
-    def _generate_equipment_csv(self, path: str):
+    def _generate_equipment_csv(self, path: str, randomize_gadgets: int):
         """Generate equipment.csv content as a string."""
         with open(path, 'w', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=equipment_field_list)
             writer.writeheader()
             rows = []
             for item in self.equipment:
-                rows.append(self.get_equipment_row(item))
+                rows.append(self.get_equipment_row(item, randomize_gadgets))
             # Filler items.
-            rows.extend(get_filler_items())
+            rows.extend(get_filler_items(randomize_gadgets))
             writer.writerows(rows)
     
     def replace_text_in_column(self, path: str, col: str, old: str, new: str):
@@ -215,6 +219,44 @@ class DiceyDungeonsClientModGenerator():
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(rows) 
+    
+    def add_starting_equipment(self, path: str, character: str, level: int, equipment: str):
+        """Add a piece of starting equipment to a certain episode"""
+        with open(path, 'r', newline='') as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames
+            rows = list(reader)
+        
+        for row in rows:
+            if row["Character"] == character and int(row["Level"]) == level and row["Equipment"]:
+                starting_equipment = row["Equipment"].split("|")
+                starting_equipment.append(equipment)
+                row["Equipment"] = "|".join(starting_equipment)
+        
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows) 
+    
+    def set_random_starting_gadgets(self, path: str):
+        """Set all Inventor episodes to start with the Random Gadget gadget(s)"""
+        with open(path, 'r', newline='') as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames
+            rows = list(reader)
+        
+        for row in rows:
+            if row["Skillcard"]:
+                skills_list = row["Skillcard"].split("|")
+                if "Inventor Gadgets" not in skills_list:
+                    continue
+                randomized_gadgets_skills_list = list(map(lambda e : e if e == "Inventor Gadgets" else "Random Gadget", skills_list))
+                row["Skillcard"] = "|".join(randomized_gadgets_skills_list)
+        
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows) 
         
     
     def generate(self):
@@ -239,9 +281,13 @@ class DiceyDungeonsClientModGenerator():
                 # Thief
                 vanilla_files = files(__package__).joinpath('data', 'thief_vanilla_progression_data', self.mod_name)
                 self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
-            else:
+            elif self.slot_data['character'] == 2:
                 # Robot
                 vanilla_files = files(__package__).joinpath('data', 'robot_vanilla_progression_data', self.mod_name)
+                self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
+            else:
+                # Inventor
+                vanilla_files = files(__package__).joinpath('data', 'inventor_vanilla_progression_data', self.mod_name)
                 self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
         else:
             # Open world
@@ -251,6 +297,13 @@ class DiceyDungeonsClientModGenerator():
         if self.slot_data['skip_cutscenes']:
             skip_cutscenes_files = files(__package__).joinpath('data', 'skip_cutscenes_data', self.mod_name)
             self._write_package_files_to_dir(skip_cutscenes_files, self.mod_name, dest_dir)
+
+        if self.slot_data['remove_checks_when_sent']:
+            remove_equip_on_check_send = files(__package__).joinpath('data', 'remove_equip_on_check_send', self.mod_name)
+            self._write_package_files_to_dir(remove_equip_on_check_send, self.mod_name, dest_dir)
+        else:
+            keep_equip_on_check_send = files(__package__).joinpath('data', 'keep_equip_on_check_send', self.mod_name)
+            self._write_package_files_to_dir(keep_equip_on_check_send, self.mod_name, dest_dir)
 
         # Conditionally give save file info
         # If episode_progression is vanilla (0), need save file to force progression logic
@@ -265,7 +318,7 @@ class DiceyDungeonsClientModGenerator():
             if not os.path.exists(equipment_path):
                 os.makedirs(equipment_path)
             equipment_path = os.path.join(equipment_path, 'equipment.csv')
-            self._generate_equipment_csv(equipment_path)
+            self._generate_equipment_csv(equipment_path, self.slot_data['randomize_gadgets'])
         
         # Modify episodes.csv based on options (QoL options)
         episodes_path = os.path.join(dest_dir, self.mod_name, 'data', 'text', 'episodes.csv')
@@ -279,6 +332,22 @@ class DiceyDungeonsClientModGenerator():
         if 'warrior_3_remove_hp_decrease_on_level' in self.slot_data and self.slot_data['warrior_3_remove_hp_decrease_on_level']:
             for removal in warrior_3_start_game_hp_loss_removals:
                 self.modify_episode_start_script(episodes_path, 'Warrior', 3, removal)
+
+        # Inventor Episode 3 - Remove Rust
+        if 'inventor_3_remove_rust' in self.slot_data and self.slot_data['inventor_3_remove_rust']:
+            for removal in inventor_3_start_game_rust_removals:
+                self.modify_episode_start_script(episodes_path, 'Inventor', 3, removal)
+
+        # Inventor Episode 3 - Start with Grindstone
+        if 'inventor_3_start_with_grindstone' in self.slot_data and self.slot_data['inventor_3_start_with_grindstone']:
+            self.add_starting_equipment(episodes_path, 'Inventor', 3, 'Grindstone')
+        
+        # Inventor - Randomize all equipments' gadgets
+        if self.slot_data['randomize_gadgets'] == 2:
+            # Randomize all gadgets, so bring in new equipment.csv
+            randomize_gadgets_files = files(__package__).joinpath('data', 'randomize_all_gadgets_data', self.mod_name)
+            self._write_package_files_to_dir(randomize_gadgets_files, self.mod_name, dest_dir)
+            self.set_random_starting_gadgets(episodes_path)
         
         # Upgrade Equipment
 

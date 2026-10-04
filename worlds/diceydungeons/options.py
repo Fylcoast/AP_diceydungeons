@@ -203,19 +203,17 @@ class ReleaseEpisodesWhenCompleted(Toggle):
 
     display_name = "Release Episodes When Completed"
 
-class Character(Choice):
+class Character(OptionSet):
     '''
-    Determines which character you would like to play as.
+    Determines which characters you would like to play as. 
+    Each character adds several hours to expected completion time.
     '''
 
-    display_name = "Character"
+    display_name = "Characters"
 
-    option_warrior = 0
-    option_thief = 1
-    option_robot = 2
-    option_inventor = 3
+    valid_keys = {"Warrior", "Thief", "Robot", "Inventor"}
 
-    default = option_warrior
+    default = {"Warrior"}
 
 class ExcludedEquipment(OptionSet):
     '''
@@ -328,7 +326,7 @@ option_presets = {
         "inventor_3_start_with_grindstone": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
-        "character": Character.option_warrior,
+        "character": Character.default,
         "excluded_equipment": ExcludedEquipment.default,
         "randomize_gadgets": RandomizeGadgets.default,
         "remove_checks_when_sent": RemoveChecksWhenSent.default,
@@ -352,7 +350,7 @@ option_presets = {
         "inventor_3_start_with_grindstone": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
-        "character": Character.option_warrior,
+        "character": Character.default,
         "excluded_equipment": ExcludedEquipment.default,
         "randomize_gadgets": RandomizeGadgets.default,
         "remove_checks_when_sent": RemoveChecksWhenSent.default,
@@ -376,7 +374,7 @@ option_presets = {
         "inventor_3_start_with_grindstone": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": True,
-        "character": Character.option_inventor,
+        "character": {"Inventor"},
         "randomize_gadgets": RandomizeGadgets.option_filler_only,
         "excluded_equipment": ExcludedEquipment.default,
         "remove_checks_when_sent": False,
@@ -400,7 +398,7 @@ option_presets = {
         "inventor_3_start_with_grindstone": True,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": True,
-        "character": Character.option_inventor,
+        "character": {"Inventor"},
         "randomize_gadgets": RandomizeGadgets.option_filler_only,
         "excluded_equipment": ExcludedEquipment.default,
         "remove_checks_when_sent": False,

@@ -296,13 +296,12 @@ class DiceyDungeonsContext(CommonContext):
     async def check_for_victory(self):
         if self.finished_game == False and "character" in self.slot_data:
             items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
-            character = CHARACTER_CODE_TO_NAME[self.slot_data["character"] + 1]
-            if character + " - Episode 1 Completed" in items_received_str and \
-               character +  " - Episode 2 Completed" in items_received_str and \
-               character +  " - Episode 3 Completed" in items_received_str and \
-               character +  " - Episode 4 Completed" in items_received_str and \
-               character +  " - Episode 5 Completed" in items_received_str and \
-               character +  " - Episode 6 Completed" in items_received_str:
+            finished_game: bool = True
+            for character in self.slot_data["character"]:
+                for episode_num in range(1, 7):
+                    finished_game = finished_game and f"{character} - Episode {episode_num} Completed" in items_received_str
+
+            if finished_game:
                 await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
                 self.finished_game = True
 

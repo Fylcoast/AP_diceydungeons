@@ -15,7 +15,7 @@ The Warrior, Thief, Robot, and Inventor are the only characters supported by thi
 
 ## What is the goal of Dicey Dungeons when randomized?
 
-The game is Completed once you have beaten all 6 episodes for your selected Character.
+The game is Completed once you have beaten all 6 episodes for all of your selected Characters.
 
 ## What items and locations get shuffled?
 

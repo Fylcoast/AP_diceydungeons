@@ -2,6 +2,7 @@ import random
 
 from ..data.episode_data import *
 from ..data.game_data import *
+from ..data.globals import *
 
 generator_names: dict[list[str]] = {
     1: ['warrior_one', 'warrior_two', 'warrior_three', 'warrior_four', 'warrior_five', 'warrior_six'],
@@ -329,17 +330,20 @@ class GeneratedItems:
 
         self.characters_playing = []
 
-        if slot_data['character'] + 1 == 1:
-            self.characters_playing.append(self.warrior)
-        elif slot_data['character'] + 1 == 2:
-            self.characters_playing.append(self.thief)
-        elif slot_data['character'] + 1 == 3:
-            self.characters_playing.append(self.robot)
-        elif slot_data['character'] + 1 == 4:
-            self.characters_playing.append(self.inventor)
-        else:
-            # Fallback
-            self.characters_playing.append(self.warrior)
+        # if slot_data['character'] + 1 == 1:
+        #     self.characters_playing.append(self.warrior)
+        # elif slot_data['character'] + 1 == 2:
+        #     self.characters_playing.append(self.thief)
+        # elif slot_data['character'] + 1 == 3:
+        #     self.characters_playing.append(self.robot)
+        # elif slot_data['character'] + 1 == 4:
+        #     self.characters_playing.append(self.inventor)
+        # else:
+        #     # Fallback
+        #     self.characters_playing.append(self.warrior)
+
+        for character in slot_data['character']:
+            self.characters_playing.append(self.all_characters[CHARACTER_NAME_TO_LIST_POS[character]])
     
     def prefill_shops(self):
         """

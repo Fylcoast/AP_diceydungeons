@@ -1151,6 +1151,14 @@ item_metadata = {
         'witch': { 'episode': [], 'location_types': [], },
         'jester': { 'episode': [], 'location_types': [], },
     },
+    'Last Laugh': {
+        'warrior': { 'episode': [], 'location_types': [], },
+        'thief': { 'episode': [], 'location_types': [], },
+        'robot': { 'episode': [], 'location_types': [], },
+        'inventor': { 'episode': [5], 'location_types': ['chest'], },
+        'witch': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [], 'location_types': [], },
+    },
     'Last Stand': {
         'warrior': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
         'thief': { 'episode': [1, 2, 3, 4, 5, 6], 'location_types': ['chest', 'shop'], },

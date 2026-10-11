@@ -272,11 +272,11 @@ class DiceyDungeonsContext(CommonContext):
         server_status = " and Archipelago Server" if self.is_connected() else " (disconnected from Archipelago)"
         return game_status + server_status
     
-    async def handle_game_command(self, data: dict):
+    async def handle_game_command(self, data: dict[str, str]):
         command = data.get("command")
 
         if command == "send_item":
-            new_loc = ast.literal_eval(data.get("payload"))[0]
+            new_loc = ast.literal_eval(data.get("payload").replace('+', ''))[0]
             if DEBUG:
                 logger.info(f"Location checked: {str(new_loc)}")
             self.locations_checked.add(new_loc)

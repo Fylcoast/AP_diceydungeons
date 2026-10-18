@@ -105,32 +105,48 @@ def create_item_with_correct_classification(world: DiceyDungeonsWorld, name: str
 
 def create_all_items(world: DiceyDungeonsWorld) -> None:
     itempool: list[Item] = []
+    characters: set[str] = world.options.character.value
 
-    # Character choice
-    character: str = CHARACTER_CODE_TO_NAME[world.options.character.value + 1]
+    # For all characters
 
-    # Levelsanity
-    if world.options.levelsanity:
-        for episode in range(1, 7):
-            itempool += [world.create_item(f"{character} - Ep. {episode} Prog. Level Up") for _ in range(1, 6)]
-    
+    # Require "use equipment from any character" has "open" equipment availability set
+    assert (not world.options.use_equipment_from_any_character.value) or world.options.equipment_availability.value == 1, "Open equipment availability must be set if playing with Use equipment from any character"
+        
     # Split dice
     if world.options.split_dice and world.options.dice_shards_per_die > 0:
         itempool += [world.create_item("Dice Shard") for _ in range(world.options.dice_shards_per_die * 3)]
         if world.options.spare_dice_shards > 0:
             itempool += [DiceyDungeonsItem("Dice Shard", ItemClassification.useful, ITEM_NAME_TO_ID["Dice Shard"], world.player) for _ in range(world.options.spare_dice_shards)]
 
-    # Require "use equipment from any character" has "open" equipment availability set
-    assert (not world.options.use_equipment_from_any_character.value) or world.options.equipment_availability.value == 1, "Open equipment availability must be set if playing with Use equipment from any character"
+
+    # Levelsanity
+    if world.options.levelsanity:
+        for character in characters:
+            for episode in range(1, 7):
+                itempool += [world.create_item(f"{character} - Ep. {episode} Prog. Level Up") for _ in range(1, 6)]
 
     # Equipment
     item_list: list[str] = []
 
-    if not world.options.use_equipment_from_any_character:
-        item_list = list(set(all_character_item_lists[world.options.character.value]) - world.options.excluded_equipment.value)
-    else:
+    if world.options.use_equipment_from_any_character:
         item_list = list(set(warrior_items + thief_items + robot_items + inventor_items) - world.options.excluded_equipment.value)
         world.random.shuffle(item_list)
+    else:
+        # Stitch character lists together, so that if we only take some equipment, it's evenly spread among selected characters.
+        # This should give maximum chance of world generation success (without having to map it out based on floor/episode requirements).
+        character_lists: list[list[str]] = []
+        for character in characters:
+            character_list: list[str] = all_character_item_lists[CHARACTER_NAME_TO_LIST_POS[character]]
+            world.random.shuffle(character_list)
+            character_lists.append(character_list)
+
+        character_lists.sort(reverse=True, key=lambda x : len(x))
+        max_character_list_length: int = len(character_lists[0])
+
+        for i in range(max_character_list_length):
+            for character_list in character_lists:
+                if i < len(character_list) and character_list[i] not in item_list:
+                    item_list.append(character_list[i])
 
     unfilled_locations: int = len(world.multiworld.get_unfilled_locations(world.player))
     max_number_of_equipment: int = unfilled_locations - len(itempool)

@@ -131,6 +131,40 @@ class DiceyDungeonsClientModGenerator():
                     walk_files(item, f'{prefix}/{item.name}')
         
         walk_files(base_path, mod_name)
+
+    def _merge_character_csv(self, csv_name: str, characters: set[str], destination_file_path: str):
+        """Stitch one CSV file together from the vanilla progression data for each selected character."""
+        if not characters:
+            return
+
+        rows: list[dict] = []
+        fieldnames: list[str] | None = None
+
+        for character in sorted(characters):
+            package_path = files(__package__).joinpath('data', f'{character.lower()}_vanilla_progression_data', self.mod_name, 'data', 'text', csv_name)
+            if not package_path.is_file():
+                continue
+
+            with package_path.open('rt', newline='', encoding='utf-8') as csv_file:
+                reader = csv.DictReader(csv_file)
+                if fieldnames is None:
+                    fieldnames = reader.fieldnames or []
+                rows.extend(reader)
+
+        if fieldnames is None:
+            return
+
+        os.makedirs(os.path.dirname(destination_file_path), exist_ok=True)
+        with open(os.path.join(destination_file_path, csv_name), 'w', newline='', encoding='utf-8') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
+
+    def generate_episodes_csv(self, characters: set[str], destination_file_path: str):
+        self._merge_character_csv('episodes.csv', characters, destination_file_path)
+
+    def generate_characters_csv(self, characters: set[str], destination_file_path: str):
+        self._merge_character_csv('characters.csv', characters, destination_file_path)
     
     def _generate_progresssettings_file(self, path: str, save_name: str):
         """Generate progresssettings.txt content"""
@@ -273,22 +307,8 @@ class DiceyDungeonsClientModGenerator():
         # Conditionally populate other files, based on Options selected.
         if self.slot_data['episode_progression'] == 0:
             # Vanilla progression
-            if self.slot_data['character'] == 0:
-                # Warrior
-                vanilla_files = files(__package__).joinpath('data', 'warrior_vanilla_progression_data', self.mod_name)
-                self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
-            elif self.slot_data['character'] == 1:
-                # Thief
-                vanilla_files = files(__package__).joinpath('data', 'thief_vanilla_progression_data', self.mod_name)
-                self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
-            elif self.slot_data['character'] == 2:
-                # Robot
-                vanilla_files = files(__package__).joinpath('data', 'robot_vanilla_progression_data', self.mod_name)
-                self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
-            else:
-                # Inventor
-                vanilla_files = files(__package__).joinpath('data', 'inventor_vanilla_progression_data', self.mod_name)
-                self._write_package_files_to_dir(vanilla_files, self.mod_name, dest_dir)
+            self.generate_episodes_csv(self.slot_data['character'], os.path.join(dest_dir, self.mod_name, 'data', 'text'))
+            self.generate_characters_csv(self.slot_data['character'], os.path.join(dest_dir, self.mod_name, 'data', 'text'))
         else:
             # Open world
             open_world_files = files(__package__).joinpath('data', 'open_world_data', self.mod_name)

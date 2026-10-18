@@ -89,56 +89,61 @@ def create_all_locations(world: DiceyDungeonsWorld) -> None:
 
 def create_regular_locations(world: DiceyDungeonsWorld) -> None:
 
+    # Assert that they've selected a character
+    assert world.options.character.value, "Must play with at least one character"
+
     # Populate episode locations based on character choice
-    episode_list = all_character_episodes[world.options.character]
-    character = CHARACTER_CODE_TO_NAME[world.options.character + 1]
-    for episode_num, episode in enumerate(episode_list, 1):
-        for floor_num, floor in enumerate(episode.floors, 1):
-            episode_floor_str = character + " - Ep. " + str(episode_num) + " Fl. " + str(floor_num)
-            episode_floor_region = character + " - Episode " + str(episode_num) + " - Floor " + str(floor_num)
-            region = world.get_region(episode_floor_region)
-            locs = []
-            # Chests
-            for chest in range(1, floor.num_chests * world.options.checks_per_chest + 1):
-                locs.append(episode_floor_str + " - Chest " + str(chest))
-            # Shops
-            for shop in range(1, floor.num_shops * world.options.checks_per_shop + 1):
-                locs.append(episode_floor_str + " - Shop " + str(shop))
-            # Trades
-            for trade in range(1, floor.num_trades * world.options.checks_per_trade + 1):
-                locs.append(episode_floor_str + " - Trade " + str(trade))
-            # Heals AND Upgrades to go here, someday
-        
-            region.add_locations(get_location_names_with_ids(locs), DiceyDungeonsLocation)
+    characters: set[str] = world.options.character.value
+
+    for character in characters:
+        episode_list = all_character_episodes[CHARACTER_NAME_TO_LIST_POS[character]]
+        for episode_num, episode in enumerate(episode_list, 1):
+            for floor_num, floor in enumerate(episode.floors, 1):
+                episode_floor_str = character + " - Ep. " + str(episode_num) + " Fl. " + str(floor_num)
+                episode_floor_region = character + " - Episode " + str(episode_num) + " - Floor " + str(floor_num)
+                region = world.get_region(episode_floor_region)
+                locs = []
+                # Chests
+                for chest in range(1, floor.num_chests * world.options.checks_per_chest + 1):
+                    locs.append(episode_floor_str + " - Chest " + str(chest))
+                # Shops
+                for shop in range(1, floor.num_shops * world.options.checks_per_shop + 1):
+                    locs.append(episode_floor_str + " - Shop " + str(shop))
+                # Trades
+                for trade in range(1, floor.num_trades * world.options.checks_per_trade + 1):
+                    locs.append(episode_floor_str + " - Trade " + str(trade))
+                # Heals AND Upgrades to go here, someday
+            
+                region.add_locations(get_location_names_with_ids(locs), DiceyDungeonsLocation)
 
 
-    # Populate episode completions
-    for episode in range(1, 7):
-        loc_name = character + " - Episode " + str(episode) + " Completed"
-        region_name = character + " - Episode " + str(episode) + " - Floor 6"
-        region = world.get_region(region_name)
-        episode_completed = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
-        region.locations.append(episode_completed)
-        episode_item = items.DiceyDungeonsItem(loc_name, ItemClassification.progression, items.ITEM_NAME_TO_ID[loc_name], world.player)
-        episode_completed.place_locked_item(episode_item)
-
-    # Populate level locations if enabled
-    if world.options.levelsanity:
-        # Place level up locations in floor AFTER the level up is first available
-        floor_required: dict[int, str] = {
-            2: "Floor 2",
-            3: "Floor 3",
-            4: "Floor 4",
-            5: "Floor 5",
-            6: "Floor 6"
-        }
-
+        # Populate episode completions
         for episode in range(1, 7):
-            for level in range(2, 7):
-                loc_name = f"{character} - Ep. {episode} - Level {level}"
-                region = world.get_region(character + " - Episode " + str(episode) + " - " + floor_required[level])
-                level_location = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
-                region.locations.append(level_location)
+            loc_name = character + " - Episode " + str(episode) + " Completed"
+            region_name = character + " - Episode " + str(episode) + " - Floor 6"
+            region = world.get_region(region_name)
+            episode_completed = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
+            region.locations.append(episode_completed)
+            episode_item = items.DiceyDungeonsItem(loc_name, ItemClassification.progression, items.ITEM_NAME_TO_ID[loc_name], world.player)
+            episode_completed.place_locked_item(episode_item)
+
+        # Populate level locations if enabled
+        if world.options.levelsanity:
+            # Place level up locations in floor AFTER the level up is first available
+            floor_required: dict[int, str] = {
+                2: "Floor 2",
+                3: "Floor 3",
+                4: "Floor 4",
+                5: "Floor 5",
+                6: "Floor 6"
+            }
+
+            for episode in range(1, 7):
+                for level in range(2, 7):
+                    loc_name = f"{character} - Ep. {episode} - Level {level}"
+                    region = world.get_region(character + " - Episode " + str(episode) + " - " + floor_required[level])
+                    level_location = DiceyDungeonsLocation(world.player, loc_name, LOCATION_NAME_TO_ID[loc_name], region)
+                    region.locations.append(level_location)
 
 
 

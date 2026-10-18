@@ -272,11 +272,11 @@ class DiceyDungeonsContext(CommonContext):
         server_status = " and Archipelago Server" if self.is_connected() else " (disconnected from Archipelago)"
         return game_status + server_status
     
-    async def handle_game_command(self, data: dict):
+    async def handle_game_command(self, data: dict[str, str]):
         command = data.get("command")
 
         if command == "send_item":
-            new_loc = ast.literal_eval(data.get("payload"))[0]
+            new_loc = ast.literal_eval(data.get("payload").replace('+', ''))[0]
             if DEBUG:
                 logger.info(f"Location checked: {str(new_loc)}")
             self.locations_checked.add(new_loc)
@@ -296,13 +296,12 @@ class DiceyDungeonsContext(CommonContext):
     async def check_for_victory(self):
         if self.finished_game == False and "character" in self.slot_data:
             items_received_str = [self.item_names.lookup_in_game(net_item.item, self.game) for net_item in self.items_received]
-            character = CHARACTER_CODE_TO_NAME[self.slot_data["character"] + 1]
-            if character + " - Episode 1 Completed" in items_received_str and \
-               character +  " - Episode 2 Completed" in items_received_str and \
-               character +  " - Episode 3 Completed" in items_received_str and \
-               character +  " - Episode 4 Completed" in items_received_str and \
-               character +  " - Episode 5 Completed" in items_received_str and \
-               character +  " - Episode 6 Completed" in items_received_str:
+            finished_game: bool = True
+            for character in self.slot_data["character"]:
+                for episode_num in range(1, 7):
+                    finished_game = finished_game and f"{character} - Episode {episode_num} Completed" in items_received_str
+
+            if finished_game:
                 await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
                 self.finished_game = True
 
@@ -336,15 +335,15 @@ class DiceyDungeonsContext(CommonContext):
         # Hint on Shops and Trades. Shops are '2' in 3rd last digit, trades are '5'
         return len(loc) == 6 and (loc[-3] == '2' or loc[-3] == '5')
     
-    def get_locations_for_episode(self, episode_num: int) -> set[int]:
+    def get_locations_for_episode(self, char_code: int, episode_num: int) -> set[int]:
         '''
         Returns set of locations for a given episode.
         '''
         # Level up locations
-        level_up_locations = set([loc_id for loc_id, _ in self.locations_info.items() if len(str(loc_id)) == 4 and str(loc_id)[-2] == str(episode_num)])
+        level_up_locations = set([loc_id for loc_id, _ in self.locations_info.items() if len(str(loc_id)) == 4 and str(loc_id)[-2] == str(episode_num) and str(loc_id)[-3] == str(char_code)])
 
         # Equipment locations
-        equipment_locations = set([loc_id for loc_id, _ in self.locations_info.items() if len(str(loc_id)) == 6 and str(loc_id)[1] == str(episode_num)])
+        equipment_locations = set([loc_id for loc_id, _ in self.locations_info.items() if len(str(loc_id)) == 6 and str(loc_id)[1] == str(episode_num) and str(loc_id)[0] == str(char_code)])
 
         return level_up_locations | equipment_locations
     
@@ -354,11 +353,18 @@ class DiceyDungeonsContext(CommonContext):
         '''
         item_str = str(item)
         return int(item_str[2]) if (len(item_str) == 3 and item_str[0] == '9') else 0
+
+    def episode_completion_character(self, item: int) -> int:
+        '''
+        Returns the Character code whose episode we have completed, if applicable. 0 otherwise.
+        '''
+        item_str = str(item)
+        return int(item_str[1]) if (len(item_str) == 3 and item_str[0] == '9') else 0
     
-    async def _send_location_checks_for_episode(self, episode_num: int):
+    async def _send_location_checks_for_episode(self, char_code: int, episode_num: int):
         if len(self.locations_info) <= 0:
             await self._wait_locations_and_get_items()
-        await self.send_msgs([{"cmd": 'LocationChecks', "locations": self.get_locations_for_episode(episode_num)}]) 
+        await self.send_msgs([{"cmd": 'LocationChecks', "locations": self.get_locations_for_episode(char_code, episode_num)}]) 
 
 
     async def server_auth(self, password_requested: bool = False):
@@ -445,10 +451,11 @@ class DiceyDungeonsContext(CommonContext):
                 # If configured, and received an Episode completion, release items from episode.
                 if "release_episodes_when_completed" in self.slot_data and self.slot_data["release_episodes_when_completed"]:
                     episode_num = self.episode_completion_number(net_item.item)
+                    char_code = self.episode_completion_character(net_item.item)
                     if episode_num > 0:
                         if DEBUG:
                             logger.info(f"Releasing all location checks in Episode {episode_num}")
-                        asyncio.create_task(self._send_location_checks_for_episode(episode_num))
+                        asyncio.create_task(self._send_location_checks_for_episode(char_code, episode_num))
             
             self.generate_items()
             

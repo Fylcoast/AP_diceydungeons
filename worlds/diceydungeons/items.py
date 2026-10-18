@@ -105,6 +105,7 @@ def create_item_with_correct_classification(world: DiceyDungeonsWorld, name: str
 
 def create_all_items(world: DiceyDungeonsWorld) -> None:
     itempool: list[Item] = []
+    characters: set[str] = world.options.character.value
 
     # For all characters
 
@@ -118,11 +119,9 @@ def create_all_items(world: DiceyDungeonsWorld) -> None:
             itempool += [DiceyDungeonsItem("Dice Shard", ItemClassification.useful, ITEM_NAME_TO_ID["Dice Shard"], world.player) for _ in range(world.options.spare_dice_shards)]
 
 
-    # For specific characters
-    characters: set[str] = world.options.character.value
-    for character in characters:
-        # Levelsanity
-        if world.options.levelsanity:
+    # Levelsanity
+    if world.options.levelsanity:
+        for character in characters:
             for episode in range(1, 7):
                 itempool += [world.create_item(f"{character} - Ep. {episode} Prog. Level Up") for _ in range(1, 6)]
 
@@ -148,12 +147,6 @@ def create_all_items(world: DiceyDungeonsWorld) -> None:
             for character_list in character_lists:
                 if i < len(character_list) and character_list[i] not in item_list:
                     item_list.append(character_list[i])
-
-    # if not world.options.use_equipment_from_any_character:
-    #     item_list = list(set(all_character_item_lists[world.options.character.value]) - world.options.excluded_equipment.value)
-    # else:
-    #     item_list = list(set(warrior_items + thief_items + robot_items + inventor_items) - world.options.excluded_equipment.value)
-    #     world.random.shuffle(item_list)
 
     unfilled_locations: int = len(world.multiworld.get_unfilled_locations(world.player))
     max_number_of_equipment: int = unfilled_locations - len(itempool)

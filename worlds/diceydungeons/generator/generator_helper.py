@@ -330,18 +330,6 @@ class GeneratedItems:
 
         self.characters_playing = []
 
-        # if slot_data['character'] + 1 == 1:
-        #     self.characters_playing.append(self.warrior)
-        # elif slot_data['character'] + 1 == 2:
-        #     self.characters_playing.append(self.thief)
-        # elif slot_data['character'] + 1 == 3:
-        #     self.characters_playing.append(self.robot)
-        # elif slot_data['character'] + 1 == 4:
-        #     self.characters_playing.append(self.inventor)
-        # else:
-        #     # Fallback
-        #     self.characters_playing.append(self.warrior)
-
         for character in slot_data['character']:
             self.characters_playing.append(self.all_characters[CHARACTER_NAME_TO_LIST_POS[character]])
     

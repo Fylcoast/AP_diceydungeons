@@ -21,6 +21,21 @@ for (item in equipment) {
   }
 }
 
+var spell_slot = 1;
+while (spell_slot < 7) {
+  var item = Spellbook.spellname(spell_slot);
+  if (item == null) {
+    continue;
+  }
+  var itemString = item.toString();
+  if (itemString.indexOf("[AP]") >= 0) {
+    var location_id = itemString.split("[AP]")[1];
+    trace("[AP] {\"command\": \"send_item\", \"payload\": \"" + location_id + "\"}");
+    Spellbook.erase(spell_slot);
+  }
+  spell_slot = spell_slot + 1;
+}
+
 for (item in items_to_remove) {
   self.equipment.remove(item);
 }

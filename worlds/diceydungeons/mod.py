@@ -31,7 +31,7 @@ default_item_info: OrderedDict = {
     'Cast Backwards?': 'NO',
     'Single use?': 'NO',
     'Tags': 'excludefromrandomlists|cannotsteal|skillcard|appearsforparts',
-    'Witch Spell': '',
+    'Witch Spell': '1',
     'Script: Before Combat': '',
     'Script: After Combat': '',
     'Script: Before Start Turn': '',
@@ -183,7 +183,7 @@ class DiceyDungeonsClientModGenerator():
             rows.extend(get_filler_items(randomize_gadgets))
             writer.writerows(rows)
     
-    def replace_text_in_column(self, path: str, col: str, old: str, new: str):
+    def replace_text_in_column(self, path: str, col: str, old: str, new: str, excluded_characters: list[str] = []):
         """Replace an old string with a new string in chosen column of csv at path. 
         Does nothing if new string already present."""
         with open(path, 'r', newline='') as f:
@@ -192,7 +192,7 @@ class DiceyDungeonsClientModGenerator():
             rows = list(reader)
         
         for row in rows:
-            if new not in row[col]:
+            if new not in row[col] and row["Character"] not in excluded_characters:
                 row[col] = row[col].replace(old, new)
         
         with open(path, 'w', newline='') as f:
@@ -220,7 +220,7 @@ class DiceyDungeonsClientModGenerator():
             writer.writeheader()
             writer.writerows(rows) 
     
-    def add_to_all_start_scripts(self, path: str, text_to_add: str):
+    def add_to_all_start_scripts(self, path: str, text_to_add: str, excluded_characters: list[str] = []):
         """Modify start script to either add given string or remove given string."""
         with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
@@ -228,7 +228,7 @@ class DiceyDungeonsClientModGenerator():
             rows = list(reader)
         
         for row in rows:
-            if text_to_add not in row["Script: Start Game"]:
+            if text_to_add not in row["Script: Start Game"] and row["Character"] not in excluded_characters:
                 row["Script: Start Game"] = row["Script: Start Game"] + text_to_add
         
         with open(path, 'w', newline='') as f:
@@ -236,7 +236,7 @@ class DiceyDungeonsClientModGenerator():
             writer.writeheader()
             writer.writerows(rows) 
     
-    def upgrade_starting_equipment(self, path: str):
+    def upgrade_starting_equipment(self, path: str, excluded_characters: list[str] = []):
         """Upgrade all starting equipment for all episodes"""
         with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
@@ -244,7 +244,7 @@ class DiceyDungeonsClientModGenerator():
             rows = list(reader)
         
         for row in rows:
-            if row["Equipment"]:
+            if row["Equipment"] and row["Character"] and row["Character"] not in excluded_characters:
                 starting_equipment = row["Equipment"].split("|")
                 upgraded_starting_equipment = list(map(lambda equip : f"{equip}+" if "+" not in equip else equip, starting_equipment))
                 row["Equipment"] = "|".join(upgraded_starting_equipment)
@@ -361,6 +361,12 @@ class DiceyDungeonsClientModGenerator():
         # Inventor Episode 3 - Start with Grindstone
         if 'inventor_3_start_with_grindstone' in self.slot_data and self.slot_data['inventor_3_start_with_grindstone']:
             self.add_starting_equipment(episodes_path, 'Inventor', 3, 'Grindstone')
+
+        if 'witch_start_with_harvest_scythe' in self.slot_data and self.slot_data['witch_start_with_harvest_scythe']:
+            self.add_starting_equipment(episodes_path, 'Witch', 1, 'Harvest Scythe')
+            self.add_starting_equipment(episodes_path, 'Witch', 2, 'Harvest Scythe')
+            self.add_starting_equipment(episodes_path, 'Witch', 4, 'Harvest Scythe')
+            self.add_starting_equipment(episodes_path, 'Witch', 5, 'Harvest Scythe')
         
         # Inventor - Randomize all equipments' gadgets
         if self.slot_data['randomize_gadgets'] == 2:
@@ -373,7 +379,7 @@ class DiceyDungeonsClientModGenerator():
 
         # Upgrade starting equipment
         if 'upgrade_equipment' in self.slot_data and self.slot_data['upgrade_equipment'] >= 1:
-            self.upgrade_starting_equipment(episodes_path)
+            self.upgrade_starting_equipment(episodes_path, ['Witch'])
             # Make sure to include episode 6
             upgraded_initial_equipment_files = files(__package__).joinpath('data', 'upgrade_starting_equipment', self.mod_name)
             self._write_package_files_to_dir(upgraded_initial_equipment_files, self.mod_name, dest_dir)
@@ -381,7 +387,11 @@ class DiceyDungeonsClientModGenerator():
         # Upgrade all equipment
         if 'upgrade_equipment' in self.slot_data and self.slot_data['upgrade_equipment'] == 2:
             for addition in start_game_upgrade_all_equipment_additions:
-                self.add_to_all_start_scripts(episodes_path, addition)
+                self.add_to_all_start_scripts(episodes_path, addition, ['Witch'])
+
+            # Handle Witch upgrade spell slots
+            self.add_to_all_start_scripts(episodes_path, "Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0); ", ['Warrior', 'Thief', 'Robot', 'Inventor'])
+
             # Also handle level ups.
-            self.replace_text_in_column(episodes_path, 'Script: Define Level Up Rewards', 'leveluprewards', 'upgraded_leveluprewards')
+            self.replace_text_in_column(episodes_path, 'Script: Define Level Up Rewards', 'leveluprewards', 'upgraded_leveluprewards', ['Witch'])
 

@@ -61,6 +61,7 @@ class DiceyDungeonsWorld(World):
             "warrior_3_remove_hp_decrease_on_level",
             "inventor_3_remove_rust",
             "inventor_3_start_with_grindstone",
+            "witch_start_with_harvest_scythe",
             "upgrade_equipment",
             "release_episodes_when_completed",
             "character",

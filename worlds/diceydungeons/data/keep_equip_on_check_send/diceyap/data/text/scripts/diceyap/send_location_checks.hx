@@ -2,21 +2,28 @@
 //var equipment = self.equipment;
 // Use getbackpackcontents instead of self.equipment so we can send from backpack! This may not correctly remove... but i mean...
 var equipment = getbackpackcontents(true);
-var items_to_remove = [];
 
 for (item in equipment) {
-  //trace("Item: " + item + ", isnull: " + (item == null));
   if (item == null) {
     continue;
   }
   var itemString = item.toString();
-  //trace("Item length: " + itemString.length);
-  //trace("Index of [AP]: " + itemString.indexOf("[AP]"));
   if (itemString.indexOf("[AP]") >= 0) {
-    //trace("Attempting to send item: " + itemString);
     var location_id = itemString.split("[AP]")[1];
     trace("[AP] {\"command\": \"send_item\", \"payload\": \"" + location_id + "\"}");
-    //self.equipment.remove(item);
-    items_to_remove.push(item);
   }
+}
+
+var spell_slot = 1;
+while (spell_slot < 7) {
+  var item = Spellbook.spellname(spell_slot);
+  if (item == null) {
+    continue;
+  }
+  var itemString = item.toString();
+  if (itemString.indexOf("[AP]") >= 0) {
+    var location_id = itemString.split("[AP]")[1];
+    trace("[AP] {\"command\": \"send_item\", \"payload\": \"" + location_id + "\"}");
+  }
+  spell_slot = spell_slot + 1;
 }

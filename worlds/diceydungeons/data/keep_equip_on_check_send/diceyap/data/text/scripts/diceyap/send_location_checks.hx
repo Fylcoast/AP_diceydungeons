@@ -14,16 +14,18 @@ for (item in equipment) {
   }
 }
 
-var spell_slot = 1;
-while (spell_slot < 7) {
-  var item = Spellbook.spellname(spell_slot);
-  if (item == null) {
-    continue;
+if (self.layout == self.layout.SPELLBOOK) {
+  var spell_slot = 1;
+  while (spell_slot < 7) {
+    var item = Spellbook.spellname(spell_slot);
+    if (item == null) {
+      continue;
+    }
+    var itemString = item.toString();
+    if (itemString.indexOf("[AP]") >= 0) {
+      var location_id = itemString.split("[AP]")[1];
+      trace("[AP] {\"command\": \"send_item\", \"payload\": \"" + location_id + "\"}");
+    }
+    spell_slot = spell_slot + 1;
   }
-  var itemString = item.toString();
-  if (itemString.indexOf("[AP]") >= 0) {
-    var location_id = itemString.split("[AP]")[1];
-    trace("[AP] {\"command\": \"send_item\", \"payload\": \"" + location_id + "\"}");
-  }
-  spell_slot = spell_slot + 1;
 }

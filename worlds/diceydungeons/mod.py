@@ -390,7 +390,7 @@ class DiceyDungeonsClientModGenerator():
                 self.add_to_all_start_scripts(episodes_path, addition, ['Witch'])
 
             # Handle Witch upgrade spell slots
-            self.add_to_all_start_scripts(episodes_path, "Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0); ", ['Warrior', 'Thief', 'Robot', 'Inventor'])
+            self.add_to_all_start_scripts(episodes_path, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0); ", ['Warrior', 'Thief', 'Robot', 'Inventor'])
 
             # Also handle level ups.
             self.replace_text_in_column(episodes_path, 'Script: Define Level Up Rewards', 'leveluprewards', 'upgraded_leveluprewards', ['Witch'])

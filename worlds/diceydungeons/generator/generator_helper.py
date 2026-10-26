@@ -51,6 +51,11 @@ class LevelItems:
     
     def add_to_level_list(self, items: list[str], replace_upgrade: bool):
         items_to_add = ["Copy" if item == "Upgrade" and replace_upgrade else item for item in items]
+        if replace_upgrade and "WitchUpgrade" in items_to_add:
+            items_to_add.remove("WitchUpgrade")
+            items_to_add.remove("WitchPrecast")
+            if not items_to_add:
+                items_to_add.append("ExtraDice")
         self.items.extend(items_to_add)
 
 class TradeItems:
@@ -420,7 +425,7 @@ class GeneratedItems:
                         # Consider using a more legible condition for Split Dice in the future
                         if self.slot_data["split_dice"] and level % 2 == 0 and level // 2 > self.dice_received:
                             continue
-                        episode.levels[level - 1].add_to_level_list(character_episodes[character.id][episode.episode_num - 1].level_items[level])
+                        episode.levels[level - 2].add_to_level_list(character_episodes[character.id][episode.episode_num - 1].level_items[level], self.slot_data["upgrade_equipment"] == 2)
     
     def assign_standard_level_ups(self):
         """For Levelsanity = off, give normal level ups"""

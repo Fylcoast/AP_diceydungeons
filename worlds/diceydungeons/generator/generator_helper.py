@@ -48,6 +48,13 @@ class LevelItems:
     
     def add_to_level(self, item: str):
         self.items.append(item)
+
+    def blocked_by_dice_shard_count(self, dice_received: int):
+        all_level_items: dict[int, list[str]] = character_episodes[self.character_num][self.episode_num - 1].level_items
+        sorted_levels: list[int] = sorted(all_level_items)
+        # Blocked by dice shard count if we are supposed to get something, and our position in that list is 
+        # >= the number of dice received.
+        return self.level_num in sorted_levels and sorted_levels.index(self.level_num) >= dice_received
     
     def add_to_level_list(self, items: list[str], replace_upgrade: bool):
         items_to_add = ["Copy" if item == "Upgrade" and replace_upgrade else item for item in items]
@@ -422,8 +429,7 @@ class GeneratedItems:
                     # 3. It's not already filled, somehow
                     # 4. If dice, and Split dice is on, we need to be able to add it
                     if level in character_episodes[character.id][episode.episode_num - 1].level_items and level <= max_level and not episode.is_level_filled(level):
-                        # Consider using a more legible condition for Split Dice in the future
-                        if self.slot_data["split_dice"] and level % 2 == 0 and level // 2 > self.dice_received:
+                        if self.slot_data["split_dice"] and episode.levels[level - 2].blocked_by_dice_shard_count(self.dice_received):
                             continue
                         episode.levels[level - 2].add_to_level_list(character_episodes[character.id][episode.episode_num - 1].level_items[level], self.slot_data["upgrade_equipment"] == 2)
     
@@ -433,8 +439,7 @@ class GeneratedItems:
         for character in self.characters_playing:
             for episode in character.episodes:
                 for level in episode.levels:
-                    # Consider using a more legible condition for Split Dice in the future
-                    if self.slot_data["split_dice"] and level.level_num % 2 == 0 and level.level_num // 2 > self.dice_received:
+                    if self.slot_data["split_dice"] and level.blocked_by_dice_shard_count(self.dice_received):
                         continue
                     level.add_to_level_list(character_episodes[character.id][episode.episode_num - 1].standard_level_items[level.level_num], upgrade_all_equipment)
     

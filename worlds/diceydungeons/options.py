@@ -216,6 +216,7 @@ class Character(OptionSet):
     '''
     Determines which characters you would like to play as. 
     Each character adds several hours to expected completion time.
+    Options are 'Warrior', 'Thief', 'Robot', 'Inventor', and 'Witch'.
     '''
 
     display_name = "Characters"

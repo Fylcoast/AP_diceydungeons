@@ -199,6 +199,24 @@ class DiceyDungeonsClientModGenerator():
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(rows) 
+
+    def populate_column(self, path: str, col: str, new: str, force: bool):
+        """Add text to a column if it is currently empty.
+        If force enabled, replaces existing values."""
+        with open(path, 'r', newline='') as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames
+            rows = list(reader)
+
+        for row in rows:
+            if force or not row[col]:
+                row[col] = new
+        
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows) 
+            
     
     def modify_episode_start_script(self, path: str, character: str, level: int, filter: str, add: bool = False):
         """Modify start script to either add given string or remove given string."""
@@ -332,7 +350,7 @@ class DiceyDungeonsClientModGenerator():
             self._generate_progresssettings_file(save_path, self.slot_data['save_name'])
 
 
-        # Make new equipment file
+        # Make append equipment file
         if self.equipment:
             equipment_path = os.path.join(dest_dir, self.mod_name, '_append', 'data', 'text')
             if not os.path.exists(equipment_path):
@@ -367,13 +385,21 @@ class DiceyDungeonsClientModGenerator():
             self.add_starting_equipment(episodes_path, 'Witch', 2, 'Harvest Scythe')
             self.add_starting_equipment(episodes_path, 'Witch', 4, 'Harvest Scythe')
             self.add_starting_equipment(episodes_path, 'Witch', 5, 'Harvest Scythe')
+
+        # Establish base equipment path
+        data_equipment_path = os.path.join(dest_dir, self.mod_name, 'data', 'text')
+        if not os.path.exists(data_equipment_path):
+            os.makedirs(data_equipment_path)
+        data_equipment_path = os.path.join(data_equipment_path, 'equipment.csv')
         
         # Inventor - Randomize all equipments' gadgets
         if self.slot_data['randomize_gadgets'] == 2:
-            # Randomize all gadgets, so bring in new equipment.csv
-            randomize_gadgets_files = files(__package__).joinpath('data', 'randomize_all_gadgets_data', self.mod_name)
-            self._write_package_files_to_dir(randomize_gadgets_files, self.mod_name, dest_dir)
+            # Randomize all gadgets
+            self.populate_column(data_equipment_path, 'Gadget', 'Random Gadget', True)
             self.set_random_starting_gadgets(episodes_path)
+
+        # Witch - Make all equipment work as spells
+        self.populate_column(data_equipment_path, 'Witch Spell', '1', False)
         
         # Upgrade Equipment
 

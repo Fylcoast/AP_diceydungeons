@@ -309,6 +309,24 @@ class DiceyDungeonsClientModGenerator():
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(rows) 
+
+    def witch_upgrade_spells(self, episodes_path: str):
+        """Upgrade and set all witch spell slots"""
+
+        # Most witch episodes can have first slot set
+        # self.add_to_all_start_scripts(episodes_path, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0); ", ['Warrior', 'Thief', 'Robot', 'Inventor'])
+
+        # But then Episode 3 we need to set a different spell, because she has no first spell.
+        # self.replace_text_in_column(episodes_path, "Script: Start Game", "Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0);", "Spellbook.setto(spells[;] [Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)][;]0);")
+
+        for i in range(1, 7):
+            if i != 3:
+                # Most witch episodes can have first slot set
+                self.modify_episode_start_script(episodes_path, "Witch", i, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);", True)
+            else:
+                # But then Episode 3 we need to set a different spell, because she has no first spell.
+                self.modify_episode_start_script(episodes_path, "Witch", i, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);", True)
+        
         
     
     def generate(self):
@@ -416,7 +434,7 @@ class DiceyDungeonsClientModGenerator():
                 self.add_to_all_start_scripts(episodes_path, addition, ['Witch'])
 
             # Handle Witch upgrade spell slots
-            self.add_to_all_start_scripts(episodes_path, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0); ", ['Warrior', 'Thief', 'Robot', 'Inventor'])
+            self.witch_upgrade_spells(episodes_path)
 
             # Also handle level ups.
             self.replace_text_in_column(episodes_path, 'Script: Define Level Up Rewards', 'leveluprewards', 'upgraded_leveluprewards', ['Witch'])

@@ -193,7 +193,7 @@ class UpgradeEquipment(Choice):
 
     all equipment: All equipment is upgraded, like Warrior Episode 2. Upgrades in episodes are converted to Copy blueprints.
 
-    NOTE: Witch will have all spell slots upgraded and prepared, but only for upgrade All equipment.
+    NOTE: Witch will have all spell slots upgraded and prepared, but only for upgrade All equipment. And for Witch Episode 6, this kicks in at start of first combat.
     '''
 
     display_name = "Upgrade Equipment"

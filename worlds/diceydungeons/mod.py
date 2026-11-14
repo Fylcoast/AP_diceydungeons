@@ -218,8 +218,8 @@ class DiceyDungeonsClientModGenerator():
             writer.writerows(rows) 
             
     
-    def modify_episode_start_script(self, path: str, character: str, level: int, filter: str, add: bool = False):
-        """Modify start script to either add given string or remove given string."""
+    def modify_csv_column(self, path: str, column: str, character: str, level: int, filter: str, add: bool = False):
+        """Modify given column in given csv to either add given string or remove given string."""
         with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
             fieldnames = reader.fieldnames
@@ -228,10 +228,10 @@ class DiceyDungeonsClientModGenerator():
         for row in rows:
             if row["Character"] == character and int(row["Level"]) == level:
                 if add:
-                    if filter not in row["Script: Start Game"]:
-                        row["Script: Start Game"] = row["Script: Start Game"] + filter
+                    if filter not in row[column]:
+                        row[column] = row[column] + filter
                 else:
-                    row["Script: Start Game"] = row["Script: Start Game"].replace(filter, "")
+                    row[column] = row[column].replace(filter, "")
         
         with open(path, 'w', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -320,13 +320,17 @@ class DiceyDungeonsClientModGenerator():
         # self.replace_text_in_column(episodes_path, "Script: Start Game", "Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0);", "Spellbook.setto(spells[;] [Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)][;]0);")
 
         for i in range(1, 7):
-            if i != 3:
+            if i != 3 and i != 6:
                 # Most witch episodes can have first slot set
-                self.modify_episode_start_script(episodes_path, "Witch", i, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);", True)
-            else:
+                self.modify_csv_column(episodes_path, "Script: Start Game", "Witch", i, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);", True)
+            elif i == 3:
                 # But then Episode 3 we need to set a different spell, because she has no first spell.
-                self.modify_episode_start_script(episodes_path, "Witch", i, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);", True)
-        
+                self.modify_csv_column(episodes_path, "Script: Start Game", "Witch", i, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);", True)
+            else:
+                # And, Episode 6 we have to do it after defining level up rewards, since that's when we get our equipment
+                # This code makes me sad.
+                self.modify_csv_column(episodes_path, "Script: Define Level Up Rewards", "Witch", i, "self.setvar(~WitchUpgradeSpells~[;] 1);", True)
+                self.modify_csv_column(episodes_path, "Script: Start Combat", "Witch", i, "if(self.getvar(~WitchUpgradeSpells~) == 1) {self.setvar(~WitchUpgradeSpells~[;] 0); var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);};", True)        
         
     
     def generate(self):
@@ -382,17 +386,17 @@ class DiceyDungeonsClientModGenerator():
         # Warrior Episode 2 - Disable Curse
         if 'warrior_2_disable_curse' in self.slot_data and self.slot_data['warrior_2_disable_curse']:
             for removal in warrior_2_start_game_curse_removals:
-                self.modify_episode_start_script(episodes_path, 'Warrior', 2, removal)
+                self.modify_csv_column(episodes_path, 'Script: Start Game', 'Warrior', 2, removal)
 
         # Warrior Episode 3 - Prevent HP Loss
         if 'warrior_3_remove_hp_decrease_on_level' in self.slot_data and self.slot_data['warrior_3_remove_hp_decrease_on_level']:
             for removal in warrior_3_start_game_hp_loss_removals:
-                self.modify_episode_start_script(episodes_path, 'Warrior', 3, removal)
+                self.modify_csv_column(episodes_path, 'Script: Start Game', 'Warrior', 3, removal)
 
         # Inventor Episode 3 - Remove Rust
         if 'inventor_3_remove_rust' in self.slot_data and self.slot_data['inventor_3_remove_rust']:
             for removal in inventor_3_start_game_rust_removals:
-                self.modify_episode_start_script(episodes_path, 'Inventor', 3, removal)
+                self.modify_csv_column(episodes_path, 'Script: Start Game', 'Inventor', 3, removal)
 
         # Inventor Episode 3 - Start with Grindstone
         if 'inventor_3_start_with_grindstone' in self.slot_data and self.slot_data['inventor_3_start_with_grindstone']:

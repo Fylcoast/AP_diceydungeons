@@ -59,7 +59,7 @@ class SplitDice(Toggle):
     '''
     Determines whether Dice Shards are required to receive
     dice when leveling up. Shared across episodes.
-    Note: Also affects Robot's CPU.
+    Note: Also affects Robot's CPU, and Witch's prepared spells and upgraded slots.
     '''
     display_name = "Split Dice"
 
@@ -176,6 +176,13 @@ class Inventor3StartWithGrindstone(Toggle):
     '''
     display_name = "Inventor Episode 3 - Start with Grindstone"
 
+class WitchStartWithHarvestScythe(Toggle):
+    '''
+    If playing as Witch, start episodes 1, 2, 4, and 5 with Harvest Scythe.
+    Gives a fun use for sent AP checks (if playing with Remove Checks When Sent off)
+    '''
+    display_name = "Witch - Start with Harvest Scythe"
+
 class UpgradeEquipment(Choice):
     '''
     Choose whether you'd like any equipment upgraded that wouldn't otherwise be.
@@ -185,6 +192,8 @@ class UpgradeEquipment(Choice):
     starting equipment: Your starting equipment is upgraded, all other equipment stays the same.
 
     all equipment: All equipment is upgraded, like Warrior Episode 2. Upgrades in episodes are converted to Copy blueprints.
+
+    NOTE: Witch will have all spell slots upgraded and prepared, but only for upgrade All equipment. And for Witch Episode 6, this kicks in at start of first combat.
     '''
 
     display_name = "Upgrade Equipment"
@@ -207,11 +216,12 @@ class Character(OptionSet):
     '''
     Determines which characters you would like to play as. 
     Each character adds several hours to expected completion time.
+    Options are 'Warrior', 'Thief', 'Robot', 'Inventor', and 'Witch'.
     '''
 
     display_name = "Characters"
 
-    valid_keys = {"Warrior", "Thief", "Robot", "Inventor"}
+    valid_keys = {"Warrior", "Thief", "Robot", "Inventor", "Witch"}
 
     default = {"Warrior"}
 
@@ -280,6 +290,7 @@ class DiceyDungeonsOptions(PerGameCommonOptions):
     warrior_3_remove_hp_decrease_on_level: Warrior3RemoveHPDecreaseOnLevel
     inventor_3_remove_rust: Inventor3RemoveRust
     inventor_3_start_with_grindstone: Inventor3StartWithGrindstone
+    witch_start_with_harvest_scythe: WitchStartWithHarvestScythe
     upgrade_equipment: UpgradeEquipment
     release_episodes_when_completed: ReleaseEpisodesWhenCompleted
     character: Character
@@ -303,7 +314,7 @@ option_groups = [
     ),
     OptionGroup(
         "Quality of Life",
-        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, Inventor3RemoveRust, Inventor3StartWithGrindstone, UpgradeEquipment, ReleaseEpisodesWhenCompleted, RemoveChecksWhenSent]
+        [SkipCutscenes, EquipmentAvailability, Warrior2DisableCurse, Warrior3RemoveHPDecreaseOnLevel, Inventor3RemoveRust, Inventor3StartWithGrindstone, WitchStartWithHarvestScythe, UpgradeEquipment, ReleaseEpisodesWhenCompleted, RemoveChecksWhenSent]
     )
 ]
 
@@ -324,6 +335,7 @@ option_presets = {
         "warrior_3_remove_hp_decrease_on_level": False,
         "inventor_3_remove_rust": False,
         "inventor_3_start_with_grindstone": False,
+        "witch_start_with_harvest_scythe": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
         "character": Character.default,
@@ -348,9 +360,10 @@ option_presets = {
         "warrior_3_remove_hp_decrease_on_level": True,
         "inventor_3_remove_rust": False,
         "inventor_3_start_with_grindstone": False,
+        "witch_start_with_harvest_scythe": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
-        "character": Character.default,
+        "character": {"Warrior", "Thief", "Robot", "Inventor", "Witch"},
         "excluded_equipment": ExcludedEquipment.default,
         "randomize_gadgets": RandomizeGadgets.default,
         "remove_checks_when_sent": RemoveChecksWhenSent.default,
@@ -372,6 +385,7 @@ option_presets = {
         "warrior_3_remove_hp_decrease_on_level": False,
         "inventor_3_remove_rust": True,
         "inventor_3_start_with_grindstone": False,
+        "witch_start_with_harvest_scythe": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": True,
         "character": {"Inventor"},
@@ -396,6 +410,7 @@ option_presets = {
         "warrior_3_remove_hp_decrease_on_level": False,
         "inventor_3_remove_rust": False,
         "inventor_3_start_with_grindstone": True,
+        "witch_start_with_harvest_scythe": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": True,
         "character": {"Inventor"},

@@ -84,11 +84,20 @@ item_name_groups: dict[str, set[str]] = {
     "Inventor Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['inventor']['episode']]),
     "Inventor Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['inventor']['episode']]),
     "Inventor All Items": set([k for k in inventor_items]),
+
+    "Witch Episode 1 Items": set([k for k, v in item_metadata.items() if 1 in v['witch']['episode']]),
+    "Witch Episode 2 Items": set([k for k, v in item_metadata.items() if 2 in v['witch']['episode']]),
+    "Witch Episode 3 Items": set([k for k, v in item_metadata.items() if 3 in v['witch']['episode']]),
+    "Witch Episode 4 Items": set([k for k, v in item_metadata.items() if 4 in v['witch']['episode']]),
+    "Witch Episode 5 Items": set([k for k, v in item_metadata.items() if 5 in v['witch']['episode']]),
+    "Witch Episode 6 Items": set([k for k, v in item_metadata.items() if 6 in v['witch']['episode']]),
+    "Witch All Items": set([k for k in witch_items]),
     
     "Warrior Episode Completion": set([f"Warrior - Episode {i} Completed" for i in range(1, 7)]),
     "Thief Episode Completion": set([f"Thief - Episode {i} Completed" for i in range(1, 7)]),
     "Robot Episode Completion": set([f"Robot - Episode {i} Completed" for i in range(1, 7)]),
     "Inventor Episode Completion": set([f"Inventor - Episode {i} Completed" for i in range(1, 7)]),
+    "Witch Episode Completion": set([f"Witch - Episode {i} Completed" for i in range(1, 7)]),
 
     "All Equipment": set([k for k in item_metadata.keys()])
 }
@@ -129,7 +138,7 @@ def create_all_items(world: DiceyDungeonsWorld) -> None:
     item_list: list[str] = []
 
     if world.options.use_equipment_from_any_character:
-        item_list = list(set(warrior_items + thief_items + robot_items + inventor_items) - world.options.excluded_equipment.value)
+        item_list = list(set(warrior_items + thief_items + robot_items + inventor_items + witch_items) - world.options.excluded_equipment.value)
         world.random.shuffle(item_list)
     else:
         # Stitch character lists together, so that if we only take some equipment, it's evenly spread among selected characters.

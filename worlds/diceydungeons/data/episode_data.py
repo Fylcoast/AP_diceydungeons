@@ -24,7 +24,7 @@ class EpisodeData:
     floors: list[FloorData]
     # Floor 6 is always just the boss
 
-    level_items: dict[int, str]
+    level_items: dict[int, list[str]]
     """Any level present here has a predefined item it gives (e.g. Dice) instead of a random item"""
 
     standard_level_items: dict[int, list[str]]
@@ -53,7 +53,7 @@ episode1 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:Boomerang"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Upgrade"], 6: ["Dice"]},
     {5: ["upgrade", "health"]}
 )
@@ -66,7 +66,7 @@ episode2 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Spiked Shield+", "Equipment:Boomerang+"], 4: ["Dice"], 5: ["Equipment:Shield Bash+", "Equipment:Pirate Hook+", "Equipment:Midnight Charm+"], 6: ["Dice"]},
     {5: ["upgrade", "health"]}
 )
@@ -79,7 +79,7 @@ episode3 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:Iron Shield"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Equipment:Last Stand"], 6: ["Dice"]},
     {5: ["upgrade", "health"]}
 )
@@ -92,7 +92,7 @@ episode4 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:Boomerang"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Upgrade"], 6: ["Dice"]},
     {5: ["upgrade", "health"]}
 )
@@ -105,7 +105,7 @@ episode5 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Crescent Moon Blade", "Equipment:Polar Star"], 4: ["Dice"], 5: ["Equipment:Battering Ram", "Upgrade"], 6: ["Dice"]},
     {5: ["upgrade", "health"]}
 )
@@ -118,7 +118,7 @@ episode6 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 1, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Crescent Moon Blade", "Equipment:Polar Star"], 4: ["Dice"], 5: ["Equipment:Battering Ram", "Upgrade"], 6: ["Dice"]},
     {5: ["upgrade", "health"]}
 )
@@ -136,7 +136,7 @@ thief_episode_1 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 1, 3, 2, 0, 1),
     FloorData(1, 1, 3, 3, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Poison Needle", "Equipment:Crowbar"], 4: ["Dice"], 5: ["Equipment:Skeleton Key", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]},
     {5: ["health"]}
 )
@@ -149,7 +149,7 @@ thief_episode_2 = EpisodeData(
     FloorData(0, 0, 0, 2, 2, 0),
     FloorData(0, 0, 0, 2, 0, 1),
     FloorData(0, 1, 3, 3, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Poison Needle", "Equipment:Crowbar"], 4: ["Dice"], 5: ["Equipment:Skeleton Key", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]},
     {5: ["health"]}
 )
@@ -162,7 +162,7 @@ thief_episode_3 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 1, 3, 2, 0, 1),
     FloorData(1, 1, 3, 3, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Kunai", "Equipment:Hall of Mirrors"], 4: ["Dice"], 5: ["Equipment:Backstab", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]},
     {5: ["health"]}
 )
@@ -175,7 +175,7 @@ thief_episode_4 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 1, 3, 2, 0, 1),
     FloorData(1, 1, 3, 3, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Poison Needle", "Equipment:Crowbar"], 4: ["Dice"], 5: ["Equipment:Skeleton Key", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]},
     {5: ["health"]}
 )
@@ -188,7 +188,7 @@ thief_episode_5 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 1, 3, 2, 0, 1),
     FloorData(1, 1, 3, 3, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Cowbell", "Equipment:Wrecking Ball"], 4: ["Dice"], 5: ["Equipment:Berlin Key", "Equipment:Bronze Cauldron", "Upgrade"], 6: ["Dice"]},
     {5: ["health"]}
 )
@@ -201,7 +201,7 @@ thief_episode_6 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 1, 3, 2, 0, 1),
     FloorData(1, 1, 3, 3, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Poison Needle", "Equipment:Cowbell"], 4: ["Dice"], 5: ["Equipment:Berlin Key", "Equipment:Hacksaw", "Upgrade"], 6: ["Dice"]},
     {5: ["health"]}
 )
@@ -216,7 +216,7 @@ robot_episode_1 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 2, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 4: ["CPU:2"], 6: ["CPU:2"]},
     {2: ["CPU:2"], 3: ["Equipment:Buster Sword", "Equipment:Ultima Weapon"], 4: ["CPU:2"], 5: ["Equipment:Heat Sink", "Equipment:Increment"], 6: ["CPU:2"]},
     {5: ["health"]}
 )
@@ -229,7 +229,7 @@ robot_episode_2 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 2, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 4: ["CPU:2"], 6: ["CPU:2"]},
     {2: ["CPU:2"], 3: ["Equipment:Buster Sword", "Equipment:Ultima Weapon"], 4: ["CPU:2"], 5: ["Equipment:Heat Sink", "Equipment:Increment"], 6: ["CPU:2"]},
     {5: ["health"]}
 )
@@ -255,7 +255,7 @@ robot_episode_4 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 2, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 4: ["CPU:2"], 6: ["CPU:2"]},
     {2: ["CPU:2"], 3: ["Equipment:Buster Sword", "Equipment:Ultima Weapon"], 4: ["CPU:2"], 5: ["Equipment:Heat Sink", "Equipment:Increment"], 6: ["CPU:2"]},
     {5: ["health"]}
 )
@@ -268,7 +268,7 @@ robot_episode_5 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 2, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 4: ["CPU:2"], 6: ["CPU:2"]},
     {2: ["CPU:2"], 3: ["Equipment:Stack Overflow", "Equipment:Precious Egg@6"], 4: ["CPU:2"], 5: ["Equipment:Cooling Fan", "Equipment:Concatenate"], 6: ["CPU:2"]},
     {5: ["health"]}
 )
@@ -281,7 +281,7 @@ robot_episode_6 = EpisodeData(
     FloorData(1, 1, 3, 2, 1, 0),
     FloorData(1, 0, 0, 2, 0, 1),
     FloorData(1, 1, 3, 2, 1, 0),
-    {2: "CPU:2", 4: "CPU:2", 6: "CPU:2"},
+    {2: ["CPU:2"], 4: ["CPU:2"], 6: ["CPU:2"]},
     {2: ["CPU:2"], 3: ["Equipment:Missing Score", "Equipment:Spud Cannon"], 4: ["CPU:2"], 5: ["Equipment:Cooling Fan", "Equipment:Increment"], 6: ["CPU:2"]},
     {5: ["health"]}
 )
@@ -296,7 +296,7 @@ inventor_episode_1 = EpisodeData(
     FloorData(3, 2, 3, 1, 0, 0),
     FloorData(2, 0, 0, 2, 0, 0),
     FloorData(2, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Flamethrower", "Equipment:Doppeldice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Metal", "Copy"], 6: ["Dice"]},
     {2: ["upgrade"], 3: ["upgrade"], 5: ["health"]}
 )
@@ -309,7 +309,7 @@ inventor_episode_2 = EpisodeData(
     FloorData(3, 2, 3, 1, 0, 0),
     FloorData(2, 0, 0, 2, 0, 0),
     FloorData(2, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Flamethrower", "Equipment:Doppeldice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Metal", "Copy"], 6: ["Dice"]},
     {2: ["upgrade"], 3: ["upgrade"], 5: ["health"]}
 )
@@ -322,7 +322,7 @@ inventor_episode_3 = EpisodeData(
     FloorData(3, 2, 3, 1, 0, 0),
     FloorData(3, 0, 0, 2, 0, 0),
     FloorData(2, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Grindstone", "Equipment:Doppeldice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Hammer", "Copy"], 6: ["Dice"]},
     {2: ["upgrade"], 3: ["upgrade"], 5: ["health"]}
 )
@@ -335,7 +335,7 @@ inventor_episode_4 = EpisodeData(
     FloorData(3, 2, 3, 1, 0, 0),
     FloorData(2, 0, 0, 2, 0, 0),
     FloorData(2, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Flamethrower", "Equipment:Doppeldice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Metal", "Copy"], 6: ["Dice"]},
     {2: ["upgrade"], 3: ["upgrade"], 5: ["health"]}
 )
@@ -348,7 +348,7 @@ inventor_episode_5 = EpisodeData(
     FloorData(2, 1, 3, 1, 0, 0),
     FloorData(2, 1, 3, 2, 0, 0),
     FloorData(2, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Molotov Cocktail", "Equipment:Doppeltwice"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Bump", "Copy"], 6: ["Dice"]},
     {2: ["upgrade"], 3: ["upgrade"], 5: ["health"]}
 )
@@ -361,7 +361,7 @@ inventor_episode_6 = EpisodeData(
     FloorData(3, 2, 3, 1, 0, 0),
     FloorData(2, 0, 0, 2, 0, 0),
     FloorData(2, 1, 3, 2, 1, 0),
-    {2: "Dice", 4: "Dice", 6: "Dice"},
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
     {2: ["Dice"], 3: ["Equipment:Screwdriver", "Equipment:Chainsaw"], 4: ["Dice"], 5: ["Upgrade", "Equipment:Scrap Spear", "Copy"], 6: ["Dice"]},
     {2: ["upgrade"], 3: ["upgrade"], 5: ["health"]}
 )
@@ -370,6 +370,86 @@ inventor_episodes = [inventor_episode_1, inventor_episode_2, inventor_episode_3,
 
 inventor_3_start_game_rust_removals = ["Rules.inventor_inspiration = false;", "Rules.inventor_equipmentrust = 4;"]
 
-all_character_episodes = [warrior_episodes, thief_episodes, robot_episodes, inventor_episodes]
+# witch_normal
+witch_episode_1 = EpisodeData(
+    "Episode 1",
+    FloorData(2, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 3, 0, 0),
+    FloorData(0, 1, 3, 3, 0, 0),
+    {3: ["WitchUpgrade", "WitchPrecast"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {2: ["Spell:Burning Light", "Spell:Electric Shock", "Spell:Ice Shard", "Spell:Sonic Wave"], 3: ["WitchUpgrade", "WitchPrecast"], 4: ["Spell:Doppeldice", "Spell:Duplicate"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {3: ["health"], 4: ["health"], 5: ["health"]}
+)
+
+# witch_normal
+witch_episode_2 = EpisodeData(
+    "Episode 2",
+    FloorData(2, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 3, 0, 0),
+    FloorData(0, 1, 3, 3, 0, 0),
+    {3: ["WitchUpgrade", "WitchPrecast"], 5: ["Dice"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {2: ["Spell:Burning Light", "Spell:Electric Shock", "Spell:Ice Shard", "Spell:Sonic Wave"], 3: ["WitchUpgrade", "WitchPrecast"], 4: ["Spell:Doppeldice", "Spell:Duplicate"], 5: ["Dice"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {3: ["health"], 4: ["health"], 5: ["health"]}
+)
+
+# witch_normal
+witch_episode_3 = EpisodeData(
+    "Episode 3",
+    FloorData(2, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 3, 0, 0),
+    FloorData(0, 1, 3, 3, 0, 0),
+    {3: ["WitchUpgrade", "WitchPrecast"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {2: ["Spell:Burning Light", "Spell:Electric Shock", "Spell:Ice Shard", "Spell:Sonic Wave"], 3: ["WitchUpgrade", "WitchPrecast"], 4: ["Spell:Doppeldice", "Spell:Duplicate"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {3: ["health"], 4: ["health"], 5: ["health"]}
+)
+
+# witch_normal
+witch_episode_4 = EpisodeData(
+    "Episode 4",
+    FloorData(2, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(2, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 3, 0, 0),
+    FloorData(0, 1, 3, 3, 0, 0),
+    {3: ["WitchUpgrade", "WitchPrecast"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {2: ["Spell:Burning Light", "Spell:Electric Shock", "Spell:Ice Shard", "Spell:Sonic Wave"], 3: ["WitchUpgrade", "WitchPrecast"], 4: ["Spell:Doppeldice", "Spell:Duplicate"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {3: ["health"], 4: ["health"], 5: ["health"]}
+)
+
+# witch_paralleluniverse
+witch_episode_5 = EpisodeData(
+    "Episode 5",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 0, 0, 4, 0, 0),
+    FloorData(0, 1, 3, 3, 0, 0),
+    {3: ["WitchUpgrade", "WitchPrecast"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {2: ["Spell:Sun Beam", "Spell:Lucky 7", "Spell:Cold Snap"], 3: ["WitchUpgrade", "WitchPrecast"], 4: ["Spell:Magnifying Glass", "Spell:Daffodil"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {3: ["health"], 5: ["health"]}
+)
+
+# witch_remixgenerator
+witch_episode_6 = EpisodeData(
+    "Episode 6",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 0, 0, 4, 0, 0),
+    FloorData(0, 1, 3, 3, 0, 0),
+    {3: ["WitchUpgrade", "WitchPrecast"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {2: ["Spell:Burning Light", "Spell:Electric Shock", "Spell:Cold Snap"], 3: ["WitchUpgrade", "WitchPrecast"], 4: ["Spell:Doppeldice", "Spell:Daffodil"], 5: ["WitchUpgrade", "ExtraDice", "WitchPrecast"], 6: ["WitchUpgrade", "WitchPrecast"]},
+    {3: ["health"], 5: ["health"]}
+)
+
+witch_episodes = [witch_episode_1, witch_episode_2, witch_episode_3, witch_episode_4, witch_episode_5, witch_episode_6]
+
+all_character_episodes = [warrior_episodes, thief_episodes, robot_episodes, inventor_episodes, witch_episodes]
 
 start_game_upgrade_all_equipment_additions = ["Rules.upgradeplayerequipment = true;", "Rules.substitute(~upgrade~[;] ~copyshop~);"]

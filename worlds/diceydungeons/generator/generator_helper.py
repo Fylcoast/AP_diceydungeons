@@ -9,6 +9,7 @@ generator_names: dict[list[str]] = {
     2: ['thief_one', 'thief_two', 'thief_three', 'thief_four', 'thief_five', 'thief_six'],
     3: ['robot_one', 'robot_two', 'robot_three', 'robot_four', 'robot_five', 'robot_six'],
     4: ['inventor_one', 'inventor_two', 'inventor_three', 'inventor_four', 'inventor_five', 'inventor_six'],
+    5: ['witch_one', 'witch_two', 'witch_three', 'witch_four', 'witch_five', 'witch_six'],
 }
 """Dict of generator names lists, indexed by character code"""
 
@@ -17,6 +18,7 @@ character_episodes: dict[int, list[EpisodeData]] = {
     2: thief_episodes,
     3: robot_episodes,
     4: inventor_episodes,
+    5: witch_episodes,
 }
 """Mapping of character code to data for their episodes"""
 
@@ -25,6 +27,7 @@ item_metadata_mapping: dict[int, str] = {
     2: 'thief',
     3: 'robot',
     4: 'inventor',
+    5: 'witch'
 }
 """Mapping of character code to item_metadata field we need to examine for availability"""
 
@@ -45,9 +48,21 @@ class LevelItems:
     
     def add_to_level(self, item: str):
         self.items.append(item)
+
+    def blocked_by_dice_shard_count(self, dice_received: int):
+        all_level_items: dict[int, list[str]] = character_episodes[self.character_num][self.episode_num - 1].level_items
+        sorted_levels: list[int] = sorted(all_level_items)
+        # Blocked by dice shard count if we are supposed to get something, and our position in that list is 
+        # >= the number of dice received.
+        return self.level_num in sorted_levels and sorted_levels.index(self.level_num) >= dice_received
     
     def add_to_level_list(self, items: list[str], replace_upgrade: bool):
         items_to_add = ["Copy" if item == "Upgrade" and replace_upgrade else item for item in items]
+        if replace_upgrade and "WitchUpgrade" in items_to_add:
+            items_to_add.remove("WitchUpgrade")
+            items_to_add.remove("WitchPrecast")
+            if not items_to_add:
+                items_to_add.append("ExtraDice")
         self.items.extend(items_to_add)
 
 class TradeItems:
@@ -289,7 +304,7 @@ class EpisodeItems:
 
 class CharacterItems:
     id: int
-    """id of Character. 1 == Warrior, 2 = Thief, 3 = Robot, 4 = Inventor"""
+    """id of Character. 1 == Warrior, 2 = Thief, 3 = Robot, 4 = Inventor, 5 = Witch"""
     episodes: list[EpisodeItems]
     """list of episodes, each of which has deeper structure"""
 
@@ -307,6 +322,8 @@ class GeneratedItems:
     """Robot episodes container"""
     inventor: CharacterItems
     """Inventor episodes container"""
+    witch: CharacterItems
+    """Witch episodes container"""
     characters_playing: list[CharacterItems]
     """List of characters we are playing, based on options."""
     all_characters: list[CharacterItems]
@@ -323,7 +340,8 @@ class GeneratedItems:
         self.thief = CharacterItems(2)
         self.robot = CharacterItems(3)
         self.inventor = CharacterItems(4)
-        self.all_characters = [self.warrior, self.thief, self.robot, self.inventor]
+        self.witch = CharacterItems(5)
+        self.all_characters = [self.warrior, self.thief, self.robot, self.inventor, self.witch]
         self.slot_data = slot_data
         self.level_ups = level_ups
         self.dice_received = dice_received
@@ -369,7 +387,7 @@ class GeneratedItems:
         else:
             # self.all_characters[<character code>].episodes[<episode number - 1>].floors[<floor_num - 1>].chests/shops to get string lists or add to them
             # Location ID: <Character Code><Episode Number><Floor Number><Location Code><Location Count, 2 digits>
-            # Character code is 1 = Warrior, 2 = Thief, 3 = Robot, 4 = Inventor
+            # Character code is 1 = Warrior, 2 = Thief, 3 = Robot, 4 = Inventor, 5 = Witch
             # Episode code is 1-6
             # Floor code is 1-6
             # Location code is 1 = chests, 2 = shops, 5 = trades
@@ -411,10 +429,9 @@ class GeneratedItems:
                     # 3. It's not already filled, somehow
                     # 4. If dice, and Split dice is on, we need to be able to add it
                     if level in character_episodes[character.id][episode.episode_num - 1].level_items and level <= max_level and not episode.is_level_filled(level):
-                        # Consider using a more legible condition for Split Dice in the future
-                        if self.slot_data["split_dice"] and level % 2 == 0 and level // 2 > self.dice_received:
+                        if self.slot_data["split_dice"] and episode.levels[level - 2].blocked_by_dice_shard_count(self.dice_received):
                             continue
-                        episode.add_to_level(level, character_episodes[character.id][episode.episode_num - 1].level_items[level])
+                        episode.levels[level - 2].add_to_level_list(character_episodes[character.id][episode.episode_num - 1].level_items[level], self.slot_data["upgrade_equipment"] == 2)
     
     def assign_standard_level_ups(self):
         """For Levelsanity = off, give normal level ups"""
@@ -422,8 +439,7 @@ class GeneratedItems:
         for character in self.characters_playing:
             for episode in character.episodes:
                 for level in episode.levels:
-                    # Consider using a more legible condition for Split Dice in the future
-                    if self.slot_data["split_dice"] and level.level_num % 2 == 0 and level.level_num // 2 > self.dice_received:
+                    if self.slot_data["split_dice"] and level.blocked_by_dice_shard_count(self.dice_received):
                         continue
                     level.add_to_level_list(character_episodes[character.id][episode.episode_num - 1].standard_level_items[level.level_num], upgrade_all_equipment)
     

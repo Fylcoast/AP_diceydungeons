@@ -31,7 +31,7 @@ default_item_info: OrderedDict = {
     'Cast Backwards?': 'NO',
     'Single use?': 'NO',
     'Tags': 'excludefromrandomlists|cannotsteal|skillcard|appearsforparts',
-    'Witch Spell': '',
+    'Witch Spell': '1',
     'Script: Before Combat': '',
     'Script: After Combat': '',
     'Script: Before Start Turn': '',
@@ -183,7 +183,7 @@ class DiceyDungeonsClientModGenerator():
             rows.extend(get_filler_items(randomize_gadgets))
             writer.writerows(rows)
     
-    def replace_text_in_column(self, path: str, col: str, old: str, new: str):
+    def replace_text_in_column(self, path: str, col: str, old: str, new: str, excluded_characters: list[str] = []):
         """Replace an old string with a new string in chosen column of csv at path. 
         Does nothing if new string already present."""
         with open(path, 'r', newline='') as f:
@@ -192,16 +192,34 @@ class DiceyDungeonsClientModGenerator():
             rows = list(reader)
         
         for row in rows:
-            if new not in row[col]:
+            if new not in row[col] and row["Character"] not in excluded_characters:
                 row[col] = row[col].replace(old, new)
         
         with open(path, 'w', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(rows) 
+
+    def populate_column(self, path: str, col: str, new: str, force: bool):
+        """Add text to a column if it is currently empty.
+        If force enabled, replaces existing values."""
+        with open(path, 'r', newline='') as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames
+            rows = list(reader)
+
+        for row in rows:
+            if force or not row[col]:
+                row[col] = new
+        
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows) 
+            
     
-    def modify_episode_start_script(self, path: str, character: str, level: int, filter: str, add: bool = False):
-        """Modify start script to either add given string or remove given string."""
+    def modify_csv_column(self, path: str, column: str, character: str, level: int, filter: str, add: bool = False):
+        """Modify given column in given csv to either add given string or remove given string."""
         with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
             fieldnames = reader.fieldnames
@@ -210,17 +228,17 @@ class DiceyDungeonsClientModGenerator():
         for row in rows:
             if row["Character"] == character and int(row["Level"]) == level:
                 if add:
-                    if filter not in row["Script: Start Game"]:
-                        row["Script: Start Game"] = row["Script: Start Game"] + filter
+                    if filter not in row[column]:
+                        row[column] = row[column] + filter
                 else:
-                    row["Script: Start Game"] = row["Script: Start Game"].replace(filter, "")
+                    row[column] = row[column].replace(filter, "")
         
         with open(path, 'w', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(rows) 
     
-    def add_to_all_start_scripts(self, path: str, text_to_add: str):
+    def add_to_all_start_scripts(self, path: str, text_to_add: str, excluded_characters: list[str] = []):
         """Modify start script to either add given string or remove given string."""
         with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
@@ -228,7 +246,7 @@ class DiceyDungeonsClientModGenerator():
             rows = list(reader)
         
         for row in rows:
-            if text_to_add not in row["Script: Start Game"]:
+            if text_to_add not in row["Script: Start Game"] and row["Character"] not in excluded_characters:
                 row["Script: Start Game"] = row["Script: Start Game"] + text_to_add
         
         with open(path, 'w', newline='') as f:
@@ -236,7 +254,7 @@ class DiceyDungeonsClientModGenerator():
             writer.writeheader()
             writer.writerows(rows) 
     
-    def upgrade_starting_equipment(self, path: str):
+    def upgrade_starting_equipment(self, path: str, excluded_characters: list[str] = []):
         """Upgrade all starting equipment for all episodes"""
         with open(path, 'r', newline='') as f:
             reader = csv.DictReader(f)
@@ -244,7 +262,7 @@ class DiceyDungeonsClientModGenerator():
             rows = list(reader)
         
         for row in rows:
-            if row["Equipment"]:
+            if row["Equipment"] and row["Character"] and row["Character"] not in excluded_characters:
                 starting_equipment = row["Equipment"].split("|")
                 upgraded_starting_equipment = list(map(lambda equip : f"{equip}+" if "+" not in equip else equip, starting_equipment))
                 row["Equipment"] = "|".join(upgraded_starting_equipment)
@@ -291,6 +309,21 @@ class DiceyDungeonsClientModGenerator():
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(rows) 
+
+    def witch_upgrade_spells(self, episodes_path: str):
+        """Upgrade and set all witch spell slots"""
+        for i in range(1, 7):
+            if i != 3 and i != 6:
+                # Most witch episodes can have first slot set
+                self.modify_csv_column(episodes_path, "Script: Start Game", "Witch", i, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);", True)
+            elif i == 3:
+                # But then Episode 3 we need to set a different spell, because she has no first spell.
+                self.modify_csv_column(episodes_path, "Script: Start Game", "Witch", i, "var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)[;]Spellbook.spellname(6)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);", True)
+            else:
+                # And, Episode 6 we have to do it after defining level up rewards, since that's when we get our equipment
+                # This code makes me sad.
+                self.modify_csv_column(episodes_path, "Script: Define Level Up Rewards", "Witch", i, "self.setvar(~WitchUpgradeSpells~[;] 1);", True)
+                self.modify_csv_column(episodes_path, "Script: Start Combat", "Witch", i, "if(self.getvar(~WitchUpgradeSpells~) == 1) {self.setvar(~WitchUpgradeSpells~[;] 0); var spells = []; for (i in 1...7) spells.push(Spellbook.spellname(i)); Spellbook.setto(spells[;] [Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)[;]Spellbook.spellname(1)][;]0); Spellbook.upgradeslot(3); Spellbook.upgradeslot(2); Spellbook.upgradeslot(1); Spellbook.upgradeslot(0);};", True)        
         
     
     def generate(self):
@@ -332,7 +365,7 @@ class DiceyDungeonsClientModGenerator():
             self._generate_progresssettings_file(save_path, self.slot_data['save_name'])
 
 
-        # Make new equipment file
+        # Make append equipment file
         if self.equipment:
             equipment_path = os.path.join(dest_dir, self.mod_name, '_append', 'data', 'text')
             if not os.path.exists(equipment_path):
@@ -346,34 +379,48 @@ class DiceyDungeonsClientModGenerator():
         # Warrior Episode 2 - Disable Curse
         if 'warrior_2_disable_curse' in self.slot_data and self.slot_data['warrior_2_disable_curse']:
             for removal in warrior_2_start_game_curse_removals:
-                self.modify_episode_start_script(episodes_path, 'Warrior', 2, removal)
+                self.modify_csv_column(episodes_path, 'Script: Start Game', 'Warrior', 2, removal)
 
         # Warrior Episode 3 - Prevent HP Loss
         if 'warrior_3_remove_hp_decrease_on_level' in self.slot_data and self.slot_data['warrior_3_remove_hp_decrease_on_level']:
             for removal in warrior_3_start_game_hp_loss_removals:
-                self.modify_episode_start_script(episodes_path, 'Warrior', 3, removal)
+                self.modify_csv_column(episodes_path, 'Script: Start Game', 'Warrior', 3, removal)
 
         # Inventor Episode 3 - Remove Rust
         if 'inventor_3_remove_rust' in self.slot_data and self.slot_data['inventor_3_remove_rust']:
             for removal in inventor_3_start_game_rust_removals:
-                self.modify_episode_start_script(episodes_path, 'Inventor', 3, removal)
+                self.modify_csv_column(episodes_path, 'Script: Start Game', 'Inventor', 3, removal)
 
         # Inventor Episode 3 - Start with Grindstone
         if 'inventor_3_start_with_grindstone' in self.slot_data and self.slot_data['inventor_3_start_with_grindstone']:
             self.add_starting_equipment(episodes_path, 'Inventor', 3, 'Grindstone')
+
+        if 'witch_start_with_harvest_scythe' in self.slot_data and self.slot_data['witch_start_with_harvest_scythe']:
+            self.add_starting_equipment(episodes_path, 'Witch', 1, 'Harvest Scythe')
+            self.add_starting_equipment(episodes_path, 'Witch', 2, 'Harvest Scythe')
+            self.add_starting_equipment(episodes_path, 'Witch', 4, 'Harvest Scythe')
+            self.add_starting_equipment(episodes_path, 'Witch', 5, 'Harvest Scythe')
+
+        # Establish base equipment path
+        data_equipment_path = os.path.join(dest_dir, self.mod_name, 'data', 'text')
+        if not os.path.exists(data_equipment_path):
+            os.makedirs(data_equipment_path)
+        data_equipment_path = os.path.join(data_equipment_path, 'equipment.csv')
         
         # Inventor - Randomize all equipments' gadgets
         if self.slot_data['randomize_gadgets'] == 2:
-            # Randomize all gadgets, so bring in new equipment.csv
-            randomize_gadgets_files = files(__package__).joinpath('data', 'randomize_all_gadgets_data', self.mod_name)
-            self._write_package_files_to_dir(randomize_gadgets_files, self.mod_name, dest_dir)
+            # Randomize all gadgets
+            self.populate_column(data_equipment_path, 'Gadget', 'Random Gadget', True)
             self.set_random_starting_gadgets(episodes_path)
+
+        # Witch - Make all equipment work as spells
+        self.populate_column(data_equipment_path, 'Witch Spell', '1', False)
         
         # Upgrade Equipment
 
         # Upgrade starting equipment
         if 'upgrade_equipment' in self.slot_data and self.slot_data['upgrade_equipment'] >= 1:
-            self.upgrade_starting_equipment(episodes_path)
+            self.upgrade_starting_equipment(episodes_path, ['Witch'])
             # Make sure to include episode 6
             upgraded_initial_equipment_files = files(__package__).joinpath('data', 'upgrade_starting_equipment', self.mod_name)
             self._write_package_files_to_dir(upgraded_initial_equipment_files, self.mod_name, dest_dir)
@@ -381,7 +428,11 @@ class DiceyDungeonsClientModGenerator():
         # Upgrade all equipment
         if 'upgrade_equipment' in self.slot_data and self.slot_data['upgrade_equipment'] == 2:
             for addition in start_game_upgrade_all_equipment_additions:
-                self.add_to_all_start_scripts(episodes_path, addition)
+                self.add_to_all_start_scripts(episodes_path, addition, ['Witch'])
+
+            # Handle Witch upgrade spell slots
+            self.witch_upgrade_spells(episodes_path)
+
             # Also handle level ups.
-            self.replace_text_in_column(episodes_path, 'Script: Define Level Up Rewards', 'leveluprewards', 'upgraded_leveluprewards')
+            self.replace_text_in_column(episodes_path, 'Script: Define Level Up Rewards', 'leveluprewards', 'upgraded_leveluprewards', ['Witch'])
 

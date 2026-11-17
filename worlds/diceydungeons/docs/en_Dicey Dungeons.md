@@ -11,7 +11,9 @@ Your pool of items (equipment) which you can acquire throughout your runs has be
 
 ## What characters are supported?
 
-The Warrior, Thief, Robot, and Inventor are the only characters supported by this mod. Other characters may be present based on your settings, but playing their Episodes will not benefit you.
+All characters (Warrior, Thief, Robot, Inventor, Witch, and the Sixth Character) are now supported by this mod.
+
+The Finale is not yet supported though.
 
 ## What is the goal of Dicey Dungeons when randomized?
 
@@ -87,6 +89,14 @@ These items are listed below, grouped by the character that they are for (if not
 - Harvest Scythe
 - Lunasa
 - Spring Equinox
+
+### Jester
+- Call for Backup Inventor
+- Call for Backup Inventor?
+- Call for Backup Warrior
+- Call for Backup Warrior?
+- Call for Backup Witch
+- Kapow
 
 
 ## Special Thanks

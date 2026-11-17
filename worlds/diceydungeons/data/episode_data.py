@@ -33,7 +33,7 @@ class EpisodeData:
     standard_shop_items: dict[int, list[str]]
     """Any pre-set shop items, separated by floor."""
 
-    def __init__(self, name: str, floor1: FloorData, floor2: FloorData, floor3: FloorData, floor4: FloorData, floor5: FloorData, level_items: dict[int, str], standard_level_items: dict[int, list[str]], standard_shop_items: dict[int, list[str]]):
+    def __init__(self, name: str, floor1: FloorData, floor2: FloorData, floor3: FloorData, floor4: FloorData, floor5: FloorData, level_items: dict[int, list[str]], standard_level_items: dict[int, list[str]], standard_shop_items: dict[int, list[str]]):
         self.name = name
         self.floor1 = floor1
         self.floor2 = floor2
@@ -450,6 +450,86 @@ witch_episode_6 = EpisodeData(
 
 witch_episodes = [witch_episode_1, witch_episode_2, witch_episode_3, witch_episode_4, witch_episode_5, witch_episode_6]
 
-all_character_episodes = [warrior_episodes, thief_episodes, robot_episodes, inventor_episodes, witch_episodes]
+# jester_normal
+jester_episode_1 = EpisodeData(
+    "Episode 1",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(2, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 1, 1, 0),
+    FloorData(0, 0, 0, 3, 1, 0),
+    {},
+    {2: ["Boosterpack:Ice Shatter,Snowflake,Snowflake", "Boosterpack:Detonator,Liquorice,Liquorice"], 3: ["Equipment:Duplicate"], 4: ["Equipment:Call for Backup Warrior", "Equipment:Call for Backup Witch", "Equipment:Call for Backup Inventor"], 5: ["Equipment:Call for Backup Thief", "Equipment:Call for Backup Robot", "Delete"], 6: ["Equipment:Duplicate"]},
+    {2: ["Delete", "Delete"], 3: ["Delete"]}
+)
+
+# jester_warrior
+jester_episode_2 = EpisodeData(
+    "Episode 2",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 1, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 1, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
+    {2: ["Dice"], 3: ["Equipment:Spiked Shield", "Equipment:Boomerang"], 4: ["Dice"], 5: ["Equipment:Shield Bash", "Upgrade"], 6: ["Dice"]},
+    {2: ["Upgrade", "Delete"], 3: ["health", "Delete"], 4: ["Upgrade", "Delete"], 5: ["Upgrade", "health"]}
+)
+
+# jester_finderskeepers
+jester_episode_3 = EpisodeData(
+    "Episode 3",
+    FloorData(0, 0, 0, 1, 0, 0),
+    FloorData(0, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(0, 1, 3, 1, 1, 0),
+    FloorData(0, 0, 0, 3, 1, 0),
+    {2: ["Dice"], 4: ["Dice"], 6: ["Dice"]},
+    {2: ["Dice"], 3: ["Equipment:Duplicate"], 4: ["Dice"], 5: ["Delete", "Upgrade"], 6: ["Dice"]},
+    {2: ["Delete", "Delete"], 3: ["Delete"], 4: ["Upgrade", "Delete"]}
+)
+
+# jester_normal
+jester_episode_4 = EpisodeData(
+    "Episode 4",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(2, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 1, 1, 0),
+    FloorData(0, 0, 0, 3, 1, 0),
+    {},
+    {2: ["Boosterpack:Flame Blast,Spark,Spark", "Boosterpack:High Voltage,Buzzer,Buzzer"], 3: ["Equipment:Duplicate"], 4: ["Equipment:Call for Backup Warrior", "Equipment:Call for Backup Witch", "Equipment:Call for Backup Inventor"], 5: ["Equipment:Call for Backup Thief", "Equipment:Call for Backup Robot", "Delete"], 6: ["Equipment:Duplicate"]},
+    {2: ["Delete", "Delete"], 3: ["Delete"]}
+)
+
+# jester_paralleluniverse
+jester_episode_5 = EpisodeData(
+    "Episode 5",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(2, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 1, 1, 0),
+    FloorData(0, 0, 0, 3, 1, 0),
+    {},
+    {2: ["Boosterpack:Hijinx,Slapsies,Slapsies", "Boosterpack:Woof Woof Woof,Ruff Ruff Ruff,Ruff Ruff Ruff"], 3: ["Equipment:Subdivide"], 4: ["Equipment:Call for Backup Warrior?", "Equipment:Call for Backup Witch?", "Equipment:Call for Backup Inventor?"], 5: ["Equipment:Call for Backup Thief?", "Equipment:Call for Backup Robot?", "Delete"], 6: ["Equipment:Subdivide"]},
+    {2: ["Delete", "Delete"], 3: ["Delete"]}
+)
+
+# jester_remixgenerator
+jester_episode_6 = EpisodeData(
+    "Episode 6",
+    FloorData(1, 0, 0, 0, 0, 0),
+    FloorData(1, 1, 3, 2, 1, 0),
+    FloorData(1, 1, 3, 2, 0, 0),
+    FloorData(1, 1, 3, 1, 1, 0),
+    FloorData(0, 0, 0, 3, 1, 0),
+    {},
+    {2: ["Boosterpack:Flying Skull,Evil Laugh,Evil Laugh", "Boosterpack:Shield Bash,Deflect,Deflect"], 3: ["Equipment:Subdivide"], 4: ["Equipment:Call for Backup Warrior?", "Equipment:Call for Backup Witch", "Equipment:Call for Backup Inventor"], 5: ["Equipment:Call for Backup Thief", "Equipment:Call for Backup Robot?", "Delete"], 6: ["Equipment:Duplicate"]},
+    {2: ["Delete", "Delete"], 3: ["Delete"]}
+)
+
+jester_episodes = [jester_episode_1, jester_episode_2, jester_episode_3, jester_episode_4, jester_episode_5, jester_episode_6]
+
+all_character_episodes = [warrior_episodes, thief_episodes, robot_episodes, inventor_episodes, witch_episodes, jester_episodes]
 
 start_game_upgrade_all_equipment_additions = ["Rules.upgradeplayerequipment = true;", "Rules.substitute(~upgrade~[;] ~copyshop~);"]

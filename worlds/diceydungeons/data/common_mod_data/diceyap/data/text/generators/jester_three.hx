@@ -1,0 +1,93 @@
+usestandardenemies();
+
+var generator = "jester_three";
+var episode = "3";
+var items = [];
+var gooditems = [];
+var otherstuff = [];
+var goodotherstuff = [];
+
+//Floor 1:
+addfloor("tiny")
+  .additems([], [])
+  .addotherstuff([health()], [])
+  .generate();
+
+//Floor 2:
+items = [];
+gooditems = [];
+otherstuff = [
+  health(), 
+  health()
+];
+goodotherstuff = [
+  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "2", "1"]))
+];
+
+addfloor("small")
+  .additems(items, gooditems)
+  .addotherstuff(otherstuff, goodotherstuff)
+  .generate();
+
+//Floor 3:
+items = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "3", "1"]);
+gooditems = [];
+otherstuff = [
+  health(), 
+  health()
+];
+goodotherstuff = [
+  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "3", "1"]))
+];
+
+addfloor("normal")
+  .additems(items, gooditems)
+  .addotherstuff(otherstuff, goodotherstuff)
+  .generate();
+
+//Floor 4
+items = [];
+gooditems = [];
+
+otherstuff = [
+  health(), 
+  upgrade()
+];
+goodotherstuff = [
+  shop(runscript("diceyap/load_ap_items_by_category", [generator, episode, "shops", "4", "1"]))
+];
+
+addfloor("normal")
+  .additems(items, gooditems)
+  .addotherstuff(otherstuff, goodotherstuff)
+  .generate();
+  
+//Floor 5
+items = [];
+gooditems = [];
+otherstuff = [health(), health(), health()];
+goodotherstuff = [rand([upgrade(), copyshop()])];
+
+addfloor("normal")
+  .additems(items, gooditems)
+  .addotherstuff(otherstuff, goodotherstuff)
+  .generate();
+
+// Floor 6:			
+items = [];
+gooditems = [];
+otherstuff = [];
+goodotherstuff = [];
+
+usestandardenemies(false);
+var finalboss:String = level6enemies.pop();
+if (finalboss == "Drake"){
+  items.push("Wooden Stake,Wooden Stake");
+}
+
+addfloor("boss")
+  .addenemies([], [finalboss])
+  .setlocation('BOSS')
+  .additems(items, gooditems)
+  .addotherstuff(otherstuff, goodotherstuff)
+  .generate();

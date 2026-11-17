@@ -29,3 +29,14 @@ if (self.layout == self.layout.SPELLBOOK) {
     spell_slot = spell_slot + 1;
   }
 }
+
+if (self.layout == self.layout.DECK) {
+  var cardlist = Deck.getcardlist("all");
+  for (card in cardlist) {
+    var cardString = card.toString();
+    if (cardString.indexOf("[AP]") >= 0) {
+      var location_id = cardString.split("[AP]")[1];
+      trace("[AP] {\"command\": \"send_item\", \"payload\": \"" + location_id + "\"}");
+    }
+  }
+}

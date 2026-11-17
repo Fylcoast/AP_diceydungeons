@@ -36,7 +36,7 @@ default_item_info: OrderedDict = {
     'Script: After Combat': '',
     'Script: Before Start Turn': '',
     'Script: On Start Turn': '',
-    'Script: On any equipment use': '',
+    'Script: On any equipment use': 'if (self.layout == ~DECK~) {trace(~testdelete~);for(i in [0|1|2|3]){trace(Deck.getcard(i));if(Deck.getcard(i) != null && Deck.getcard(i).toString().indexOf(~[AP]~) >= 0) {trace(~deleting card maybe~);Deck.getcard(i).delete();}};}',
     'Script: On any countdown reduce': '',
     'Script: End Turn': '',
     'Script: Before execute': '',

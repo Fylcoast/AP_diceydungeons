@@ -13,7 +13,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5], 'location_types': ['chest'], },
     },
     'Backstab': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -37,7 +37,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Battering Ram': {
         'warrior': { 'episode': [5], 'location_types': ['chest'], },
@@ -85,7 +85,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5], 'location_types': ['chest'], },
     },
     'Big Stick': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -141,7 +141,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['shop'], },
     },
     'Blood Suck': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -149,7 +149,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 3, 4, 6], 'location_types': ['shop'], },
     },
     'Blue Ocean': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -173,7 +173,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 3, 4, 6], 'location_types': ['shop'], },
     },
     'Boxing Gloves': {
         'warrior': { 'episode': [5, 6], 'location_types': ['shop'], },
@@ -181,7 +181,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['shop'], },
     },
     'Broadsword': {
         'warrior': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['shop'], },
@@ -189,7 +189,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [3, 6], 'location_types': ['chest'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Broken Mirror': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -221,7 +221,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 3, 4, 6], 'location_types': ['chest', 'shop'], },
     },
     'Bumpblade': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -237,7 +237,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Burning Light': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -373,7 +373,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop'], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Cauldron': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -381,7 +381,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 3, 4, 6], 'location_types': ['chest', 'shop'], },
     },
     'Chainsaw': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -421,7 +421,7 @@ item_metadata = {
         'robot': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop'], },
         'inventor': { 'episode': [6], 'location_types': ['chest'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Chocolate Cookie,Spatula': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -429,7 +429,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Cloak': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -453,7 +453,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Cold Snap': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -549,7 +549,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [1, 2, 4, 6], 'location_types': ['chest', 'shop'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Daffodil': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -597,7 +597,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 4], 'location_types': ['chest'], },
     },
     'Disco Ball': {
         'warrior': { 'episode': [5, 6], 'location_types': ['chest'], },
@@ -685,7 +685,7 @@ item_metadata = {
         'robot': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
         'inventor': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['shop'], },
     },
     'Electromagnet': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -725,7 +725,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 4], 'location_types': ['chest'], },
     },
     'Fireworks': {
         'warrior': { 'episode': [5, 6], 'location_types': ['chest'], },
@@ -901,7 +901,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 4], 'location_types': ['chest'], },
     },
     'Grindstone': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -917,7 +917,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [5, 6], 'location_types': ['shop'], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
     },
     'Hacksaw': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -941,7 +941,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [3, 6], 'location_types': ['chest'], },
         'witch': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest'], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 3, 4, 6], 'location_types': ['shop'], },
     },
     'Hammer': {
         'warrior': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop', 'trade'], },
@@ -949,7 +949,7 @@ item_metadata = {
         'robot': { 'episode': [3], 'location_types': ['chest', 'shop'], },
         'inventor': { 'episode': [3], 'location_types': ['chest'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['shop'], },
     },
     'Hammer,Bump': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -957,7 +957,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Harvest Scythe': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1045,7 +1045,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop'], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 3, 4, 6], 'location_types': ['shop'], },
     },
     'Increment': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1077,7 +1077,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Juggling Ball': {
         'warrior': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['shop'], },
@@ -1085,7 +1085,7 @@ item_metadata = {
         'robot': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop', 'trade'], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop'], },
     },
     'Kapow': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1093,7 +1093,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['shop'], },
     },
     'Katana': {
         'warrior': { 'episode': [5], 'location_types': ['chest'], },
@@ -1141,7 +1141,7 @@ item_metadata = {
         'robot': { 'episode': [3], 'location_types': ['chest', 'shop'], },
         'inventor': { 'episode': [3], 'location_types': ['chest', 'shop'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 3, 4, 6], 'location_types': ['shop'], },
     },
     'Lantern': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1173,7 +1173,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5], 'location_types': ['chest'], },
     },
     'Leather Armor': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1213,7 +1213,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [1, 2, 4, 6], 'location_types': ['chest'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Lockpick': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1229,7 +1229,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
     },
     'Lucky 7': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1381,7 +1381,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['shop'], },
     },
     'Missing Score': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1389,7 +1389,7 @@ item_metadata = {
         'robot': { 'episode': [6], 'location_types': ['chest'], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['shop'], },
     },
     'Molotov Cocktail': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1461,7 +1461,7 @@ item_metadata = {
         'robot': { 'episode': [1, 2, 3, 4], 'location_types': ['chest', 'shop'], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop'], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 3, 4, 6], 'location_types': ['chest', 'shop'], },
     },
     'Nudgeblade': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1613,7 +1613,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 4], 'location_types': ['chest'], },
     },
     'Puppy Paws': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1685,7 +1685,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['shop'], },
     },
     'Safe Bet': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1797,7 +1797,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['shop'], },
     },
     'Shield Bash': {
         'warrior': { 'episode': [1, 2, 3, 4], 'location_types': ['chest'], },
@@ -1837,7 +1837,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Shovel': {
         'warrior': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'trade'], },
@@ -1845,7 +1845,7 @@ item_metadata = {
         'robot': { 'episode': [3], 'location_types': ['chest', 'shop'], },
         'inventor': { 'episode': [3, 6], 'location_types': ['chest', 'shop'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['shop'], },
     },
     'Shriek': {
         'warrior': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['shop'], },
@@ -1853,7 +1853,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Signal Jammer': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -1973,7 +1973,7 @@ item_metadata = {
         'robot': { 'episode': [3], 'location_types': ['chest', 'shop'], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Snowflake': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2029,7 +2029,7 @@ item_metadata = {
         'robot': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop', 'trade'], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop'], },
     },
     'Spatulasword': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2037,7 +2037,7 @@ item_metadata = {
         'robot': { 'episode': [5, 6], 'location_types': ['chest', 'shop', 'trade'], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
     },
     'Spike': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2101,7 +2101,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['chest', 'shop'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Staff,Juggling Ball': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2109,7 +2109,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Starspear': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2189,7 +2189,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
     },
     'Target Shield': {
         'warrior': { 'episode': [1, 2, 3, 4, 6], 'location_types': ['shop'], },
@@ -2213,7 +2213,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Telephone': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2221,7 +2221,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['shop'], },
     },
     'Teleport Spell': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2253,7 +2253,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [3], 'location_types': ['chest'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['shop'], },
     },
     'Toxic Ooze,Slime Ball': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2261,7 +2261,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Transformer@1': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2317,7 +2317,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Venus Gospel': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2341,7 +2341,7 @@ item_metadata = {
         'robot': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [5, 6], 'location_types': ['chest', 'shop'], },
     },
     'Whisper': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2357,7 +2357,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [3], 'location_types': ['chest', 'shop'], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [1, 3, 4, 6], 'location_types': ['shop'], },
     },
     'Whip,Bump': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2365,7 +2365,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Winds of Winter': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2397,7 +2397,7 @@ item_metadata = {
         'robot': { 'episode': [], 'location_types': [], },
         'inventor': { 'episode': [], 'location_types': [], },
         'witch': { 'episode': [], 'location_types': [], },
-        'jester': { 'episode': [], 'location_types': [], },
+        'jester': { 'episode': [2], 'location_types': ['chest'], },
     },
     'Wrecking Ball': {
         'warrior': { 'episode': [], 'location_types': [], },
@@ -2652,6 +2652,7 @@ jester_items = [
     'Claw,Claw',
     'Crystal Sword',
     'Dice Cannon',
+    'Duplicate',
     'Elastic Heart',
     'Encore',
     'Grand Finale',

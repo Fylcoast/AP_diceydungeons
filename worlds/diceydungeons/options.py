@@ -60,6 +60,7 @@ class SplitDice(Toggle):
     Determines whether Dice Shards are required to receive
     dice when leveling up. Shared across episodes.
     Note: Also affects Robot's CPU, and Witch's prepared spells and upgraded slots.
+    Note: Some of Jester's episodes are not affected by this setting.
     '''
     display_name = "Split Dice"
 
@@ -194,6 +195,8 @@ class UpgradeEquipment(Choice):
     all equipment: All equipment is upgraded, like Warrior Episode 2. Upgrades in episodes are converted to Copy blueprints.
 
     NOTE: Witch will have all spell slots upgraded and prepared, but only for upgrade All equipment. And for Witch Episode 6, this kicks in at start of first combat.
+
+    NOTE: Jester's Booster packs will not be upgraded.
     '''
 
     display_name = "Upgrade Equipment"
@@ -216,12 +219,12 @@ class Character(OptionSet):
     '''
     Determines which characters you would like to play as. 
     Each character adds several hours to expected completion time.
-    Options are 'Warrior', 'Thief', 'Robot', 'Inventor', and 'Witch'.
+    Options are 'Warrior', 'Thief', 'Robot', 'Inventor', 'Witch', and 'Jester'.
     '''
 
     display_name = "Characters"
 
-    valid_keys = {"Warrior", "Thief", "Robot", "Inventor", "Witch"}
+    valid_keys = {"Warrior", "Thief", "Robot", "Inventor", "Witch", "Jester"}
 
     default = {"Warrior"}
 
@@ -269,6 +272,8 @@ class RemoveChecksWhenSent(DefaultOnToggle):
     '''
     Remove AP checks from your equipped items when the check is sent to the client.
     Useful to have off if you want to use them as gadgets for Inventor.
+    Or if you want to Harvest Scythe them as Witch.
+    NOTE: Jester cards are always removed, because I don't think those are useful ever?
     '''
 
     display_name = "Remove Checks When Sent"
@@ -363,7 +368,7 @@ option_presets = {
         "witch_start_with_harvest_scythe": False,
         "upgrade_equipment": UpgradeEquipment.default,
         "release_episodes_when_completed": False,
-        "character": {"Warrior", "Thief", "Robot", "Inventor", "Witch"},
+        "character": {"Warrior", "Thief", "Robot", "Inventor", "Witch", "Jester"},
         "excluded_equipment": ExcludedEquipment.default,
         "randomize_gadgets": RandomizeGadgets.default,
         "remove_checks_when_sent": RemoveChecksWhenSent.default,

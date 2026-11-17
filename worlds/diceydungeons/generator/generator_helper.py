@@ -10,6 +10,7 @@ generator_names: dict[list[str]] = {
     3: ['robot_one', 'robot_two', 'robot_three', 'robot_four', 'robot_five', 'robot_six'],
     4: ['inventor_one', 'inventor_two', 'inventor_three', 'inventor_four', 'inventor_five', 'inventor_six'],
     5: ['witch_one', 'witch_two', 'witch_three', 'witch_four', 'witch_five', 'witch_six'],
+    6: ['jester_one', 'jester_two', 'jester_three', 'jester_four', 'jester_five', 'jester_six'],
 }
 """Dict of generator names lists, indexed by character code"""
 
@@ -19,6 +20,7 @@ character_episodes: dict[int, list[EpisodeData]] = {
     3: robot_episodes,
     4: inventor_episodes,
     5: witch_episodes,
+    6: jester_episodes
 }
 """Mapping of character code to data for their episodes"""
 
@@ -27,9 +29,15 @@ item_metadata_mapping: dict[int, str] = {
     2: 'thief',
     3: 'robot',
     4: 'inventor',
-    5: 'witch'
+    5: 'witch',
+    6: 'jester'
 }
 """Mapping of character code to item_metadata field we need to examine for availability"""
+
+
+def get_safe_item_name(item: str):
+    return item.replace(',', '[APcomma]')
+
 
 class LevelItems:
     character_num: int
@@ -174,31 +182,33 @@ class FloorItems:
         if self.is_floor_full():
             return False
         
+        item_to_add: str = get_safe_item_name(item)
+        
         if not allow_anywhere:
             item_data: dict = item_metadata[item][item_metadata_mapping[self.character_num]]
             
             if not self.are_floor_chests_filled() and self.episode_num in item_data['episode'] and 'chest' in item_data['location_types']:
-                self.add_to_chests(item)
+                self.add_to_chests(item_to_add)
                 return True
             
             if not self.are_floor_shops_filled() and self.episode_num in item_data['episode'] and 'shop' in item_data['location_types']:
-                self.add_to_shops(item)
+                self.add_to_shops(item_to_add)
                 return True
             
             if not self.are_floor_trades_filled() and self.episode_num in item_data['episode'] and 'trade' in item_data['location_types']:
-                self.add_to_trades(item)
+                self.add_to_trades(item_to_add)
                 return True
         else:
             if not self.are_floor_chests_filled():
-                self.add_to_chests(item)
+                self.add_to_chests(item_to_add)
                 return True
             
             if not self.are_floor_shops_filled():
-                self.add_to_shops(item)
+                self.add_to_shops(item_to_add)
                 return True
             
             if not self.are_floor_trades_filled():
-                self.add_to_trades(item)
+                self.add_to_trades(item_to_add)
                 return True
         
         return False
@@ -277,7 +287,7 @@ class EpisodeItems:
     def item_allowed_for_levels(self, item: str, allow_anywhere: bool) -> bool:
         """Check if item is allowed in levels for this episode."""
         item_data: dict = item_metadata[item][item_metadata_mapping[self.character_num]]
-        return allow_anywhere or (self.episode_num in item_data['episode'] and 'chest' in item_data['location_types'])
+        return allow_anywhere or (self.episode_num in item_data['episode'] and 'chest' in item_data['location_types'] and ',' not in item)
 
     def is_level_filled(self, level: int) -> bool:
         """Check if level in this episode is filled. T/F"""
@@ -304,7 +314,7 @@ class EpisodeItems:
 
 class CharacterItems:
     id: int
-    """id of Character. 1 == Warrior, 2 = Thief, 3 = Robot, 4 = Inventor, 5 = Witch"""
+    """id of Character. 1 == Warrior, 2 = Thief, 3 = Robot, 4 = Inventor, 5 = Witch, 6 = Jester"""
     episodes: list[EpisodeItems]
     """list of episodes, each of which has deeper structure"""
 
@@ -324,6 +334,8 @@ class GeneratedItems:
     """Inventor episodes container"""
     witch: CharacterItems
     """Witch episodes container"""
+    jester: CharacterItems
+    """Jester episodes container"""
     characters_playing: list[CharacterItems]
     """List of characters we are playing, based on options."""
     all_characters: list[CharacterItems]
@@ -341,7 +353,8 @@ class GeneratedItems:
         self.robot = CharacterItems(3)
         self.inventor = CharacterItems(4)
         self.witch = CharacterItems(5)
-        self.all_characters = [self.warrior, self.thief, self.robot, self.inventor, self.witch]
+        self.jester = CharacterItems(6)
+        self.all_characters = [self.warrior, self.thief, self.robot, self.inventor, self.witch, self.jester]
         self.slot_data = slot_data
         self.level_ups = level_ups
         self.dice_received = dice_received
@@ -387,7 +400,7 @@ class GeneratedItems:
         else:
             # self.all_characters[<character code>].episodes[<episode number - 1>].floors[<floor_num - 1>].chests/shops to get string lists or add to them
             # Location ID: <Character Code><Episode Number><Floor Number><Location Code><Location Count, 2 digits>
-            # Character code is 1 = Warrior, 2 = Thief, 3 = Robot, 4 = Inventor, 5 = Witch
+            # Character code is 1 = Warrior, 2 = Thief, 3 = Robot, 4 = Inventor, 5 = Witch, 6 = Jester
             # Episode code is 1-6
             # Floor code is 1-6
             # Location code is 1 = chests, 2 = shops, 5 = trades

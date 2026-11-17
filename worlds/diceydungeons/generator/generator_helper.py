@@ -65,7 +65,7 @@ class LevelItems:
         return self.level_num in sorted_levels and sorted_levels.index(self.level_num) >= dice_received
     
     def add_to_level_list(self, items: list[str], replace_upgrade: bool):
-        items_to_add = ["Copy" if item == "Upgrade" and replace_upgrade else item for item in items]
+        items_to_add = ["Copy" if item == "Upgrade" and replace_upgrade else get_safe_item_name(item) for item in items]
         if replace_upgrade and "WitchUpgrade" in items_to_add:
             items_to_add.remove("WitchUpgrade")
             items_to_add.remove("WitchPrecast")

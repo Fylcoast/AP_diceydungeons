@@ -67,7 +67,7 @@ addfloor("big")
 items = [];
 gooditems = [];
 otherstuff = [health(), health(), health()];
-goodotherstuff = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "5", "1"]);
+goodotherstuff = [rand([upgrade(), copyshop()])];
 
 addfloor("normal")
   .additems(items, gooditems)

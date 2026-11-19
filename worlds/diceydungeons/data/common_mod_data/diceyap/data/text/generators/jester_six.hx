@@ -47,7 +47,7 @@ addfloor("normal")
 
 //Floor 4
 items = [];
-gooditems = [runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "4", "1"])]; //substituted elsewhere
+gooditems = runscript("diceyap/load_ap_items_by_category", [generator, episode, "chests", "4", "1"]); //substituted elsewhere
 
 otherstuff = [
   health(), 

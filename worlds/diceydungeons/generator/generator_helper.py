@@ -38,6 +38,20 @@ item_metadata_mapping: dict[int, str] = {
 def get_safe_item_name(item: str):
     return item.replace(',', '[APcomma]')
 
+def allowed_in_chests(character_code: int, item: str):
+    # Booster packs only work for Jester
+    return not ((',' in item or '[APcomma]' in item) and CHARACTER_CODE_TO_NAME[character_code] not in ['Jester'])
+
+def allowed_in_shops(character_code: int, item: str):
+    # ',' items break shops
+    return ',' not in item \
+    and '[APcomma]' not in item
+
+def allowed_in_trades(character_code: int, item: str):
+    # ',' items break trades?
+    return ',' not in item \
+    and '[APcomma]' not in item
+
 
 class LevelItems:
     character_num: int
@@ -199,15 +213,15 @@ class FloorItems:
                 self.add_to_trades(item_to_add)
                 return True
         else:
-            if not self.are_floor_chests_filled():
+            if not self.are_floor_chests_filled() and allowed_in_chests(self.character_num, item_to_add):
                 self.add_to_chests(item_to_add)
                 return True
             
-            if not self.are_floor_shops_filled():
+            if not self.are_floor_shops_filled() and allowed_in_shops(self.character_num, item_to_add):
                 self.add_to_shops(item_to_add)
                 return True
             
-            if not self.are_floor_trades_filled():
+            if not self.are_floor_trades_filled() and allowed_in_trades(self.character_num, item_to_add):
                 self.add_to_trades(item_to_add)
                 return True
         

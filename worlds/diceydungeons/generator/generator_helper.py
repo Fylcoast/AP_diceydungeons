@@ -52,6 +52,10 @@ def allowed_in_trades(character_code: int, item: str):
     return ',' not in item \
     and '[APcomma]' not in item
 
+def allowed_in_level_ups(character_code: int, item: str):
+    return ',' not in item \
+    and '[APcomma]' not in item
+
 
 class LevelItems:
     character_num: int
@@ -481,7 +485,7 @@ class GeneratedItems:
                 allow_anywhere: bool = self.slot_data["equipment_availability"] == 1
 
                 for level in range(2, 7):
-                    if level <= max_level and not episode.is_level_filled(level) and episode.item_allowed_for_levels(item, allow_anywhere):
+                    if level <= max_level and not episode.is_level_filled(level) and episode.item_allowed_for_levels(item, allow_anywhere) and allowed_in_level_ups(character.id, item):
                         episode.add_to_level(level, f"Equipment:{item}")
                         filled = True
                         break
